@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Foody Moody</string>
+    <string name="txt_main_page">Food lover? Welcome!</string>
+    <string name="txt_main_page_1">Food lover?</string>
+    <string name="txt_main_page_2">Welcome!</string>
 </resources>
