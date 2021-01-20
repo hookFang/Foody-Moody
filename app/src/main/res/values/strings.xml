@@ -3,4 +3,12 @@
     <string name="txt_main_page">Food lover? Welcome!</string>
     <string name="txt_main_page_1">Food lover?</string>
     <string name="txt_main_page_2">Welcome!</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="login">LOGIN</string>
+    <string name="google">oogle</string>
+    <string name="twitter">Twitter</string>
+    <string name="facebook">acebook</string>
+    <string name="retrieving">Forget password/username?</string>
+    <string name="signup">signup</string>
 </resources>
