@@ -27,29 +27,31 @@
         android:id="@+id/editText_username"
         android:layout_width="@dimen/d_300"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="@string/username"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo"
         android:layout_marginTop="@dimen/d_50"
+        android:background="@drawable/text_frame"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textPersonName"
         android:paddingStart="@dimen/d_10"
         android:paddingEnd="@dimen/d_10"
-        android:background="@drawable/text_frame"/>
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo" />
 
     <EditText
         android:id="@+id/editText_password"
         android:layout_width="@dimen/d_270"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:hint="@string/password"
-        app:layout_constraintStart_toStartOf="@+id/editText_username"
-        app:layout_constraintTop_toBottomOf="@+id/editText_username"
         android:layout_marginTop="@dimen/d_15"
+        android:background="@drawable/text_frame_password"
+        android:hint="@string/password"
+        android:inputType="textPassword"
         android:paddingStart="@dimen/d_10"
         android:paddingEnd="@dimen/d_10"
-        android:background="@drawable/text_frame_password"/>
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@+id/editText_username"
+        app:layout_constraintTop_toBottomOf="@+id/editText_username" />
 
     <Button
         android:id="@+id/button_visiblity"
