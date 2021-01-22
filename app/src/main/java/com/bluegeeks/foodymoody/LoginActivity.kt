@@ -14,11 +14,18 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.IdpResponse
+import com.google.firebase.auth.FirebaseAuth
+import android.annotation.SuppressLint
 
 
 class LoginActivity : AppCompatActivity() {
 
     private val auth = Firebase.auth
+    private val RC_SIGN_IN = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
                                                 Toast.LENGTH_LONG
                                         ).show()
                                     } else {
-                                        val i = Intent(applicationContext, MainActivity::class.java)
+                                        val i = Intent(applicationContext, HomeActivity::class.java)
                                         startActivity(i)
                                     }
                                 }
@@ -89,5 +96,67 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter you're Username and Password.", Toast.LENGTH_LONG).show()
             }
         }
+
+        signin_google_button.setOnClickListener {
+            // Choose authentication providers
+            val providers = arrayListOf(
+                    AuthUI.IdpConfig.GoogleBuilder().build()
+            )
+            startActivityForResult (
+            AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(providers)
+                    .build(),
+            RC_SIGN_IN
+            )
+        }
+
+        signin_twitter_button.setOnClickListener {
+            // Choose authentication providers
+            val providers = arrayListOf(
+                    AuthUI.IdpConfig.TwitterBuilder().build()
+            )
+            startActivityForResult (
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .build(),
+                    RC_SIGN_IN
+            )
+        }
+
+
+        signin_facebook_button.setOnClickListener {
+            // Choose authentication providers
+            val providers = arrayListOf(
+                    AuthUI.IdpConfig.FacebookBuilder().build()
+            )
+            startActivityForResult (
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .build(),
+                    RC_SIGN_IN
+            )
+        }
+
     }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SIGN_IN) {
+            val response = IdpResponse.fromResultIntent(data)
+            if (resultCode == RESULT_OK) {
+                // Successfully signed in
+                val user = FirebaseAuth.getInstance().currentUser
+                // send to list activity
+                val intent = Intent(applicationContext, HomeActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Invalid Login", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
 }
