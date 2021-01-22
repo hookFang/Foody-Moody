@@ -24,12 +24,13 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
-        android:id="@+id/editText_username"
+        android:id="@+id/editText_email"
         android:layout_width="@dimen/d_300"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/d_50"
         android:background="@drawable/text_frame"
         android:ems="10"
+        android:fontFamily="@font/aldrich"
         android:hint="@string/username"
         android:inputType="textPersonName"
         android:paddingStart="@dimen/d_10"
@@ -45,13 +46,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/d_15"
         android:background="@drawable/text_frame_password"
+        android:fontFamily="@font/aldrich"
         android:hint="@string/password"
         android:inputType="textPassword"
         android:paddingStart="@dimen/d_10"
         android:paddingEnd="@dimen/d_10"
         android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="@+id/editText_username"
-        app:layout_constraintTop_toBottomOf="@+id/editText_username" />
+        app:layout_constraintStart_toStartOf="@+id/editText_email"
+        app:layout_constraintTop_toBottomOf="@+id/editText_email" />
 
     <Button
         android:id="@+id/button_visiblity"
@@ -76,28 +78,29 @@
         android:background="@drawable/button_login"/>
 
     <Button
-        android:id="@+id/butten_retrieving"
+        android:id="@+id/button_retrieving"
         android:layout_width="@dimen/d_300"
         android:layout_height="@dimen/d_20"
-        android:text="@string/retrieving"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_button"
-        android:textSize="@dimen/f_14"
         android:layout_marginTop="@dimen/d_20"
         android:background="@color/background_green"
+        android:fontFamily="@font/aldrich"
+        android:text="@string/retrieving"
+        android:textAllCaps="false"
         android:textColor="@color/dark_green"
-        tools:ignore="RtlSymmetry"
-        android:textAllCaps="false" />
+        android:textSize="@dimen/f_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login_button"
+        tools:ignore="RtlSymmetry" />
 
     <Button
-        android:id="@+id/butten_signup"
+        android:id="@+id/button_signUp"
         android:layout_width="@dimen/d_150"
         android:layout_height="@dimen/d_25"
         android:text="@string/signup"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/butten_retrieving"
+        app:layout_constraintTop_toBottomOf="@id/button_retrieving"
         android:textSize="@dimen/f_14"
         android:layout_marginTop="@dimen/d_20"
         android:background="@drawable/butten_signup"
@@ -112,7 +115,7 @@
         android:text="@string/google"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/butten_signup"
+        app:layout_constraintTop_toBottomOf="@id/button_signUp"
         android:textSize="@dimen/f_20"
         android:textColor="@color/white"
         android:layout_marginTop="@dimen/d_30"

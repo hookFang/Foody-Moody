@@ -4,12 +4,21 @@
     <string name="txt_main_page_1">Food lover?</string>
     <string name="txt_main_page_2">Welcome!</string>
     <string name="password">Password</string>
-    <string name="username">Username</string>
+    <string name="username">E-mail</string>
     <string name="login">LOGIN</string>
     <string name="google">oogle</string>
     <string name="twitter">Twitter</string>
     <string name="facebook">acebook</string>
     <string name="facebook_application_id" translatable="false">716202202622945</string>
-    <string name="retrieving">Forget password/username?</string>
-    <string name="signup">signup</string>
+    <string name="retrieving">FORGOT PASSWORD?</string>
+    <string name="signup">SIGN UP</string>
+    <string name="signUpHeadingTextView">Food Moody Sign Up</string>
+    <string name="userNameHint">Username</string>
+    <string name="passwordHint">Password</string>
+    <string name="firstNameHint">First Name</string>
+    <string name="lastNameHint">Last Name</string>
+    <string name="emailNameHint">E-mail</string>
+    <string name="confirmPasswordHint">Confirm Password</string>
+    <string name="signUpButtonText">Sign Up</string>
+    <string name="backToLogin">Back to Login</string>
 </resources>

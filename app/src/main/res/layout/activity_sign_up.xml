@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_green"
+    android:orientation="vertical"
+    tools:context=".SignUpActivity">
+
+    <include
+        android:id="@+id/toolBarSignUp"
+        layout="@layout/toolbar_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTintMode="src_in" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d_80"
+        android:src="@drawable/first_logo"
+        android:layout_gravity="top"/>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/signUpLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/signUpUsername"
+                android:layout_width="@dimen/emailWidth"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_frame"
+                android:ems="10"
+                android:fontFamily="@font/aldrich"
+                android:hint="@string/userNameHint"
+                android:inputType="text"
+                android:textAlignment="center" />
+
+            <EditText
+                android:id="@+id/signUpEmail"
+                android:layout_width="@dimen/usernameWidth"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/usernameMarginTop"
+                android:background="@drawable/text_frame"
+                android:ems="10"
+                android:fontFamily="@font/aldrich"
+                android:hint="@string/emailNameHint"
+                android:inputType="text"
+                android:textAlignment="center" />
+
+            <EditText
+                android:id="@+id/signUpPassword"
+                android:layout_width="@dimen/passwordWidth"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/passwordMarginTop"
+                android:background="@drawable/text_frame"
+                android:ems="10"
+                android:fontFamily="@font/aldrich"
+                android:hint="@string/passwordHint"
+                android:inputType="textPassword"
+                android:textAlignment="center" />
+
+            <EditText
+                android:id="@+id/signUpConfirmPassword"
+                android:layout_width="@dimen/passwordWidth"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/passwordMarginTop"
+                android:background="@drawable/text_frame"
+                android:ems="10"
+                android:fontFamily="@font/aldrich"
+                android:hint="@string/confirmPasswordHint"
+                android:inputType="textPassword"
+                android:textAlignment="center" />
+
+
+            <Button
+                android:id="@+id/signUpButton"
+                android:layout_width="@dimen/d_180"
+                android:layout_height="@dimen/d_50"
+                android:layout_marginTop="@dimen/d_80"
+                android:background="@drawable/button_login"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/signUpButtonText"
+                android:textColor="@color/white"
+                android:textSize="@dimen/f_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_password" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
