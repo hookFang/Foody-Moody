@@ -9,6 +9,7 @@
     <string name="google">oogle</string>
     <string name="twitter">Twitter</string>
     <string name="facebook">acebook</string>
+    <string name="facebook_application_id" translatable="false">716202202622945</string>
     <string name="retrieving">Forget password/username?</string>
     <string name="signup">signup</string>
 </resources>

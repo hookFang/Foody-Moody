@@ -55,6 +55,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:20.0.2'
     implementation 'com.google.firebase:firebase-database-ktx:19.6.0'
 
+    //For Facebook API
+    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:26.3.0')
+
+    // Declare the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     // We added for Firebase ui library
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
