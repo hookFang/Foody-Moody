@@ -42,4 +42,7 @@
     <dimen name="usernameMarginTop">20dp</dimen>
     <dimen name="lastNameMarginTop">20dp</dimen>
     <dimen name="signUpEmailMarginTop">20dp</dimen>
+    <dimen name="d_23">23dp</dimen>
+    <dimen name="d_24">24dp</dimen>
+    <dimen name="d_2">2dp</dimen>
 </resources>
