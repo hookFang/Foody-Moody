@@ -14,12 +14,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
-import android.annotation.SuppressLint
 
 
 class LoginActivity : AppCompatActivity() {
@@ -52,10 +49,17 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        //Sign Up button is clicked
+        button_signUp.setOnClickListener {
+            //When the button is pressed the Sign Up activity is opened
+            val i = Intent(applicationContext, SignUpActivity::class.java)
+            startActivity(i)
+        }
+
         //Login button is clicked
         //Login Button onClick listener verifies the login details
         login_button.setOnClickListener {
-            val username = editText_username.text.toString().trim()
+            val username = editText_email.text.toString().trim()
             val passwordSecurity = editText_password.text.toString().trim()
 
             //If the values or not empty proceed with authentication process.

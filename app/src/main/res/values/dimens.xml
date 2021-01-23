@@ -30,4 +30,16 @@
     <dimen name="d_240">240dp</dimen>
     <dimen name="d_120">120dp</dimen>
     <dimen name="d_162">162dp</dimen>
+    <dimen name="signUpHeadingSize">24sp</dimen>
+    <dimen name="signUpHeadingMarginBottom">40dp</dimen>
+    <dimen name="passwordMarginTop">20dp</dimen>
+    <dimen name="loginButtonMarginTop">20dp</dimen>
+    <dimen name="usernameWidth">300sp</dimen>
+    <dimen name="passwordWidth">300sp</dimen>
+    <dimen name="emailWidth">300sp</dimen>
+    <dimen name="nameWidth">300sp</dimen>
+    <dimen name="signUpButtonWidth">300sp</dimen>
+    <dimen name="usernameMarginTop">20dp</dimen>
+    <dimen name="lastNameMarginTop">20dp</dimen>
+    <dimen name="signUpEmailMarginTop">20dp</dimen>
 </resources>
