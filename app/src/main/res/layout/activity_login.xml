@@ -111,10 +111,11 @@
             <Button
                 android:id="@+id/button_signUp"
                 android:layout_width="@dimen/d_150"
-                android:layout_height="@dimen/d_25"
+                android:layout_height="@dimen/d_23"
                 android:text="@string/signup"
                 app:layout_constraintTop_toBottomOf="@id/button_retrieving"
                 android:textSize="@dimen/f_14"
+                android:paddingTop="@dimen/d_2"
                 android:layout_marginTop="@dimen/d_20"
                 android:background="@drawable/butten_signup"
                 android:textColor="@color/dark_green"
