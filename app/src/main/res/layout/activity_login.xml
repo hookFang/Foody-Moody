@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_green"
+    android:orientation="vertical"
     tools:context=".LoginActivity">
-
-    <ImageView
-        android:id="@+id/backgroundLayer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background_green"
-        tools:layout_editor_absoluteX="69dp"
-        tools:layout_editor_absoluteY="70dp" />
 
     <ImageView
         android:id="@+id/logo"
@@ -21,148 +15,165 @@
         android:src="@drawable/first_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
-    <EditText
-        android:id="@+id/editText_email"
-        android:layout_width="@dimen/d_300"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/d_50"
-        android:background="@drawable/text_frame"
-        android:ems="10"
-        android:fontFamily="@font/aldrich"
-        android:hint="@string/username"
-        android:inputType="textPersonName"
-        android:paddingStart="@dimen/d_10"
-        android:paddingEnd="@dimen/d_10"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo" />
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fillViewport="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="ScrollViewCount">
 
-    <EditText
-        android:id="@+id/editText_password"
-        android:layout_width="@dimen/d_270"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/d_15"
-        android:background="@drawable/text_frame_password"
-        android:fontFamily="@font/aldrich"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:paddingStart="@dimen/d_10"
-        android:paddingEnd="@dimen/d_10"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="@+id/editText_email"
-        app:layout_constraintTop_toBottomOf="@+id/editText_email" />
+        <LinearLayout
+            android:id="@+id/signUpLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button_visiblity"
-        android:layout_width="@dimen/d_29"
-        android:layout_height="@dimen/d_22"
-        android:background="@drawable/visible_eye"
-        android:layout_marginTop="@dimen/d_1"
-        app:layout_constraintStart_toEndOf="@+id/editText_password"
-        app:layout_constraintTop_toTopOf="@+id/editText_password"/>
+            <EditText
+                android:id="@+id/editText_email"
+                android:layout_width="@dimen/d_300"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/d_50"
+                android:background="@drawable/text_frame"
+                android:ems="10"
+                android:fontFamily="@font/aldrich"
+                android:hint="@string/username"
+                android:inputType="textEmailAddress"
+                android:paddingStart="@dimen/d_10"
+                android:paddingEnd="@dimen/d_10"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logo"
+                android:autofillHints="" />
 
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="@dimen/d_160"
-        android:layout_height="@dimen/d_50"
-        android:text="@string/login"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editText_password"
-        android:textSize="@dimen/f_20"
-        android:textColor="@color/white"
-        android:layout_marginTop="@dimen/d_30"
-        android:background="@drawable/button_login"/>
+            <LinearLayout
+                android:id="@+id/signUpLinearLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/editText_email"
+                android:layout_marginTop="@dimen/d_15"
+                android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/button_retrieving"
-        android:layout_width="@dimen/d_300"
-        android:layout_height="@dimen/d_20"
-        android:layout_marginTop="@dimen/d_20"
-        android:background="@color/background_green"
-        android:fontFamily="@font/aldrich"
-        android:text="@string/retrieving"
-        android:textAllCaps="false"
-        android:textColor="@color/dark_green"
-        android:textSize="@dimen/f_14"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login_button"
-        tools:ignore="RtlSymmetry" />
+                <EditText
+                    android:id="@+id/editText_password"
+                    android:layout_width="@dimen/d_270"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/text_frame_password"
+                    android:fontFamily="@font/aldrich"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:paddingStart="@dimen/d_10"
+                    android:paddingEnd="@dimen/d_10"
+                    android:textColor="@color/black"
+                    android:autofillHints=""
+                    android:layout_gravity = "center"/>
 
-    <Button
-        android:id="@+id/button_signUp"
-        android:layout_width="@dimen/d_150"
-        android:layout_height="@dimen/d_25"
-        android:text="@string/signup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_retrieving"
-        android:textSize="@dimen/f_14"
-        android:layout_marginTop="@dimen/d_20"
-        android:background="@drawable/butten_signup"
-        android:textColor="@color/dark_green"
-        tools:ignore="RtlSymmetry"
-        android:textAllCaps="false" />
+                <Button
+                    android:id="@+id/button_visiblity"
+                    android:layout_width="@dimen/d_29"
+                    android:layout_height="@dimen/d_23"
+                    android:background="@drawable/visible_eye"
+                    android:layout_marginTop="@dimen/d_1"
+                    app:layout_constraintStart_toEndOf="@+id/editText_password"
+                    app:layout_constraintTop_toTopOf="@+id/editText_password"/>
+            </LinearLayout>
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="@dimen/d_160"
+                android:layout_height="@dimen/d_50"
+                android:text="@string/login"
+                app:layout_constraintTop_toBottomOf="@id/editText_password"
+                android:textSize="@dimen/f_20"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/d_30"
+                android:background="@drawable/button_login"/>
 
-    <Button
-        android:id="@+id/signin_google_button"
-        android:layout_width="@dimen/d_240"
-        android:layout_height="@dimen/d_35"
-        android:text="@string/google"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_signUp"
-        android:textSize="@dimen/f_20"
-        android:textColor="@color/white"
-        android:layout_marginTop="@dimen/d_30"
-        android:background="@drawable/button_google"
-        android:paddingStart="30dp"
-        tools:ignore="RtlSymmetry"
-        android:textAllCaps="false" />
+            <Button
+                android:id="@+id/button_retrieving"
+                android:layout_width="@dimen/d_300"
+                android:layout_height="@dimen/d_20"
+                android:layout_marginTop="@dimen/d_20"
+                android:background="@color/background_green"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/retrieving"
+                android:textAllCaps="false"
+                android:textColor="@color/dark_green"
+                android:textSize="@dimen/f_14"
+                app:layout_constraintTop_toBottomOf="@id/login_button"
+                tools:ignore="RtlSymmetry" />
 
-    <Button
-        android:id="@+id/signin_twitter_button"
-        android:layout_width="@dimen/d_240"
-        android:layout_height="@dimen/d_35"
-        android:text="@string/twitter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signin_google_button"
-        android:textSize="@dimen/f_20"
-        android:textColor="@color/white"
-        android:layout_marginTop="@dimen/d_10"
-        android:background="@drawable/button_twitter"
-        android:paddingStart="@dimen/d_30"
-        tools:ignore="RtlSymmetry"
-        android:textAllCaps="false" />
+            <Button
+                android:id="@+id/button_signUp"
+                android:layout_width="@dimen/d_150"
+                android:layout_height="@dimen/d_25"
+                android:text="@string/signup"
+                app:layout_constraintTop_toBottomOf="@id/button_retrieving"
+                android:textSize="@dimen/f_14"
+                android:layout_marginTop="@dimen/d_20"
+                android:background="@drawable/butten_signup"
+                android:textColor="@color/dark_green"
+                tools:ignore="RtlSymmetry"
+                android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/signin_facebook_button"
-        android:layout_width="@dimen/d_240"
-        android:layout_height="@dimen/d_35"
-        android:text="@string/facebook"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signin_twitter_button"
-        android:textSize="@dimen/f_20"
-        android:textColor="@color/white"
-        android:layout_marginTop="@dimen/d_10"
-        android:background="@drawable/button_facebook"
-        android:paddingStart="@dimen/d_20"
-        tools:ignore="RtlSymmetry"
-        android:textAllCaps="false" />
+            <Button
+                android:id="@+id/signin_google_button"
+                android:layout_width="@dimen/d_240"
+                android:layout_height="@dimen/d_35"
+                android:text="@string/google"
+                app:layout_constraintTop_toBottomOf="@id/button_signUp"
+                android:textSize="@dimen/f_20"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/d_30"
+                android:background="@drawable/button_google"
+                android:paddingStart="30dp"
+                tools:ignore="RtlSymmetry"
+                android:textAllCaps="false" />
 
+            <Button
+                android:id="@+id/signin_twitter_button"
+                android:layout_width="@dimen/d_240"
+                android:layout_height="@dimen/d_35"
+                android:text="@string/twitter"
+                app:layout_constraintTop_toBottomOf="@id/signin_google_button"
+                android:textSize="@dimen/f_20"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/d_10"
+                android:background="@drawable/button_twitter"
+                android:paddingStart="@dimen/d_30"
+                tools:ignore="RtlSymmetry"
+                android:textAllCaps="false" />
 
-    <ImageView
-        android:id="@+id/chefImage"
-        android:layout_width="@dimen/d_120"
-        android:layout_height="@dimen/d_162"
-        android:src="@drawable/chef"
-        app:layout_constraintBottom_toBottomOf="@+id/backgroundLayer"
-        app:layout_constraintEnd_toEndOf="parent"/>
+            <Button
+                android:id="@+id/signin_facebook_button"
+                android:layout_width="@dimen/d_240"
+                android:layout_height="@dimen/d_35"
+                android:text="@string/facebook"
+                app:layout_constraintTop_toBottomOf="@id/signin_twitter_button"
+                android:textSize="@dimen/f_20"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/d_10"
+                android:background="@drawable/button_facebook"
+                android:paddingStart="@dimen/d_20"
+                tools:ignore="RtlSymmetry"
+                android:textAllCaps="false" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/chefImage"
+                android:layout_width="@dimen/d_120"
+                android:layout_height="@dimen/d_162"
+                android:src="@drawable/chef"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="ContentDescription"
+                android:layout_gravity = "end"
+                android:gravity = "bottom" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
