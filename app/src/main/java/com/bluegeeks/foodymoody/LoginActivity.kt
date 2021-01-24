@@ -144,6 +144,13 @@ class LoginActivity : AppCompatActivity() {
             )
         }
 
+        //User Has Forgotten Password and clicks "Forgot Password?"
+        button_retrieving.setOnClickListener {
+            //When the button is pressed the Forgot Password is opened
+            val i = Intent(applicationContext, RetrievePasswordActivity::class.java)
+            startActivity(i)
+        }
+
     }
 
 
