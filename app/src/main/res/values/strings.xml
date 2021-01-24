@@ -21,4 +21,5 @@
     <string name="confirmPasswordHint">Confirm Password</string>
     <string name="signUpButtonText">Sign Up</string>
     <string name="backToLogin">Back to Login</string>
+    <string name="RetrievePassword">Retrieve Password</string>
 </resources>
