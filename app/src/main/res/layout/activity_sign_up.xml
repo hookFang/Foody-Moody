@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constrainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_green"
@@ -13,81 +14,102 @@
         layout="@layout/toolbar_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTintMode="src_in" />
+        android:backgroundTintMode="src_in"
+        app:layout_constraintBottom_toTopOf="@id/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="match_parent"
         android:layout_height="@dimen/d_80"
+        android:layout_gravity="top"
         android:src="@drawable/first_logo"
-        android:layout_gravity="top"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolBarSignUp" />
 
     <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
         android:fillViewport="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        android:layout_height="0dp">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/signUpLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/signUpUsername"
-                android:layout_width="@dimen/emailWidth"
+                android:layout_width="@dimen/d_300"
                 android:layout_height="wrap_content"
                 android:background="@drawable/text_frame"
                 android:ems="10"
                 android:fontFamily="@font/aldrich"
                 android:hint="@string/userNameHint"
                 android:inputType="text"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:layout_marginTop="@dimen/d_40"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/signUpEmail"
-                android:layout_width="@dimen/usernameWidth"
+                android:layout_width="@dimen/d_300"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/usernameMarginTop"
                 android:background="@drawable/text_frame"
                 android:ems="10"
+                android:layout_marginTop="@dimen/d_30"
                 android:fontFamily="@font/aldrich"
                 android:hint="@string/emailNameHint"
                 android:inputType="text"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/signUpUsername" />
 
             <EditText
                 android:id="@+id/signUpPassword"
-                android:layout_width="@dimen/passwordWidth"
+                android:layout_width="@dimen/d_300"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/passwordMarginTop"
                 android:background="@drawable/text_frame"
                 android:ems="10"
+                android:layout_marginTop="@dimen/d_30"
                 android:fontFamily="@font/aldrich"
                 android:hint="@string/passwordHint"
                 android:inputType="textPassword"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/signUpEmail" />
 
             <EditText
                 android:id="@+id/signUpConfirmPassword"
-                android:layout_width="@dimen/passwordWidth"
+                android:layout_width="@dimen/d_300"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/passwordMarginTop"
                 android:background="@drawable/text_frame"
                 android:ems="10"
+                android:layout_marginTop="@dimen/d_30"
                 android:fontFamily="@font/aldrich"
                 android:hint="@string/confirmPasswordHint"
                 android:inputType="textPassword"
-                android:textAlignment="center" />
-
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/signUpPassword" />
 
             <Button
                 android:id="@+id/signUpButton"
                 android:layout_width="@dimen/d_180"
                 android:layout_height="@dimen/d_50"
-                android:layout_marginTop="@dimen/d_80"
+                android:layout_marginTop="@dimen/d_50"
                 android:background="@drawable/button_login"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/signUpButtonText"
@@ -95,9 +117,18 @@
                 android:textSize="@dimen/f_20"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/editText_password" />
+                app:layout_constraintTop_toBottomOf="@+id/signUpConfirmPassword"
+                app:layout_constraintBottom_toTopOf="@id/chefImage"/>
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/chefImage"
+                android:layout_width="@dimen/d_120"
+                android:layout_height="@dimen/d_162"
+                android:src="@drawable/chef"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
