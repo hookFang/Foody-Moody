@@ -40,8 +40,6 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-//DLLKOMaqisb8vEivc5omCM4cLn33
-
 
         val loggedin_user = db.collection("users")
         var username = ""
@@ -57,15 +55,7 @@ class HomeActivity : AppCompatActivity() {
 
         loggedin_user.whereEqualTo("id", authDb.currentUser!!.uid.toString()).get().addOnSuccessListener { user ->
             if (user != null) {
-                user.getKey().equals("userName")
-                username = user.getValue()
-//                    if (user.id == authDb.currentUser!!.uid.toString()) {
-                Log.d(TAG, "DocumentSnapshot data: ${user}")
-//                Toast.makeText(
-//                        applicationContext,
-//                        authDb.currentUser!!.uid.toString(),
-//                        Toast.LENGTH_SHORT
-//                ).show()
+                //username = user.......
             } else {
                 Log.d("userName", "No such document")
             }
@@ -76,12 +66,10 @@ class HomeActivity : AppCompatActivity() {
 
         //populate the textviews based on the current user's profile
         if (authDb.currentUser != null) {
-//            textView_name.text = authDb.currentUser!!.displayName
+            textView_name.text = authDb.currentUser!!.displayName
 //
 //            if (!username.equals("")) {
 //                textView_name.text = username
-//                Toast.makeText(this, "YAYA", Toast.LENGTH_LONG).show()
-//
 //            }
 
 
@@ -92,7 +80,6 @@ class HomeActivity : AppCompatActivity() {
 ////                            textView_name.text = user.firstName + ' ' + user.lastName
 //                        }
 //                    }
-            //textView_name.text = auth.currentUser!!.uid
 
 //            // display photoUri if any
 //            var profilePhoto: Uri? = authDb.currentUser!!.photoUrl
