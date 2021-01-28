@@ -45,4 +45,6 @@
     <dimen name="d_23">23dp</dimen>
     <dimen name="d_24">24dp</dimen>
     <dimen name="d_2">2dp</dimen>
+    <dimen name="d_0">0dp</dimen>
+    <dimen name="d_9">9dp</dimen>
 </resources>

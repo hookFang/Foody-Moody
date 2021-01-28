@@ -22,4 +22,7 @@
     <string name="signUpButtonText">Sign Up</string>
     <string name="backToLogin">Back to Login</string>
     <string name="RetrievePassword">Retrieve Password</string>
+    <string name="add">Add</string>
+    <string name="logout">logout</string>
+    <string name="format">Change format</string>
 </resources>
