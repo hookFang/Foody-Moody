@@ -10,4 +10,6 @@
     <color name="background_green">#75d69c</color>
     <color name="dark_green">#237745</color>
     <color name="dark_blue">#008080</color>
+    <color name="menu_bar">#31a55f </color>
+    <color name="yellow">#FFD700 </color>
 </resources>

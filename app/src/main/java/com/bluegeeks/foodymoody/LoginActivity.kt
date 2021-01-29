@@ -81,6 +81,7 @@ class LoginActivity : AppCompatActivity() {
                                     } else {
                                         val i = Intent(applicationContext, HomeActivity::class.java)
                                         startActivity(i)
+                                        finish()
                                     }
                                 }
                             } else {
@@ -164,6 +165,7 @@ class LoginActivity : AppCompatActivity() {
                 // send to list activity
                 val intent = Intent(applicationContext, HomeActivity::class.java)
                 startActivity(intent)
+                finish()
             } else {
                 Toast.makeText(this, "Invalid Login", Toast.LENGTH_LONG).show()
             }

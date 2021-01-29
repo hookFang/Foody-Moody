@@ -169,7 +169,6 @@
                 android:layout_width="@dimen/d_120"
                 android:layout_height="@dimen/d_162"
                 android:src="@drawable/chef"
-                app:layout_constraintBottom_toBottomOf="parent"
                 tools:ignore="ContentDescription"
                 android:layout_gravity = "end"
                 android:gravity = "bottom" />
