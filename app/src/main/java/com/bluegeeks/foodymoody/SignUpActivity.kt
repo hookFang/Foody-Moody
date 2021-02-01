@@ -20,6 +20,7 @@ class SignUpActivity : AppCompatActivity() {
     //Code referred from https://firebase.google.com/docs/auth/android/password-auth#create_a_password-based_account
     var auth: FirebaseAuth = Firebase.auth
     var db = FirebaseFirestore.getInstance().collection("users")
+    var PASSWORD_REGEX = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$".toRegex()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,32 +48,36 @@ class SignUpActivity : AppCompatActivity() {
                         Log.i("TAG", "Username already exist")
                         Toast.makeText(this, "A user with same username already exist. Please use a different username", Toast.LENGTH_LONG).show()
                     } else {
-                        if(checkValues(email, userName, password, confirmPassword)) {
-                            //Code referred from https://firebase.google.com/docs/auth/android/password-auth#create_a_password-based_account
-                            auth.createUserWithEmailAndPassword(email, password)
-                                .addOnCompleteListener() { task: Task<AuthResult> ->
-                                    if (task.isSuccessful) {
-                                        FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
-                                        //Show confirmation and clear inputs
-                                        Toast.makeText(this, "A confirmation e-mail has been send.", Toast.LENGTH_LONG).show()
+                        if (checkValues(email, userName, password, confirmPassword)) {
+                            if (PASSWORD_REGEX.matches(password)) {
+                                //Code referred from https://firebase.google.com/docs/auth/android/password-auth#create_a_password-based_account
+                                auth.createUserWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener() { task: Task<AuthResult> ->
+                                            if (task.isSuccessful) {
+                                                FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
+                                                //Show confirmation and clear inputs
+                                                Toast.makeText(this, "A confirmation e-mail has been send.", Toast.LENGTH_LONG).show()
 
-                                        //A user variable is created and added to the db collection
-                                        val user = User(auth.currentUser?.uid, email, firstName, lastName, userName)
-                                        val db = FirebaseFirestore.getInstance().collection("users")
-                                        db.document(user.id!!).set(user)
-                                        finish()
-                                    } else {
-                                        try {
-                                            throw task.exception!!
-                                        } catch (e: FirebaseAuthWeakPasswordException) {
-                                            Toast.makeText(this, "The password you entered is weak, please try again with a new password", Toast.LENGTH_LONG).show()
-                                        } catch (e: FirebaseAuthUserCollisionException) {
-                                            Toast.makeText(this, "The email address is already in use by another account.", Toast.LENGTH_LONG).show()
-                                        } catch (e: Exception) {
-                                            Log.e("TAG", e.message!!)
+                                                //A user variable is created and added to the db collection
+                                                val user = User(auth.currentUser?.uid, email, firstName, lastName, userName)
+                                                val db = FirebaseFirestore.getInstance().collection("users")
+                                                db.document(user.id!!).set(user)
+                                                finish()
+                                            } else {
+                                                try {
+                                                    throw task.exception!!
+                                                } catch (e: FirebaseAuthWeakPasswordException) {
+                                                    Toast.makeText(this, "The password you entered is weak, please try again with a new password", Toast.LENGTH_LONG).show()
+                                                } catch (e: FirebaseAuthUserCollisionException) {
+                                                    Toast.makeText(this, "The email address is already in use by another account.", Toast.LENGTH_LONG).show()
+                                                } catch (e: Exception) {
+                                                    Log.e("TAG", e.message!!)
+                                                }
+                                            }
                                         }
-                                    }
-                                }
+                            } else {
+                                Toast.makeText(this, "Your password must contain Minimum eight characters, at least one uppercase letter, \n one lowercase letter, one number and one special character:", Toast.LENGTH_LONG).show()
+                            }
                         } else {
                             Toast.makeText(this, "Please make sure the fields are all filled in", Toast.LENGTH_LONG).show()
                         }
