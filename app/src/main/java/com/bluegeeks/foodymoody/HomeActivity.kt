@@ -45,7 +45,7 @@ class HomeActivity : AppCompatActivity() {
 
         when (item.itemId) {
             R.id.action_add -> {
-                startActivity(Intent(applicationContext, HomeActivity::class.java))
+                startActivity(Intent(applicationContext, PostActivity::class.java))
                 return true
             }
             R.id.action_logout -> {

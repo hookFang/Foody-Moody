@@ -25,4 +25,9 @@
     <string name="add">Add</string>
     <string name="logout">logout</string>
     <string name="format">Change format</string>
+    <string name="back">back</string>
+    <string name="click_to_add">Click to add</string>
+    <string name="description">Add a description</string>
+    <string name="Post">post</string>
+    <string name="method">Pick a method</string>
 </resources>

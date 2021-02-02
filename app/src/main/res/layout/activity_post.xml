@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_green"
+    android:orientation="vertical"
+    tools:context=".PostActivity">
+
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d_80"
+        android:src="@drawable/second_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/white"
+        tools:ignore="ContentDescription" />
+
+    <include
+        android:id="@+id/menuBarHome"
+        layout="@layout/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTintMode="src_in" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="ScrollViewCount">
+
+        <LinearLayout
+            android:id="@+id/signUpLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/imageView_post"
+                android:layout_width="350dp"
+                android:layout_height="350dp"
+                android:layout_marginTop="@dimen/d_50"
+                android:textColor="@color/dark_blue"
+                android:hint="@string/click_to_add"
+                android:background="@drawable/image_frame"/>
+
+            <EditText
+                android:id="@+id/editText_description"
+                android:layout_width="350dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="@dimen/d_50"
+                android:background="@color/yellow"
+                android:textAlignment="viewStart"
+                android:gravity="top"
+                android:hint="@string/description"
+                tools:ignore="RtlCompat,RtlSymmetry"
+                android:padding="@dimen/d_10"
+                android:textColor="@color/dark_blue"/>
+
+            <Button
+                android:id="@+id/button_post"
+                android:layout_width="@dimen/d_160"
+                android:layout_height="@dimen/d_50"
+                android:text="@string/Post"
+                android:textSize="@dimen/f_20"
+                android:textColor="@color/white"
+                android:layout_marginTop="@dimen/d_30"
+                android:background="@drawable/button_login"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
