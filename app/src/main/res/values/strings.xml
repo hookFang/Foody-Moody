@@ -30,4 +30,6 @@
     <string name="description">Add a description</string>
     <string name="Post">post</string>
     <string name="method">Pick a method</string>
+    <string name="comment">Write a comment …</string>
+    <string name="submit">submit</string>
 </resources>

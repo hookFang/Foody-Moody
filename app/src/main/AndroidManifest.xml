@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_chef_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        <activity android:name=".CommentActivity"></activity>
         <activity android:name=".PostActivity" />
         <activity android:name=".PersonalActivity" />
         <activity android:name=".RetrievePasswordActivity" />
