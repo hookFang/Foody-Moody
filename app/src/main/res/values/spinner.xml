@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="review">
+        <item> </item>
+        <item>Yummy</item>
+        <item>Sweet</item>
+        <item>Sour</item>
+        <item>Salty</item>
+        <item>Bitter</item>
+    </string-array>
+</resources>

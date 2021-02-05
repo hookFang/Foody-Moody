@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/background_green"
     android:orientation="vertical"
+    android:id="@+id/homeLayout"
     tools:context=".HomeActivity">
 
 
@@ -36,7 +37,7 @@
         tools:ignore="ScrollViewCount">
 
         <LinearLayout
-            android:id="@+id/signUpLinearLayout"
+            android:id="@+id/LinearLayout_home_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -44,13 +45,13 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/signUpLinearLayout3"
+                android:id="@+id/LinearLayout_home_head"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:paddingTop="@dimen/d_10"
                 app:layout_constraintTop_toBottomOf="@+id/editText_email"
-                android:background="@drawable/horizeontal_line"
+                android:background="@drawable/horizontal_line"
                 android:orientation="horizontal">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -85,6 +86,14 @@
                 android:layout_margin="@dimen/d_10"
                 android:background="@drawable/change_format_button"/>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/postsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/button_change_format"
+                android:layout_marginTop="@dimen/d_20"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
         </LinearLayout>
     </ScrollView>
