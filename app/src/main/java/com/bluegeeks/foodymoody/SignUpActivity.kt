@@ -1,19 +1,17 @@
 package com.bluegeeks.foodymoody
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.toolbar_signup.*
+
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -57,7 +55,11 @@ class SignUpActivity : AppCompatActivity() {
                                                 FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
                                                 //Show confirmation and clear inputs
                                                 Toast.makeText(this, "A confirmation e-mail has been send.", Toast.LENGTH_LONG).show()
-
+                                                //Changing the display name to be username by default
+                                                val profileUpdates = UserProfileChangeRequest.Builder()
+                                                    .setDisplayName(userName)
+                                                    .build()
+                                                FirebaseAuth.getInstance().currentUser?.updateProfile(profileUpdates)
                                                 //A user variable is created and added to the db collection
                                                 val user = User(auth.currentUser?.uid, email, firstName, lastName, userName)
                                                 val db = FirebaseFirestore.getInstance().collection("users")

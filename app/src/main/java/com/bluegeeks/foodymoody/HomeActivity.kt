@@ -4,57 +4,44 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.item_post.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeActivity : AppCompatActivity() {
-
-    private val authDb = FirebaseAuth.getInstance()
-    val db = FirebaseFirestore.getInstance()
-    private var adapter: PostAdapter? = null
+class HomeActivity : BaseFirebaseProperties() {
+        private var adapter: PostAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-
         if (authDb.currentUser != null) {
-            textView_name.text = authDb.currentUser!!.displayName
-        } else {
-            logout()
+            if(authDb.currentUser!!.displayName != null) {
+                textView_name.text = authDb.currentUser!!.displayName
+            }
         }
 
         imageView_profile_picture.setImageResource(R.drawable.logout)
-
         imageView_profile_picture.setOnClickListener {
             startActivity(Intent(applicationContext, PersonalActivity::class.java))
         }
 
-        val postsQuery = db.collection("posts").orderBy("time", Query.Direction.DESCENDING)
-
+        val postsQuery = rootDB.collection("posts").orderBy("time", Query.Direction.DESCENDING)
         // set our recyclerview to use LinearLayout
         postsRecyclerView.layoutManager = LinearLayoutManager(this)
-
         val options =
                 FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java)
                         .build()
-
         adapter = PostAdapter(options)
-
         postsRecyclerView.adapter = adapter
-
         //instantiate toolbar
         setSupportActionBar(topToolbar)
     }
@@ -160,7 +147,7 @@ class HomeActivity : AppCompatActivity() {
                 e.printStackTrace();
             }
 
-            holder.itemView.ImageView_post.setImageResource(R.drawable.chef)
+            Glide.with(this@HomeActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
             holder.itemView.textView_time.text = time
             holder.itemView.TextView_name.text = model.userId!!
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
