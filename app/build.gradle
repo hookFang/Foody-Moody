@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: "kotlin-kapt"
 
 android {
     compileSdkVersion 30
@@ -43,12 +44,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'com.google.firebase:firebase-firestore:22.0.1'
+    implementation 'com.google.firebase:firebase-firestore:22.0.2'
     implementation 'com.google.firebase:firebase-auth-ktx'
 
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
-    // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:26.0.0')
     // Declare the dependency for the Firebase Authentication
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-database:19.6.0'
@@ -57,13 +56,13 @@ dependencies {
 
     //For Facebook API
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
-
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:26.3.0')
-
-    // Declare the dependency for the Firebase Authentication library
+    implementation platform('com.google.firebase:firebase-bom:26.4.0')
+    // Declare the dependency for the Cloud Storage library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-storage'
+    // FirebaseUI Storage only
+    implementation 'com.firebaseui:firebase-ui-storage:6.4.0'
 
     // We added for Firebase ui library
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
@@ -76,4 +75,8 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation "androidx.constraintlayout:constraintlayout:2.1.0-alpha2"
+
+    //Glide implentation to load image
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    kapt 'com.github.bumptech.glide:compiler:4.10.0'
 }
