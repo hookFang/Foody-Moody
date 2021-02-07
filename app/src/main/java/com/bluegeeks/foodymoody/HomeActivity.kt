@@ -23,17 +23,6 @@ class HomeActivity : BaseFirebaseProperties() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        if (authDb.currentUser != null) {
-            if(authDb.currentUser!!.displayName != null) {
-                textView_name.text = authDb.currentUser!!.displayName
-            }
-        }
-
-        imageView_profile_picture.setImageResource(R.drawable.logout)
-        imageView_profile_picture.setOnClickListener {
-            startActivity(Intent(applicationContext, PersonalActivity::class.java))
-        }
-
         val postsQuery = rootDB.collection("posts").orderBy("time", Query.Direction.DESCENDING)
         // set our recyclerview to use LinearLayout
         postsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -60,6 +49,10 @@ class HomeActivity : BaseFirebaseProperties() {
             }
             R.id.action_logout -> {
                 logout()
+                return true
+            }
+            R.id.action_personal -> {
+                startActivity(Intent(applicationContext, PersonalActivity::class.java))
                 return true
             }
             R.id.action_notification -> {

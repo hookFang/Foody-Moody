@@ -32,4 +32,8 @@
     <string name="method">Pick a method</string>
     <string name="comment">Write a comment …</string>
     <string name="submit">submit</string>
+    <string name="home">Home</string>
+    <string name="personal">Personal</string>
+    <string name="newComment">Enter new comment</string>
+    <string name="update">update</string>
 </resources>

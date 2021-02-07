@@ -48,4 +48,5 @@
     <dimen name="d_0">0dp</dimen>
     <dimen name="d_9">9dp</dimen>
     <dimen name="d_5">5dp</dimen>
+    <dimen name="d_350">350dp</dimen>
 </resources>
