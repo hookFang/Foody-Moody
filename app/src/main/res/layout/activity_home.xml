@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_green"
+    android:background="@color/yellow"
     android:orientation="vertical"
     android:id="@+id/homeLayout"
     tools:context=".HomeActivity">
@@ -36,65 +36,14 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="ScrollViewCount">
 
-        <LinearLayout
-            android:id="@+id/LinearLayout_home_body"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/postsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:background="@color/yellow"
-            android:orientation="vertical">
+            app:layout_constraintTop_toBottomOf="@id/button_change_format"
+            android:layout_marginTop="@dimen/d_20"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-            <LinearLayout
-                android:id="@+id/LinearLayout_home_head"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:paddingTop="@dimen/d_10"
-                app:layout_constraintTop_toBottomOf="@+id/editText_email"
-                android:background="@drawable/horizontal_line"
-                android:orientation="horizontal">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/imageView_profile_picture"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity = "start"
-                    android:layout_marginStart="@dimen/d_10"
-                    android:layout_marginTop="@dimen/d_10"/>
-
-                <TextView
-                    android:id="@+id/textView_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginTop="@dimen/d_35"
-                    android:layout_marginStart="@dimen/d_20"
-                    android:layout_marginEnd="@dimen/d_20"
-                    android:textColor="@color/dark_blue"
-                    android:textSize="@dimen/f_20"
-                    android:textAlignment="center"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/button_change_format"
-                android:layout_width="match_parent"
-                android:layout_height="18dp"
-                android:text="@string/format"
-                android:textSize="12sp"
-                android:textColor="@color/dark_green"
-                android:layout_margin="@dimen/d_10"
-                android:background="@drawable/change_format_button"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/postsRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/button_change_format"
-                android:layout_marginTop="@dimen/d_20"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-        </LinearLayout>
     </ScrollView>
 </LinearLayout>

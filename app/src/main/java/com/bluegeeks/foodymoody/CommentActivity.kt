@@ -2,18 +2,26 @@ package com.bluegeeks.foodymoody
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.authDb
+import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.rootDB
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_comment.*
+import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.button_visiblity
+import kotlinx.android.synthetic.main.item_comment.*
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
@@ -21,8 +29,6 @@ import java.util.*
 
 class CommentActivity : AppCompatActivity() {
 
-    private val authDb = FirebaseAuth.getInstance()
-    val db = FirebaseFirestore.getInstance().collection("comments")
     private var adapter: CommentAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +46,8 @@ class CommentActivity : AppCompatActivity() {
                 comment.time = getTime()
                 comment.postId = postId
 
-                comment.id = db.document().id
-                db.document(comment.id!!).set(comment)
+                comment.id = rootDB.collection("comments").document().id
+                rootDB.collection("comments").document(comment.id!!).set(comment)
 
                 // show confirmation & clear inputs
                 EditText_comment.setText("")
@@ -53,7 +59,7 @@ class CommentActivity : AppCompatActivity() {
 
         commentsRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        val commentsQuery = db.whereEqualTo("postId", postId).orderBy("time", Query.Direction.DESCENDING)
+        val commentsQuery = rootDB.collection("comments").whereEqualTo("postId", postId).orderBy("time", Query.Direction.DESCENDING)
 
         val options =
                 FirestoreRecyclerOptions.Builder<Comment>().setQuery(commentsQuery, Comment::class.java)
@@ -121,9 +127,46 @@ class CommentActivity : AppCompatActivity() {
         ) {
 
             holder.itemView.TextView_user.text = model.userId
-            //holder.itemView.textView_time.text = time
             holder.itemView.TextView_comment.text = model.comment!!
-            holder.itemView.TextView_review.text = model.review.toString() // convert to float to match RatingBar.rating type
+
+            if (model.whoLiked?.containsKey(authDb.currentUser!!.uid) == true &&
+                    model.whoLiked?.get(authDb.currentUser!!.uid) == true) {
+
+                holder.itemView.ImageView_like.setBackgroundResource(R.drawable.liked)
+            } else {
+                holder.itemView.ImageView_like.setBackgroundResource(R.drawable.heart)
+            }
+
+            holder.itemView.ImageView_like.setOnClickListener {
+
+                if (model.whoLiked?.containsKey(authDb.currentUser!!.uid) == true &&
+                        model.whoLiked?.get(authDb.currentUser!!.uid) == true) {
+
+                    rootDB.collection("comments").document(model.id!!).update(
+
+                        mapOf(
+                                "whoLiked."+authDb.currentUser!!.uid to false
+                        ))
+                } else {
+
+                    rootDB.collection("comments").document(model.id!!).update(
+
+                        mapOf(
+                                "whoLiked."+authDb.currentUser!!.uid to true
+                        ))
+                }
+            }
+
+
+            holder.itemView.TextView_comment.setOnClickListener {
+                val intent = Intent(applicationContext, EditCommentActivity::class.java)
+                intent.putExtra("commentId", model.id)
+                intent.putExtra("comment", model.comment)
+                intent.putExtra("postId", model.postId)
+                startActivity(intent)
+            }
+
+            //holder.itemView.TextView_review.text = model.review.toString() // convert to float to match RatingBar.rating type
 
 
 //            val spinner: Spinner = findViewById(R.id.spinner_review)

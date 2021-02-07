@@ -39,15 +39,15 @@
 
         <EditText
             android:id="@+id/EditText_comment"
-            android:layout_width="350dp"
+            android:layout_width="@dimen/d_350"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/d_20"
             android:paddingEnd="@dimen/d_20"
-            android:autofillHints="@string/comment"
+            android:hint="@string/comment"
             android:layout_marginStart="@dimen/d_10"
             android:layout_marginBottom="@dimen/d_10"
             android:background="@color/white"
-            android:inputType="text"
+            android:singleLine="false"
             android:layout_gravity = "start"/>
 
         <ImageView
@@ -76,15 +76,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:background="@color/yellow"
-            android:orientation="vertical">
+            android:background="@color/background_green"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/d_20"
+            android:layout_marginEnd="@dimen/d_20">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/commentsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/ImageView_post"
-                android:layout_marginTop="@dimen/d_20"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 

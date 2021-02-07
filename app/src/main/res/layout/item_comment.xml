@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/dark_blue"
+    android:background="@drawable/comment"
+    android:layout_marginTop="@dimen/d_20"
     android:orientation="vertical">
 
     <TextView
@@ -22,8 +23,7 @@
         android:id="@+id/LinearLayout_comment_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:background="@color/yellow">
+        android:gravity="center_horizontal">
 
         <TextView
             android:id="@+id/TextView_comment"
@@ -33,28 +33,18 @@
             android:textSize="@dimen/f_14"
             android:paddingTop="@dimen/d_10"
             android:paddingBottom="@dimen/d_20"
-            android:paddingStart="@dimen/d_20"
-            android:paddingEnd="@dimen/d_20"
+            android:paddingStart="@dimen/d_10"
+            android:paddingEnd="@dimen/d_10"
             android:textAlignment="viewStart"
             android:layout_gravity = "start"
             android:layout_marginStart="@dimen/d_10"/>
 
-        <TextView
-            android:id="@+id/TextView_review"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:textAlignment="center"
-            android:layout_gravity = "end"
-            android:textStyle="bold"
-            tools:ignore="RtlCompat" />
-
-        <Spinner
-            android:id="@+id/spinner_review"
-            android:layout_width="@dimen/d_50"
-            android:layout_height="@dimen/d_50"
-            android:layout_marginStart="@dimen/d_10"
-            android:textAlignment="center"
-            android:background="@drawable/hat" />
+        <ImageView
+            android:id="@+id/ImageView_like"
+            android:layout_width="@dimen/d_40"
+            android:layout_height="@dimen/d_40"
+            android:layout_marginStart="@dimen/d_20"
+            android:background="@drawable/heart" />
     </LinearLayout>
 
 </android.widget.LinearLayout>
