@@ -28,6 +28,9 @@ class SignUpInstrumentedTest {
         emailAlreadyInUse = "The email address is already in use by another account."
     }
 
+    /**
+     * Instrumented Unit test- Verifies creation of an account
+     */
     @Test
     fun createNewAccountSuccess() {
         //Go to sign Up page
@@ -53,6 +56,9 @@ class SignUpInstrumentedTest {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
+    /**
+     * Instrumented Unit test- Verifies Password strength for user sign up
+     */
     @Test
     fun passwordStrength() {
         //Go to sign Up page
@@ -78,6 +84,9 @@ class SignUpInstrumentedTest {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
+    /**
+     * Instrumented Unit test- Verifies if e-mail ID already exists
+     */
     @Test
     fun checkEmailAlreadyExist() {
         //Go to sign Up page

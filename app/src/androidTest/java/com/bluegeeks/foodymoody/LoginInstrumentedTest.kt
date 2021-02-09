@@ -29,6 +29,9 @@ class LoginInstrumentedTest {
         blankValues = "Please enter you're Username and Password."
     }
 
+    /**
+     * Instrumented Unit test- checks the login credentials
+     */
     @Test
     fun successfullLoginCreds() {
         onView(withId(R.id.editText_email))
@@ -42,17 +45,23 @@ class LoginInstrumentedTest {
         onView((withId(R.id.postsRecyclerView))).check(matches(isDisplayed()))
     }
 
+    /**
+     * Instrumented Unit test- Invalid Login credentials
+     */
     @Test
     fun invalidLoginCreds() {
         onView(withId(R.id.editText_email))
             .perform(typeText("edwinchrist52ie100@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.editText_password))
-            .perform(typeText("Oppo1234$"), closeSoftKeyboard());
+            .perform(typeText("Google8667%@"), closeSoftKeyboard());
         onView(withId(R.id.login_button)).perform(click())
         onView(withText(emailNotExistError)).inRoot(ToastMatcher())
             .check(matches(isDisplayed()))
     }
 
+    /**
+     * Instrumented Unit Test - Blank fields
+     */
     @Test
     fun blankCredentials() {
         onView(withId(R.id.login_button)).perform(click())
