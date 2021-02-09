@@ -6,6 +6,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.authDb
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,5 +58,10 @@ class LoginInstrumentedTest {
         onView(withId(R.id.login_button)).perform(click())
         onView(withText(blankValues)).inRoot(ToastMatcher())
                 .check(matches(isDisplayed()))
+    }
+
+    @After
+    fun signOut() {
+        authDb.signOut()
     }
 }
