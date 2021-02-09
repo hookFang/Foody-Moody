@@ -108,5 +108,6 @@ class SignUpInstrumentedTest {
         //Removing the user
         authDb.currentUser?.uid?.let { rootDB.collection("users").document(it).delete() }
         authDb.currentUser?.delete()
+        authDb.signOut()
     }
 }
