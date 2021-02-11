@@ -1,28 +1,34 @@
 package com.bluegeeks.foodymoody
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
+import com.bluegeeks.foodymoody.entity.User
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.IdpResponse
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.auth.FirebaseAuth
 
 
-class LoginActivity : AppCompatActivity() {
+class
+
+LoginActivity : AppCompatActivity() {
 
     private val auth = Firebase.auth
     private val RC_SIGN_IN = 0
+    //bitmap image fore the post
+    var bitmapImage: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,12 +113,13 @@ class LoginActivity : AppCompatActivity() {
             val providers = arrayListOf(
                     AuthUI.IdpConfig.GoogleBuilder().build()
             )
-            startActivityForResult (
-            AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setAvailableProviders(providers)
-                    .build(),
-            RC_SIGN_IN
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setIsSmartLockEnabled(true)
+                            .setAvailableProviders(providers)
+                            .build(),
+                    RC_SIGN_IN
             )
         }
 
@@ -121,9 +128,10 @@ class LoginActivity : AppCompatActivity() {
             val providers = arrayListOf(
                     AuthUI.IdpConfig.TwitterBuilder().build()
             )
-            startActivityForResult (
+            startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
+                            .setIsSmartLockEnabled(true)
                             .setAvailableProviders(providers)
                             .build(),
                     RC_SIGN_IN
@@ -136,9 +144,10 @@ class LoginActivity : AppCompatActivity() {
             val providers = arrayListOf(
                     AuthUI.IdpConfig.FacebookBuilder().build()
             )
-            startActivityForResult (
+            startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
+                            .setIsSmartLockEnabled(true)
                             .setAvailableProviders(providers)
                             .build(),
                     RC_SIGN_IN
@@ -155,6 +164,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("RestrictedApi")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
@@ -164,8 +174,45 @@ class LoginActivity : AppCompatActivity() {
                 val user = FirebaseAuth.getInstance().currentUser
                 // send to list activity
                 val intent = Intent(applicationContext, HomeActivity::class.java)
-                startActivity(intent)
-                finish()
+
+                rootDB.collection("users").whereEqualTo("email", user?.email).get().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val document = task.result
+                        if (!(document?.isEmpty!!)) {
+                            Log.i("TAG", "User is registered")
+                        } else {
+                            try {
+                                val email = user?.email
+                                val firstName =  ""
+                                val lastName = ""
+                                val userName = user?.displayName
+                                val birthDay = ""
+                                val photoURI = user?.photoUrl.toString()
+                                val id = BaseFirebaseProperties.authDb.currentUser!!.uid
+                                val newUser =
+                                    User(
+                                        id,
+                                        email,
+                                        firstName,
+                                        lastName,
+                                        userName,
+                                        birthDay,
+                                        photoURI
+                                    )
+                                rootDB.collection("users").document(newUser.id!!).set(newUser)
+                            } catch (e: Exception) {
+                                Log.e("TAG", e.message!!)
+                                finish()
+                            }
+                        }
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Log.i("TAG", "get failed with ", task.exception)
+                        Toast.makeText(this, "Please try again", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                }
             } else {
                 Toast.makeText(this, "Invalid Login", Toast.LENGTH_LONG).show()
             }

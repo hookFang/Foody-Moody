@@ -6,7 +6,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.authDb
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -25,6 +25,7 @@ class LoginInstrumentedTest {
 
     @Before
     fun setUp(){
+        activityScenarioRule.scenario
         emailNotExistError = "The user with this email does not exist, Please sign Up for a Account"
         blankValues = "Please enter you're Username and Password."
     }

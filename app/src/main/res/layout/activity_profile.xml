@@ -2,8 +2,122 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constrainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_green"
+    android:orientation="vertical"
     tools:context=".ProfileActivity">
 
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d_80"
+        android:src="@drawable/second_logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/white"
+        tools:ignore="ContentDescription" />
+
+    <include
+        android:id="@+id/menuBarHome"
+        layout="@layout/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        android:backgroundTintMode="src_in" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/menuBarHome"
+        android:layout_height="0dp">
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_home_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageView_profile_picture"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_marginTop="@dimen/d_10"
+                android:background="@drawable/text_frame_profile" />
+
+            <TextView
+                android:id="@+id/TextView_username"
+                android:layout_width="@dimen/d_200"
+                android:layout_height="@dimen/d_30"
+                android:background="@drawable/text_frame_profile"
+                android:text="@string/username1"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="@dimen/f_20"
+                android:layout_marginTop="@dimen/d_20"/>
+
+            <TextView
+                android:id="@+id/TextView_fullname"
+                android:layout_width="@dimen/d_200"
+                android:layout_height="@dimen/d_30"
+                android:background="@drawable/text_frame_profile"
+                android:text="@string/fullName"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="@dimen/f_20"
+                android:layout_marginTop="@dimen/d_20"/>
+
+            <TextView
+                android:id="@+id/TextView_email"
+                android:layout_width="@dimen/d_200"
+                android:layout_height="@dimen/d_30"
+                android:background="@drawable/text_frame_profile"
+                android:text="@string/username"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="@dimen/f_20"
+                android:layout_marginTop="@dimen/d_20"/>
+
+            <TextView
+                android:id="@+id/TextView_birthday"
+                android:layout_width="@dimen/d_200"
+                android:layout_height="@dimen/d_30"
+                android:background="@drawable/text_frame_profile"
+                android:text="@string/birthday"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="@dimen/f_20"
+                android:layout_marginTop="@dimen/d_20"/>
+
+            <Button
+                android:id="@+id/Button_updateProfile"
+                android:layout_width="@dimen/d_180"
+                android:layout_height="@dimen/d_40"
+                android:layout_marginTop="@dimen/d_40"
+                android:background="@drawable/button_login"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/updateProfile"
+                android:textColor="@color/white"
+                android:textSize="@dimen/f_20"/>
+
+            <Button
+                android:id="@+id/Button_updateSecurity"
+                android:layout_width="@dimen/d_180"
+                android:layout_height="@dimen/d_40"
+                android:layout_marginTop="@dimen/d_20"
+                android:background="@drawable/button_login"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/updateSecurity"
+                android:textColor="@color/white"
+                android:textSize="@dimen/f_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Button_updateProfile"
+                android:layout_marginBottom="@dimen/d_40"/>
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

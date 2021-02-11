@@ -36,4 +36,9 @@
     <string name="personal">Personal</string>
     <string name="newComment">Enter new comment</string>
     <string name="update">update</string>
+    <string name="username1">Username</string>
+    <string name="fullName">Full name</string>
+    <string name="birthday">Birthday</string>
+    <string name="updateProfile">Update Profile</string>
+    <string name="updateSecurity">Update security</string>
 </resources>
