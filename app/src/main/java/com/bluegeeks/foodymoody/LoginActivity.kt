@@ -19,11 +19,11 @@ import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
-class
-
-LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private val auth = Firebase.auth
     private val RC_SIGN_IN = 0
@@ -189,6 +189,10 @@ LoginActivity : AppCompatActivity() {
                                 val birthDay = ""
                                 val photoURI = user?.photoUrl.toString()
                                 val id = BaseFirebaseProperties.authDb.currentUser!!.uid
+                                val friends = HashMap<String, Boolean> ()
+                                val bio = ""
+                                val time = getTime()
+
                                 val newUser =
                                     User(
                                         id,
@@ -197,7 +201,10 @@ LoginActivity : AppCompatActivity() {
                                         lastName,
                                         userName,
                                         birthDay,
-                                        photoURI
+                                        photoURI,
+                                        friends,
+                                        bio,
+                                        time
                                     )
                                 rootDB.collection("users").document(newUser.id!!).set(newUser)
                             } catch (e: Exception) {
@@ -219,4 +226,9 @@ LoginActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
+    fun getTime(): String {
+        val sdf = SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z")
+        return sdf.format(Date())
+    }
 }
