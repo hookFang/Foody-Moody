@@ -14,6 +14,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
@@ -25,11 +27,9 @@ import java.util.*
 
 
 class PostActivity : BaseFirebaseProperties() {
-    val db = rootDB.collection("posts")
+
     //bitmap image fore the post
     var bitmapImage: Bitmap? = null
-    var storage = FirebaseStorage.getInstance()
-    var storageRef = storage.reference
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,17 +64,40 @@ class PostActivity : BaseFirebaseProperties() {
         }
 
         button_post.setOnClickListener {
-            progressBar_PostPage.visibility = View.VISIBLE;
+            progressBar_PostPage.visibility = View.VISIBLE
+            var userName = ""
+
+            rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { user ->
+                if(user.isSuccessful){
+                    val userInfo = user.result
+                    if (userInfo != null) {
+                        if (userInfo.get("firstName") != null && userInfo.get("lastName") != null) {
+                            userName = userInfo.get("firstName").toString() + " " + userInfo.get("lastName").toString()
+                        } else if (userInfo.get("firstName") != null) {
+                            userName = userInfo.get("firstName").toString()
+                        } else if (userInfo.get("lastName") != null) {
+                            userName = userInfo.get("lastName").toString()
+                        } else if (userInfo.get("fullName") != null) {
+                            userName = userInfo.get("fullName").toString()
+                        } else if (userInfo.get("userName") != null) {
+                            userName = userInfo.get("uerName").toString()
+                        }
+                    } else {
+                        userName = authDb.currentUser!!.uid
+                    }
+                }
+            }
             try {
                     val post = Post()
                     post.userId = authDb.currentUser!!.uid
+                    post.userFullName = userName
                     post.description = editText_description.text.toString().trim()
                     post.time = getTime()
-                    post.id = db.document().id
-                    db.document(post.id!!).set(post)
+                    post.id = rootDB.collection("posts").document().id
+                    rootDB.collection("posts").document(post.id!!).set(post)
 
                     //Upload the image to firebase storage
-                    val imagesRef : StorageReference = storageRef.child("images/" + post.id + ".jpeg")
+                    val imagesRef : StorageReference = imageRef.child("images/" + post.id + ".jpeg")
                     val baos = ByteArrayOutputStream()
                     bitmapImage?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
                     val data = baos.toByteArray()

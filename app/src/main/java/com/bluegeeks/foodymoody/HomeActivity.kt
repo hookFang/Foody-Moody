@@ -142,6 +142,8 @@ class HomeActivity : BaseFirebaseProperties() {
 
             Glide.with(this@HomeActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
             holder.itemView.textView_time.text = time
+
+
             holder.itemView.TextView_name.text = model.userId!!
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
 

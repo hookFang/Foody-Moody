@@ -5,11 +5,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.authDb
+import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.rootDB
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.toolbar_signup.*
 
@@ -17,7 +16,6 @@ import kotlinx.android.synthetic.main.toolbar_signup.*
 class SignUpActivity : AppCompatActivity() {
 
     //Code referred from https://firebase.google.com/docs/auth/android/password-auth#create_a_password-based_account
-    var db = FirebaseFirestore.getInstance().collection("users")
     var PASSWORD_REGEX = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$".toRegex()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,9 +35,11 @@ class SignUpActivity : AppCompatActivity() {
             val confirmPassword = signUpConfirmPassword.text.toString().trim()
             val firstName = ""
             val lastName = ""
+            val fullName = ""
             val userName = signUpUsername.text.toString().trim()
+            val birthday = ""
 
-            db.whereEqualTo("userName", userName).get().addOnCompleteListener { task ->
+            rootDB.collection("users").whereEqualTo("userName", userName).get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
                     if (!(document?.isEmpty!!)) {
@@ -61,9 +61,8 @@ class SignUpActivity : AppCompatActivity() {
                                                     .build()
                                                 FirebaseAuth.getInstance().currentUser?.updateProfile(profileUpdates)
                                                 //A user variable is created and added to the db collection
-                                                val user = User(authDb.currentUser?.uid, email, firstName, lastName, userName)
-                                                val db = FirebaseFirestore.getInstance().collection("users")
-                                                db.document(user.id!!).set(user)
+                                                val user = User(authDb.currentUser?.uid, email, firstName, lastName, fullName, userName, birthday)
+                                                rootDB.collection("users").document(user.id!!).set(user)
                                                 finish()
                                             } else {
                                                 try {
