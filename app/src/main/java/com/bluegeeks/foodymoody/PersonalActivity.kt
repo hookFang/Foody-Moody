@@ -6,11 +6,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
+import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.postsRecyclerView
 import kotlinx.android.synthetic.main.activity_personal.*
 import kotlinx.android.synthetic.main.item_post.view.*
@@ -24,13 +25,16 @@ class PersonalActivity : BaseFirebaseProperties() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_personal)
-
-        if (authDb.currentUser != null) {
-            if(authDb.currentUser!!.displayName != null) {
-                textView_name.text = authDb.currentUser!!.displayName
+        rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val userInfo = task.result
+                if (userInfo != null) {
+                    textView_name.text = userInfo.get("userName") as CharSequence?
+                } else {
+                    textView_name.text = authDb.currentUser!!.displayName
+                }
             }
         }
-
         imageView_profile_picture.setImageResource(R.drawable.logout)
         imageView_profile_picture.setOnClickListener {
             startActivity(Intent(applicationContext, ProfileActivity::class.java))
@@ -156,7 +160,7 @@ class PersonalActivity : BaseFirebaseProperties() {
 
             Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
             holder.itemView.textView_time.text = time
-            holder.itemView.TextView_name.text = model.userId!!
+            holder.itemView.TextView_name.text = model.userFullName!!
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
 
 

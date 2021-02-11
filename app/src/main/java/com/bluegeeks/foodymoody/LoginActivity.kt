@@ -3,34 +3,27 @@ package com.bluegeeks.foodymoody
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.imageRef
-import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.rootDB
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
+import com.bluegeeks.foodymoody.entity.User
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.tasks.Task
-import com.google.android.material.internal.ContextUtils.getActivity
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_post.*
-import java.io.ByteArrayOutputStream
 
 
-class LoginActivity : AppCompatActivity() {
+class
+
+LoginActivity : AppCompatActivity() {
 
     private val auth = Firebase.auth
     private val RC_SIGN_IN = 0
@@ -123,6 +116,7 @@ class LoginActivity : AppCompatActivity() {
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
+                            .setIsSmartLockEnabled(true)
                             .setAvailableProviders(providers)
                             .build(),
                     RC_SIGN_IN
@@ -137,6 +131,7 @@ class LoginActivity : AppCompatActivity() {
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
+                            .setIsSmartLockEnabled(true)
                             .setAvailableProviders(providers)
                             .build(),
                     RC_SIGN_IN
@@ -152,6 +147,7 @@ class LoginActivity : AppCompatActivity() {
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
+                            .setIsSmartLockEnabled(true)
                             .setAvailableProviders(providers)
                             .build(),
                     RC_SIGN_IN
@@ -189,27 +185,34 @@ class LoginActivity : AppCompatActivity() {
                                 val email = user?.email
                                 val firstName =  ""
                                 val lastName = ""
-                                val fullName = user?.displayName
-                                val userName = ""
+                                val userName = user?.displayName
                                 val birthDay = ""
                                 val photoURI = user?.photoUrl.toString()
                                 val id = BaseFirebaseProperties.authDb.currentUser!!.uid
-                                val newUser = User(id, email, firstName, lastName, fullName, userName, birthDay, photoURI)
+                                val newUser =
+                                    User(
+                                        id,
+                                        email,
+                                        firstName,
+                                        lastName,
+                                        userName,
+                                        birthDay,
+                                        photoURI
+                                    )
                                 rootDB.collection("users").document(newUser.id!!).set(newUser)
-
                             } catch (e: Exception) {
                                 Log.e("TAG", e.message!!)
                                 finish()
                             }
                         }
+                        startActivity(intent)
+                        finish()
                     } else {
                         Log.i("TAG", "get failed with ", task.exception)
                         Toast.makeText(this, "Please try again", Toast.LENGTH_LONG).show()
                         finish()
                     }
                 }
-                startActivity(intent)
-                finish()
             } else {
                 Toast.makeText(this, "Invalid Login", Toast.LENGTH_LONG).show()
             }

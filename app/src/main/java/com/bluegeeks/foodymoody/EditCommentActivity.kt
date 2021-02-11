@@ -7,9 +7,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.rootDB
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import kotlinx.android.synthetic.main.activity_edit_comment.*
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*

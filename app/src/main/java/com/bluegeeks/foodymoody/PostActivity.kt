@@ -14,9 +14,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.storage.FirebaseStorage
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
+import com.bluegeeks.foodymoody.entity.Post
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_post.*
@@ -64,58 +63,52 @@ class PostActivity : BaseFirebaseProperties() {
         }
 
         button_post.setOnClickListener {
-            progressBar_PostPage.visibility = View.VISIBLE
-            var userName = ""
+            if (imageView_post.drawable != null && editText_description.text.isNotEmpty()) {
+                progressBar_PostPage.visibility = View.VISIBLE
+                rootDB.collection("users").document(authDb.currentUser!!.uid).get()
+                    .addOnCompleteListener { user ->
+                        if (user.isSuccessful) {
+                            val userInfo = user.result
+                            if (userInfo != null) {
+                                try {
+                                    val post =
+                                        Post()
+                                    post.userId = authDb.currentUser!!.uid
+                                    post.userFullName = userInfo.get("userName") as String?
+                                    post.description = editText_description.text.toString().trim()
+                                    post.time = getTime()
+                                    post.id = rootDB.collection("posts").document().id
+                                    rootDB.collection("posts").document(post.id!!).set(post)
 
-            rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { user ->
-                if(user.isSuccessful){
-                    val userInfo = user.result
-                    if (userInfo != null) {
-                        if (userInfo.get("firstName") != null && userInfo.get("lastName") != null) {
-                            userName = userInfo.get("firstName").toString() + " " + userInfo.get("lastName").toString()
-                        } else if (userInfo.get("firstName") != null) {
-                            userName = userInfo.get("firstName").toString()
-                        } else if (userInfo.get("lastName") != null) {
-                            userName = userInfo.get("lastName").toString()
-                        } else if (userInfo.get("fullName") != null) {
-                            userName = userInfo.get("fullName").toString()
-                        } else if (userInfo.get("userName") != null) {
-                            userName = userInfo.get("uerName").toString()
+                                    //Upload the image to firebase storage
+                                    val imagesRef: StorageReference =
+                                        imageRef.child("images/" + post.id + ".jpeg")
+                                    val baos = ByteArrayOutputStream()
+                                    bitmapImage?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                                    val data = baos.toByteArray()
+                                    val uploadTask: UploadTask = imagesRef.putBytes(data)
+                                    uploadTask.addOnFailureListener {
+                                        Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG)
+                                            .show()
+                                        progressBar_PostPage.visibility = View.GONE
+                                    }.addOnSuccessListener {
+                                        Toast.makeText(this, successMessage, Toast.LENGTH_LONG)
+                                            .show()
+                                        progressBar_PostPage.visibility = View.GONE
+                                        finish()
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("TAG", e.message!!)
+                                    Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG).show()
+                                    progressBar_PostPage.visibility = View.GONE
+                                    finish()
+                                }
+                            }
                         }
-                    } else {
-                        userName = authDb.currentUser!!.uid
                     }
-                }
+            }  else {
+                Toast.makeText(this, "Please select a image and add a description !", Toast.LENGTH_LONG).show()
             }
-            try {
-                    val post = Post()
-                    post.userId = authDb.currentUser!!.uid
-                    post.userFullName = userName
-                    post.description = editText_description.text.toString().trim()
-                    post.time = getTime()
-                    post.id = rootDB.collection("posts").document().id
-                    rootDB.collection("posts").document(post.id!!).set(post)
-
-                    //Upload the image to firebase storage
-                    val imagesRef : StorageReference = imageRef.child("images/" + post.id + ".jpeg")
-                    val baos = ByteArrayOutputStream()
-                    bitmapImage?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                    val data = baos.toByteArray()
-                    val uploadTask: UploadTask = imagesRef.putBytes(data)
-                    uploadTask.addOnFailureListener {
-                        Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG).show()
-                        progressBar_PostPage.visibility = View.GONE
-                    }.addOnSuccessListener {
-                        Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show()
-                        progressBar_PostPage.visibility = View.GONE
-                        finish()
-                    }
-                } catch (e: Exception) {
-                    Log.e("TAG", e.message!!)
-                    Toast.makeText(this, unSuccessMessage , Toast.LENGTH_LONG).show()
-                    progressBar_PostPage.visibility = View.GONE
-                    finish()
-                }
         }
         //instantiate toolbar
         setSupportActionBar(topToolbar)

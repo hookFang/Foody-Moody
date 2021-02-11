@@ -1,4 +1,4 @@
-package com.bluegeeks.foodymoody
+package com.bluegeeks.foodymoody.entity
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity

@@ -7,8 +7,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.authDb
-import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.rootDB
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 

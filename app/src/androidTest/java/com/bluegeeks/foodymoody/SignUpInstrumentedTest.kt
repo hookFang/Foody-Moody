@@ -5,8 +5,8 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.authDb
-import com.bluegeeks.foodymoody.BaseFirebaseProperties.Companion.rootDB
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

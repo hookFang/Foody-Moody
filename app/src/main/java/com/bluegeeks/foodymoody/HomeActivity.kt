@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
+import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -142,11 +144,8 @@ class HomeActivity : BaseFirebaseProperties() {
 
             Glide.with(this@HomeActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
             holder.itemView.textView_time.text = time
-
-
-            holder.itemView.TextView_name.text = model.userId!!
+            holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
-
 
 //            val spinner: Spinner = findViewById(R.id.spinner_review)
 //            // Create an ArrayAdapter using the string array and a default spinner layout
@@ -162,7 +161,6 @@ class HomeActivity : BaseFirebaseProperties() {
 //            }
 //
 //            var review: String? = spinner.selectedItem as String
-
 
             holder.itemView.imageView_comment.setOnClickListener {
                 val intent = Intent(applicationContext, CommentActivity::class.java)
