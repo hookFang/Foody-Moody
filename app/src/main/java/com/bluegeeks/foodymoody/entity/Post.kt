@@ -9,6 +9,7 @@ class Post {
     var description: String? = null
     var post: String? = null
     var postIsPhoto: Boolean? =null
+    var review: HashMap<String, Int>? = HashMap<String, Int> ()
 
     //Constructors
     constructor()
@@ -19,7 +20,8 @@ class Post {
         time: String?,
         description: String?,
         post: String?,
-        postIsPhoto: Boolean?
+        postIsPhoto: Boolean?,
+        review: HashMap<String, Int>?
         ) {
         this.id = id
         this.userId = userId
@@ -28,14 +30,16 @@ class Post {
         this.description = description
         this.post = post
         this.postIsPhoto = postIsPhoto
+        this.review = review
     }
 
-    constructor(userId: String?, userFullName: String?, time: String?, description: String?, post: String?, postIsPhoto: Boolean?) {
+    constructor(userId: String?, userFullName: String?, time: String?, description: String?, post: String?, postIsPhoto: Boolean?, review: HashMap<String, Int>?) {
         this.userId = userId
         this.userFullName = userFullName
         this.time = time
         this.description = description
         this.post = post
         this.postIsPhoto = postIsPhoto
+        this.review = review
     }
 }

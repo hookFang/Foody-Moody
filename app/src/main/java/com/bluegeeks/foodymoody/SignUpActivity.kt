@@ -1,5 +1,6 @@
 package com.bluegeeks.foodymoody
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -11,6 +12,8 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.toolbar_signup.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class SignUpActivity : AppCompatActivity() {
@@ -36,7 +39,11 @@ class SignUpActivity : AppCompatActivity() {
             val firstName = ""
             val lastName = ""
             val userName = signUpUsername.text.toString().trim()
-            val birthday = ""
+            val birthDay = ""
+            var photoURI = ""
+            val friends = HashMap<String, Boolean> ()
+            val bio = ""
+            val time = getTime()
 
             rootDB.collection("users").whereEqualTo("userName", userName).get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -62,8 +69,11 @@ class SignUpActivity : AppCompatActivity() {
                                                         firstName,
                                                         lastName,
                                                         userName,
-                                                        birthday,
-                                                        null
+                                                        birthDay,
+                                                        photoURI,
+                                                        friends,
+                                                        bio,
+                                                        time
                                                     )
                                                 rootDB.collection("users").document(user.id!!).set(user)
                                                 finish()
@@ -107,5 +117,11 @@ class SignUpActivity : AppCompatActivity() {
             return true
         }
         return false
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun getTime(): String {
+        val sdf = SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z")
+        return sdf.format(Date())
     }
 }

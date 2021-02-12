@@ -150,7 +150,6 @@ class CommentActivity : AppCompatActivity() {
                 }
             }
 
-
             holder.itemView.TextView_comment.setOnClickListener {
                 val intent = Intent(applicationContext, EditCommentActivity::class.java)
                 intent.putExtra("commentId", model.id)
@@ -158,24 +157,6 @@ class CommentActivity : AppCompatActivity() {
                 intent.putExtra("postId", model.postId)
                 startActivity(intent)
             }
-
-            //holder.itemView.TextView_review.text = model.review.toString() // convert to float to match RatingBar.rating type
-
-
-//            val spinner: Spinner = findViewById(R.id.spinner_review)
-//            // Create an ArrayAdapter using the string array and a default spinner layout
-//            ArrayAdapter.createFromResource(
-//                    this,
-//                    R.array.review,
-//                    android.R.layout.simple_spinner_item
-//            ).also { adapter ->
-//                // Specify the layout to use when the list of choices appears
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                // Apply the adapter to the spinner
-//                spinner.adapter = adapter
-//            }
-//
-//            var review: String? = spinner.selectedItem as String
         }
     }
 
