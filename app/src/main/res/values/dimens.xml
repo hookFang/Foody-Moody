@@ -49,4 +49,6 @@
     <dimen name="d_9">9dp</dimen>
     <dimen name="d_5">5dp</dimen>
     <dimen name="d_350">350dp</dimen>
+    <dimen name="f_16">16sp</dimen>
+    <dimen name="d_230">230dp</dimen>
 </resources>

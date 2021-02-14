@@ -41,4 +41,9 @@
     <string name="birthday">Birthday</string>
     <string name="updateProfile">Update Profile</string>
     <string name="updateSecurity">Update security</string>
+    <string name="about">About me</string>
+    <string name="birthDate">Birth date</string>
+    <string name="dash">---</string>
+    <string name="bio">Bio</string>
+    <string name="Edit">Edit</string>
 </resources>

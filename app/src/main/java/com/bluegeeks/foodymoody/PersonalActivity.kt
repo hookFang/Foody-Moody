@@ -15,13 +15,14 @@ import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.postsRecyclerView
 import kotlinx.android.synthetic.main.activity_personal.*
 import kotlinx.android.synthetic.main.item_post.view.*
+import kotlinx.android.synthetic.main.item_post_changed.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class PersonalActivity : BaseFirebaseProperties() {
     private var adapter: PostAdapter? = null
-
+    private var adapterChanged: PostAdapterChanged? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_personal)
@@ -30,6 +31,12 @@ class PersonalActivity : BaseFirebaseProperties() {
                 val userInfo = task.result
                 if (userInfo != null) {
                     textView_name.text = userInfo.get("userName") as CharSequence?
+                    if(userInfo.get("birthDay") != null && userInfo.get("birthDay") != "") {
+                        TextView_birthDate1.text = userInfo.get("birthDay") as CharSequence?
+                    }
+                    if(userInfo.get("bio") != null && userInfo.get("bio") != "") {
+                        TextView_bio_content.text = userInfo.get("bio") as CharSequence?
+                    }
                 } else {
                     textView_name.text = authDb.currentUser!!.displayName
                 }
@@ -41,13 +48,21 @@ class PersonalActivity : BaseFirebaseProperties() {
         }
 
         val postsQuery = rootDB.collection("posts").whereEqualTo("userId", authDb.currentUser!!.uid).orderBy("time", Query.Direction.DESCENDING)
+
         // set our recyclerview to use LinearLayout
         postsRecyclerView.layoutManager = LinearLayoutManager(this)
         val options =
-            FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java)
-                .build()
+                FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java)
+                        .build()
+
         adapter = PostAdapter(options)
         postsRecyclerView.adapter = adapter
+
+        button_change_format.setOnClickListener {
+            //adapter = null
+            adapterChanged = PostAdapterChanged(options)
+            postsRecyclerView.adapter = adapterChanged
+        }
 
         //instantiate toolbar
         setSupportActionBar(topToolbar)
@@ -105,25 +120,25 @@ class PersonalActivity : BaseFirebaseProperties() {
 
     // create inner classes needed to bind the data to the recyclerview
     private inner class PostViewHolder internal constructor(private val view: View) :
-        RecyclerView.ViewHolder(view) {}
+            RecyclerView.ViewHolder(view) {}
 
     private inner class PostAdapter internal constructor(options: FirestoreRecyclerOptions<Post>) :
-        FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
+            FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
         override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
+                parent: ViewGroup,
+                viewType: Int
         ): PostViewHolder {
 
             val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
             return PostViewHolder(view)
         }
 
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         override fun onBindViewHolder(
-            holder: PostViewHolder,
-            position: Int,
-            model: Post
+                holder: PostViewHolder,
+                position: Int,
+                model: Post
         ) {
 
             val dateStart = model.time
@@ -160,7 +175,7 @@ class PersonalActivity : BaseFirebaseProperties() {
 
             Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
             holder.itemView.textView_time.text = time
-            holder.itemView.TextView_name.text = model.userFullName!!
+            holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
 
 
@@ -185,6 +200,37 @@ class PersonalActivity : BaseFirebaseProperties() {
                 intent.putExtra("postId", model.id)
                 startActivity(intent)
             }
+
+        }
+    }
+
+    private inner class PostAdapterChanged internal constructor(options: FirestoreRecyclerOptions<Post>) :
+            FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
+        override fun onCreateViewHolder(
+                parent: ViewGroup,
+                viewType: Int
+        ): PostViewHolder {
+
+            val view =
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_post_changed, parent, false)
+            return PostViewHolder(view)
+        }
+
+        @SuppressLint("SetTextI18n", "SimpleDateFormat")
+        override fun onBindViewHolder(
+                holder: PostViewHolder,
+                position: Int,
+                model: Post
+        ) {
+
+            Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post1);
+
+
+//            holder.itemView.imageView_post.setOnClickListener {
+//                val intent = Intent(applicationContext, PersonalActivity::class.java)
+//                intent.putExtra("postId", model.id)
+//                startActivity(intent)
+//            }
 
         }
     }

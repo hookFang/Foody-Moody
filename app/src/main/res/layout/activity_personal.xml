@@ -49,30 +49,117 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:paddingTop="@dimen/d_10"
-                app:layout_constraintTop_toBottomOf="@+id/editText_email"
                 android:background="@drawable/horizontal_line"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/imageView_profile_picture"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity = "start"
-                    android:layout_marginStart="@dimen/d_10"
-                    android:layout_marginTop="@dimen/d_10"/>
+                <LinearLayout
+                    android:id="@+id/LinearLayout_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="@dimen/d_10"
+                    android:orientation="horizontal">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imageView_profile_picture"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity = "start"
+                        android:layout_marginStart="@dimen/d_10"
+                        android:layout_marginTop="@dimen/d_10"/>
+
+                    <TextView
+                        android:id="@+id/textView_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="@dimen/d_35"
+                        android:layout_marginStart="@dimen/d_20"
+                        android:layout_marginEnd="@dimen/d_20"
+                        android:textColor="@color/dark_blue"
+                        android:textSize="@dimen/f_20"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/textView_name"
-                    android:layout_width="0dp"
+                    android:id="@+id/textView_about"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginTop="@dimen/d_35"
-                    android:layout_marginStart="@dimen/d_20"
-                    android:layout_marginEnd="@dimen/d_20"
-                    android:textColor="@color/dark_blue"
-                    android:textSize="@dimen/f_20"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/f_16"
+                    android:layout_gravity = "center"
                     android:textAlignment="center"
+                    android:text="@string/about"
+                    android:background="@drawable/horizontal_line_white"
                     android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/LinearLayout_birthDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/d_10"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/TextView_birthDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/f_14"
+                        android:text="@string/birthDate"/>
+
+                    <TextView
+                        android:id="@+id/TextView_birthDate1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/dark_blue"
+                        android:textSize="@dimen/f_16"
+                        android:layout_marginStart="@dimen/d_40"
+                        android:text="@string/dash"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LinearLayout_bio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/d_10"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/TextView_bio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:layout_marginEnd="@dimen/d_230"
+                        android:textSize="@dimen/f_14"
+                        android:text="@string/bio"/>
+
+                    <Button
+                        android:id="@+id/Button_bio"
+                        android:layout_width="@dimen/d_50"
+                        android:layout_height="@dimen/d_25"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/f_14"
+                        android:layout_marginStart="@dimen/d_40"
+                        android:background="@drawable/button_edit"
+                        android:text="@string/Edit"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/TextView_bio_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="@dimen/d_40"
+                    android:layout_marginEnd="@dimen/d_40"
+                    android:layout_marginTop="@dimen/d_10"
+                    android:layout_marginBottom="@dimen/d_10"
+                    android:textAlignment="viewStart"
+                    android:textSize="@dimen/f_16"/>
             </LinearLayout>
 
             <Button
@@ -89,7 +176,6 @@
                 android:id="@+id/postsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/button_change_format"
                 android:layout_marginTop="@dimen/d_20"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
