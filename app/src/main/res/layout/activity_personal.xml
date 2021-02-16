@@ -95,60 +95,6 @@
                     android:background="@drawable/horizontal_line_white"
                     android:textStyle="bold" />
 
-                <LinearLayout
-                    android:id="@+id/LinearLayout_birthDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/d_10"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/TextView_birthDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/f_14"
-                        android:text="@string/birthDate"/>
-
-                    <TextView
-                        android:id="@+id/TextView_birthDate1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/dark_blue"
-                        android:textSize="@dimen/f_16"
-                        android:layout_marginStart="@dimen/d_40"
-                        android:text="@string/dash"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/LinearLayout_bio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/d_10"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/TextView_bio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:layout_marginEnd="@dimen/d_230"
-                        android:textSize="@dimen/f_14"
-                        android:text="@string/bio"/>
-
-                    <Button
-                        android:id="@+id/Button_bio"
-                        android:layout_width="@dimen/d_50"
-                        android:layout_height="@dimen/d_25"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/f_14"
-                        android:layout_marginStart="@dimen/d_40"
-                        android:background="@drawable/button_edit"
-                        android:text="@string/Edit"/>
-
-                </LinearLayout>
-
                 <TextView
                     android:id="@+id/TextView_bio_content"
                     android:layout_width="match_parent"

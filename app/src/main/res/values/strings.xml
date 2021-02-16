@@ -44,7 +44,10 @@
     <string name="about">About me</string>
     <string name="birthDate">Birth date</string>
     <string name="dash">---</string>
-    <string name="bio">Bio</string>
+    <string name="follow_user_side">Follow</string>
+    <string name="message_user_side">message</string>
+    <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
     <string name="Edit">Edit</string>
     <string name="follow_user_side">Follow</string>
     <string name="message_user_side">message</string>

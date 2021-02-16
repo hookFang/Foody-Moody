@@ -1,9 +1,17 @@
 package com.bluegeeks.foodymoody
 
+import android.R.layout
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
@@ -12,30 +20,37 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.activity_edit_comment.*
 import kotlinx.android.synthetic.main.activity_home.postsRecyclerView
 import kotlinx.android.synthetic.main.activity_personal.*
+import kotlinx.android.synthetic.main.bio_dialogue.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.item_post_changed.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class PersonalActivity : BaseFirebaseProperties() {
+
     private var adapter: PostAdapter? = null
+
+  var newBio: String = ""
+
+    @SuppressLint("SetTextI18n")
     private var adapterChanged: PostAdapterChanged? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_personal)
+
         rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val userInfo = task.result
                 if (userInfo != null) {
                     textView_name.text = userInfo.get("userName") as CharSequence?
-                    if(userInfo.get("birthDay") != null && userInfo.get("birthDay") != "") {
-                        TextView_birthDate1.text = userInfo.get("birthDay") as CharSequence?
-                    }
                     if(userInfo.get("bio") != null && userInfo.get("bio") != "") {
                         TextView_bio_content.text = userInfo.get("bio") as CharSequence?
+                        newBio = (userInfo.get("bio") as CharSequence?).toString()
                     }
                 } else {
                     textView_name.text = authDb.currentUser!!.displayName
@@ -59,9 +74,49 @@ class PersonalActivity : BaseFirebaseProperties() {
         postsRecyclerView.adapter = adapter
 
         button_change_format.setOnClickListener {
-            //adapter = null
-            adapterChanged = PostAdapterChanged(options)
-            postsRecyclerView.adapter = adapterChanged
+
+        }
+
+        TextView_bio_content.setOnClickListener {
+
+            val alert = AlertDialog.Builder(this@PersonalActivity)
+            val mView: View = layoutInflater.inflate(R.layout.bio_dialogue, null)
+            val button_bio_edit: Button = mView.findViewById(R.id.Button_bio_edit)
+            val button_bio_cancel: Button = mView.findViewById(R.id.Button_bio_cancel)
+
+            val editText_bio_edit: EditText = mView.findViewById(R.id.EditText_bio_edit)
+            alert.setView(mView)
+            val alertDialog: AlertDialog = alert.create()
+
+            editText_bio_edit.setText(newBio.toString())
+            editText_bio_edit.setSelection(editText_bio_edit.length())
+            alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            alertDialog.show()
+
+            button_bio_edit.setOnClickListener(View.OnClickListener() {
+                if (editText_bio_edit.text.isNotEmpty()) {
+
+                    rootDB.collection("users").document(authDb.currentUser!!.uid)
+                            .update(
+                                    mapOf(
+                                            "bio" to editText_bio_edit.text.toString()
+                                    )
+                            )
+                            .addOnSuccessListener {
+                                val intent = Intent(applicationContext, PersonalActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                            }
+                }
+            })
+
+            button_bio_cancel.setOnClickListener {
+                alertDialog.dismiss()
+            }
         }
 
         //instantiate toolbar
@@ -169,7 +224,7 @@ class PersonalActivity : BaseFirebaseProperties() {
                 } else if (seconds >= 1) {
                     time = seconds.toString() + " Second(s) ago"
                 }
-            } catch  (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace();
             }
 
