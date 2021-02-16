@@ -68,6 +68,9 @@ class PersonalActivityUserSide : AppCompatActivity() {
                         followers_text_view.text = followers.size.toString() + "\nFollowers"
                         posts_text_view.text = postsNumber.size.toString() + "\nPosts"
                         textView_name.text = userInfo.get("userName").toString()
+                        if(userInfo.get("bio") != null && userInfo.get("bio") != "") {
+                            TextView_bio_content.text = userInfo.get("bio") as CharSequence?
+                        }
                     }
                 }
             }
