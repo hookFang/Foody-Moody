@@ -12,4 +12,5 @@
     <color name="dark_blue">#008080</color>
     <color name="menu_bar">#31a55f </color>
     <color name="yellow">#FFD700 </color>
+    <color name="red">#FF0000</color>
 </resources>

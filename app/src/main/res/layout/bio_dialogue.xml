@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bio"
+    android:padding="@dimen/d_15">
+
+    <EditText
+        android:id="@+id/EditText_bio_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/f_20"
+        android:textAlignment="viewStart"
+        android:singleLine="false"
+        android:text=""/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/d_20"
+        android:layout_marginEnd="@dimen/d_20"
+        android:layout_marginTop="@dimen/d_20">
+
+        <Button
+            android:id="@+id/Button_bio_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/d_30"
+            android:background="@drawable/button_edit"
+            android:textColor="@color/red"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/d_20"
+            android:layout_marginEnd="@dimen/d_20"
+            android:text="@string/cancel"
+            android:textSize="@dimen/f_20"/>
+
+        <Button
+            android:id="@+id/Button_bio_edit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/d_30"
+            android:background="@drawable/button_edit"
+            android:textColor="@color/dark_green"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/d_20"
+            android:layout_marginEnd="@dimen/d_20"
+            android:text="@string/edit"
+            android:textSize="@dimen/f_20"/>
+
+    </LinearLayout>
+</LinearLayout>
