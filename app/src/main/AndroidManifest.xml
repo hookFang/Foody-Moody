@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_chef_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <activity android:name=".OthersProfileActivity"></activity>
+        <activity android:name=".PersonalActivityUserSide"></activity>
+        <activity android:name=".OthersProfileActivity" />
         <activity android:name=".EditCommentActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".CommentActivity" />

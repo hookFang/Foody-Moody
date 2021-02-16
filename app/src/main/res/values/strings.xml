@@ -46,4 +46,6 @@
     <string name="dash">---</string>
     <string name="bio">Bio</string>
     <string name="Edit">Edit</string>
+    <string name="follow_user_side">Follow</string>
+    <string name="message_user_side">message</string>
 </resources>

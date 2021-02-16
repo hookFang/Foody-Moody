@@ -168,6 +168,17 @@ class HomeActivity : BaseFirebaseProperties() {
                 startActivity(intent)
             }
 
+            //This for the the username click taking the user to the other users profile page
+            holder.itemView.TextView_name.setOnClickListener {
+                if(model.userId == authDb.currentUser?.uid) {
+                    startActivity(Intent(applicationContext, PersonalActivity::class.java))
+                } else {
+                    val intent = Intent(applicationContext, PersonalActivityUserSide::class.java)
+                    intent.putExtra("userID", model.userId)
+                    startActivity(intent)
+                }
+            }
+
         }
     }
 
