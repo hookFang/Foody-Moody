@@ -192,6 +192,7 @@ class LoginActivity : AppCompatActivity() {
                                 val id = BaseFirebaseProperties.authDb.currentUser!!.uid
                                 val followers = ArrayList<String>()
                                 val following = ArrayList<String>()
+                                val postsID = ArrayList<String>()
                                 val bio = ""
                                 val time = getTime()
 
@@ -206,6 +207,7 @@ class LoginActivity : AppCompatActivity() {
                                         photoURI,
                                         followers,
                                         following,
+                                        postsID,
                                         bio,
                                         time
                                     )

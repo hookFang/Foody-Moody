@@ -61,23 +61,22 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val userInfo = task.result
                     if (userInfo != null) {
-                        textView_name.text = userInfo.get("userName") as CharSequence?
-                        if(userInfo.get("birthDay") != null && userInfo.get("birthDay") != "") {
-                            TextView_birthDate1.text = userInfo.get("birthDay") as CharSequence?
-                        }
+                        val following: ArrayList<String> = userInfo.get("following") as ArrayList<String>
+                        val followers: ArrayList<String> = userInfo.get("followers") as ArrayList<String>
+                        val postsNumber: ArrayList<String> = userInfo.get("postsID") as ArrayList<String>
+                        following_text_view.text = following.size.toString() + "\nFollowing"
+                        followers_text_view.text = followers.size.toString() + "\nFollowers"
+                        posts_text_view.text = postsNumber.size.toString() + "\nPosts"
+                        textView_name.text = userInfo.get("userName").toString()
                         if(userInfo.get("bio") != null && userInfo.get("bio") != "") {
                             TextView_bio_content.text = userInfo.get("bio") as CharSequence?
                         }
-                    } else {
-                        textView_name.text = authDb.currentUser!!.displayName
                     }
                 }
             }
         }
+
         imageView_profile_picture.setImageResource(R.drawable.logout)
-        imageView_profile_picture.setOnClickListener {
-            startActivity(Intent(applicationContext, ProfileActivity::class.java))
-        }
 
         //Follow button add the user to the array list in firebase
         follow_button.setOnClickListener{

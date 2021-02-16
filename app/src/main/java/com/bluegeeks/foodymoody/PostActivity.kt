@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.Post
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_post.*
@@ -79,6 +80,7 @@ class PostActivity : BaseFirebaseProperties() {
                                     post.time = getTime()
                                     post.id = rootDB.collection("posts").document().id
                                     rootDB.collection("posts").document(post.id!!).set(post)
+                                    rootDB.collection("users").document(authDb.currentUser!!.uid).update("postsID", (FieldValue.arrayUnion(post.id)))
 
                                     //Upload the image to firebase storage
                                     val imagesRef: StorageReference =
