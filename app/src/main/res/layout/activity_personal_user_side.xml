@@ -55,7 +55,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/LinearLayout_image"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:padding="10dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imageView_profile_picture"
@@ -66,18 +67,49 @@
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <TextView
+                        android:id="@+id/posts_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="253 \nPosts"
+                        android:layout_marginStart="20dp"
+                        app:layout_constraintStart_toEndOf="@+id/imageView_profile_picture"
+                        app:layout_constraintEnd_toStartOf="@id/followers_text_view"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/followers_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_marginStart="20dp"
+                        app:layout_constraintStart_toEndOf="@+id/posts_text_view"
+                        app:layout_constraintEnd_toStartOf="@id/following_text_view"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/following_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_marginStart="20dp"
+                        app:layout_constraintStart_toEndOf="@+id/followers_text_view"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
                         android:id="@+id/textView_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
                         android:layout_marginStart="20dp"
-                        android:layout_marginTop="40dp"
+                        android:layout_marginTop="20dp"
                         android:textColor="@color/dark_blue"
                         android:textSize="@dimen/f_20"
                         android:textStyle="bold"
                         app:layout_constraintStart_toEndOf="@+id/imageView_profile_picture"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@id/followers_text_view" />
 
                     <Button
                         android:id="@+id/follow_button"
