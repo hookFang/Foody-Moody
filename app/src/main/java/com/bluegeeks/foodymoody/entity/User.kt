@@ -9,12 +9,14 @@ class User {
     var userName: String? = null
     var birthDay: String? = null
     var photoURI: String? = null
-    var friends: HashMap<String, Boolean>? = HashMap<String, Boolean> ()
+    var followers: ArrayList<String>? = ArrayList()
+    var following:  ArrayList<String>? = ArrayList()
     var bio: String? = null
     var time: String? = null
 
     //Constructors
     constructor()
+
     constructor(
         id: String?,
         email: String?,
@@ -23,7 +25,8 @@ class User {
         userName: String?,
         birthDay: String?,
         photoURI: String?,
-        friends: HashMap<String, Boolean>?,
+        followers: ArrayList<String>?,
+        following: ArrayList<String>?,
         bio: String?,
         time: String?
     ) {
@@ -34,7 +37,8 @@ class User {
         this.userName = userName
         this.birthDay = birthDay
         this.photoURI = photoURI
-        this.friends = friends
+        this.followers = followers
+        this.following = following
         this.bio = bio
         this.time = time
     }
@@ -46,7 +50,8 @@ class User {
         userName: String?,
         birthDay: String?,
         photoURI: String?,
-        friends: HashMap<String, Boolean>?,
+        followers: ArrayList<String>?,
+        following: ArrayList<String>?,
         bio: String?,
         time: String?
     ) {
@@ -56,8 +61,11 @@ class User {
         this.userName = userName
         this.birthDay = birthDay
         this.photoURI = photoURI
-        this.friends = friends
+        this.followers = followers
+        this.following = following
         this.bio = bio
         this.time = time
     }
+
+
 }

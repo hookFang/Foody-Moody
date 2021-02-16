@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.toolbar_signup.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SignUpActivity : AppCompatActivity() {
@@ -40,8 +41,9 @@ class SignUpActivity : AppCompatActivity() {
             val lastName = ""
             val userName = signUpUsername.text.toString().trim()
             val birthDay = ""
-            var photoURI = ""
-            val friends = HashMap<String, Boolean> ()
+            val photoURI = ""
+            val followers = ArrayList<String>()
+            val following = ArrayList<String>()
             val bio = ""
             val time = getTime()
 
@@ -71,7 +73,8 @@ class SignUpActivity : AppCompatActivity() {
                                                         userName,
                                                         birthDay,
                                                         photoURI,
-                                                        friends,
+                                                        followers,
+                                                        following,
                                                         bio,
                                                         time
                                                     )
