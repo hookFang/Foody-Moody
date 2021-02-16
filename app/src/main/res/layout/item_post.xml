@@ -18,13 +18,15 @@
             android:id="@+id/TextView_name"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="@dimen/f_20"
-            android:paddingStart="@dimen/d_10"
-            android:textAlignment="viewStart"
             android:layout_marginStart="@dimen/d_10"
             android:layout_marginEnd="@dimen/d_5"
-            tools:ignore="RtlSymmetry"/>
+            android:clickable="true"
+            android:paddingStart="@dimen/d_10"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="@dimen/f_20"
+            tools:ignore="RtlSymmetry"
+            android:focusable="true" />
 
         <TextView
             android:id="@+id/textView_time"

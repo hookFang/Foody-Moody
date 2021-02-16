@@ -1,122 +1,115 @@
 package com.bluegeeks.foodymoody
 
-import android.R.layout
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.activity_edit_comment.*
-import kotlinx.android.synthetic.main.activity_home.postsRecyclerView
+import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_personal.*
-import kotlinx.android.synthetic.main.bio_dialogue.*
+import kotlinx.android.synthetic.main.activity_personal.TextView_bio_content
+import kotlinx.android.synthetic.main.activity_personal.button_change_format
+import kotlinx.android.synthetic.main.activity_personal.imageView_profile_picture
+import kotlinx.android.synthetic.main.activity_personal.postsRecyclerView
+import kotlinx.android.synthetic.main.activity_personal.textView_name
+import kotlinx.android.synthetic.main.activity_personal_user_side.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.item_post_changed.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
-
-class PersonalActivity : BaseFirebaseProperties() {
-
+class PersonalActivityUserSide : AppCompatActivity() {
     private var adapter: PostAdapter? = null
-
-  var newBio: String = ""
-
-    @SuppressLint("SetTextI18n")
     private var adapterChanged: PostAdapterChanged? = null
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_personal)
+        setContentView(R.layout.activity_personal_user_side)
+        val userID = intent.getStringExtra("userID")
 
         rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val userInfo = task.result
                 if (userInfo != null) {
-                    textView_name.text = userInfo.get("userName") as CharSequence?
-                    if(userInfo.get("bio") != null && userInfo.get("bio") != "") {
-                        TextView_bio_content.text = userInfo.get("bio") as CharSequence?
-                        newBio = (userInfo.get("bio") as CharSequence?).toString()
+                    val following: ArrayList<String> = userInfo.get("following") as ArrayList<String>
+                    if(following.contains(userID)) {
+                        follow_button.text = "Unfollow"
                     }
-                } else {
-                    textView_name.text = authDb.currentUser!!.displayName
                 }
             }
         }
-        imageView_profile_picture.setImageResource(R.drawable.logout)
-        imageView_profile_picture.setOnClickListener {
-            startActivity(Intent(applicationContext, ProfileActivity::class.java))
+
+        if (userID != null) {
+            rootDB.collection("users").document(userID).get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val userInfo = task.result
+                    if (userInfo != null) {
+                        val following: ArrayList<String> = userInfo.get("following") as ArrayList<String>
+                        val followers: ArrayList<String> = userInfo.get("followers") as ArrayList<String>
+                        val postsNumber: ArrayList<String> = userInfo.get("postsID") as ArrayList<String>
+                        following_text_view.text = following.size.toString() + "\nFollowing"
+                        followers_text_view.text = followers.size.toString() + "\nFollowers"
+                        posts_text_view.text = postsNumber.size.toString() + "\nPosts"
+                        textView_name.text = userInfo.get("userName").toString()
+                        if(userInfo.get("bio") != null && userInfo.get("bio") != "") {
+                            TextView_bio_content.text = userInfo.get("bio") as CharSequence?
+                        }
+                    }
+                }
+            }
         }
 
-        val postsQuery = rootDB.collection("posts").whereEqualTo("userId", authDb.currentUser!!.uid).orderBy("time", Query.Direction.DESCENDING)
+        imageView_profile_picture.setImageResource(R.drawable.logout)
+
+        //Follow button add the user to the array list in firebase
+        follow_button.setOnClickListener{
+            if(follow_button.text == "Follow") {
+                rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(userID)))
+                if (userID != null) {
+                    rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                }
+                follow_button.text = "Unfollow"
+            } else {
+                rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayRemove(userID)))
+                if (userID != null) {
+                    rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
+                }
+                follow_button.text = "Follow"
+            }
+        }
+
+        val postsQuery = rootDB.collection("posts").whereEqualTo("userId", userID).orderBy("time", Query.Direction.DESCENDING)
 
         // set our recyclerview to use LinearLayout
         postsRecyclerView.layoutManager = LinearLayoutManager(this)
         val options =
-                FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java)
-                        .build()
+            FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java)
+                .build()
 
         adapter = PostAdapter(options)
         postsRecyclerView.adapter = adapter
 
         button_change_format.setOnClickListener {
-
-        }
-
-        TextView_bio_content.setOnClickListener {
-
-            val alert = AlertDialog.Builder(this@PersonalActivity)
-            val mView: View = layoutInflater.inflate(R.layout.bio_dialogue, null)
-            val button_bio_edit: Button = mView.findViewById(R.id.Button_bio_edit)
-            val button_bio_cancel: Button = mView.findViewById(R.id.Button_bio_cancel)
-
-            val editText_bio_edit: EditText = mView.findViewById(R.id.EditText_bio_edit)
-            alert.setView(mView)
-            val alertDialog: AlertDialog = alert.create()
-
-            editText_bio_edit.setText(newBio.toString())
-            editText_bio_edit.setSelection(editText_bio_edit.length())
-            alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            alertDialog.show()
-
-            button_bio_edit.setOnClickListener(View.OnClickListener() {
-                if (editText_bio_edit.text.isNotEmpty()) {
-
-                    rootDB.collection("users").document(authDb.currentUser!!.uid)
-                            .update(
-                                    mapOf(
-                                            "bio" to editText_bio_edit.text.toString()
-                                    )
-                            )
-                            .addOnSuccessListener {
-                                val intent = Intent(applicationContext, PersonalActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
-                            }
-                }
-            })
-
-            button_bio_cancel.setOnClickListener {
-                alertDialog.dismiss()
-            }
+            //adapter = null
+            adapterChanged = PostAdapterChanged(options)
+            postsRecyclerView.adapter = adapterChanged
         }
 
         //instantiate toolbar
@@ -166,7 +159,7 @@ class PersonalActivity : BaseFirebaseProperties() {
     }
 
     private fun logout() {
-        authDb.signOut()
+        BaseFirebaseProperties.authDb.signOut()
         finish()
         val intent = Intent(applicationContext, LoginActivity::class.java)
         startActivity(intent)
@@ -175,25 +168,25 @@ class PersonalActivity : BaseFirebaseProperties() {
 
     // create inner classes needed to bind the data to the recyclerview
     private inner class PostViewHolder internal constructor(private val view: View) :
-            RecyclerView.ViewHolder(view) {}
+        RecyclerView.ViewHolder(view) {}
 
     private inner class PostAdapter internal constructor(options: FirestoreRecyclerOptions<Post>) :
-            FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
+        FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
         override fun onCreateViewHolder(
-                parent: ViewGroup,
-                viewType: Int
+            parent: ViewGroup,
+            viewType: Int
         ): PostViewHolder {
 
             val view =
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
+                LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
             return PostViewHolder(view)
         }
 
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         override fun onBindViewHolder(
-                holder: PostViewHolder,
-                position: Int,
-                model: Post
+            holder: PostViewHolder,
+            position: Int,
+            model: Post
         ) {
 
             val dateStart = model.time
@@ -224,11 +217,11 @@ class PersonalActivity : BaseFirebaseProperties() {
                 } else if (seconds >= 1) {
                     time = seconds.toString() + " Second(s) ago"
                 }
-            } catch (e: Exception) {
+            } catch  (e: Exception) {
                 e.printStackTrace();
             }
 
-            Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
+            Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
             holder.itemView.textView_time.text = time
             holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
@@ -260,25 +253,25 @@ class PersonalActivity : BaseFirebaseProperties() {
     }
 
     private inner class PostAdapterChanged internal constructor(options: FirestoreRecyclerOptions<Post>) :
-            FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
+        FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
         override fun onCreateViewHolder(
-                parent: ViewGroup,
-                viewType: Int
+            parent: ViewGroup,
+            viewType: Int
         ): PostViewHolder {
 
             val view =
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_post_changed, parent, false)
+                LayoutInflater.from(parent.context).inflate(R.layout.item_post_changed, parent, false)
             return PostViewHolder(view)
         }
 
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         override fun onBindViewHolder(
-                holder: PostViewHolder,
-                position: Int,
-                model: Post
+            holder: PostViewHolder,
+            position: Int,
+            model: Post
         ) {
 
-            Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post1);
+            Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post1);
 
 
 //            holder.itemView.imageView_post.setOnClickListener {
@@ -297,4 +290,3 @@ class PersonalActivity : BaseFirebaseProperties() {
         return sdf.format(Date())
     }
 }
-

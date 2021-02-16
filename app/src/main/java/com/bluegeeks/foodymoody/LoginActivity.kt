@@ -21,6 +21,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class LoginActivity : AppCompatActivity() {
@@ -189,7 +190,9 @@ class LoginActivity : AppCompatActivity() {
                                 val birthDay = ""
                                 val photoURI = user?.photoUrl.toString()
                                 val id = BaseFirebaseProperties.authDb.currentUser!!.uid
-                                val friends = HashMap<String, Boolean> ()
+                                val followers = ArrayList<String>()
+                                val following = ArrayList<String>()
+                                val postsID = ArrayList<String>()
                                 val bio = ""
                                 val time = getTime()
 
@@ -202,7 +205,9 @@ class LoginActivity : AppCompatActivity() {
                                         userName,
                                         birthDay,
                                         photoURI,
-                                        friends,
+                                        followers,
+                                        following,
+                                        postsID,
                                         bio,
                                         time
                                     )
