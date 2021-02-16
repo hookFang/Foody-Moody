@@ -23,6 +23,8 @@ import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_edit_comment.*
 import kotlinx.android.synthetic.main.activity_home.postsRecyclerView
 import kotlinx.android.synthetic.main.activity_personal.*
+import kotlinx.android.synthetic.main.activity_personal.imageView_profile_picture
+import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.bio_dialogue.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.item_post_changed.view.*
@@ -52,12 +54,16 @@ class PersonalActivity : BaseFirebaseProperties() {
                         TextView_bio_content.text = userInfo.get("bio") as CharSequence?
                         newBio = (userInfo.get("bio") as CharSequence?).toString()
                     }
+
+                    if(userInfo.get("photoURI") != "") {
+                        //Glide.with(this@ProfileActivity).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
+                        Glide.with(this).load(userInfo.get("photoURI").toString()).into(imageView_profile_picture);
+                    }
                 } else {
                     textView_name.text = authDb.currentUser!!.displayName
                 }
             }
         }
-        imageView_profile_picture.setImageResource(R.drawable.logout)
         imageView_profile_picture.setOnClickListener {
             startActivity(Intent(applicationContext, ProfileActivity::class.java))
         }
@@ -94,25 +100,24 @@ class PersonalActivity : BaseFirebaseProperties() {
 
             alertDialog.show()
 
-            button_bio_edit.setOnClickListener(View.OnClickListener() {
+            button_bio_edit.setOnClickListener{
                 if (editText_bio_edit.text.isNotEmpty()) {
 
                     rootDB.collection("users").document(authDb.currentUser!!.uid)
-                            .update(
-                                    mapOf(
-                                            "bio" to editText_bio_edit.text.toString()
-                                    )
+                        .update(
+                            mapOf(
+                                "bio" to editText_bio_edit.text.toString()
                             )
-                            .addOnSuccessListener {
-                                val intent = Intent(applicationContext, PersonalActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
-                            }
+                        )
+                        .addOnSuccessListener {
+                            val intent = Intent(applicationContext, PersonalActivity::class.java)
+                            startActivity(intent)
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                        }
                 }
-            })
+            }
 
             button_bio_cancel.setOnClickListener {
                 alertDialog.dismiss()
