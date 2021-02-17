@@ -10,7 +10,7 @@ class User {
     var birthDay: String? = null
     var photoURI: String? = null
     var followers: ArrayList<String>? = ArrayList()
-    var following:  ArrayList<String>? = ArrayList()
+    var following: ArrayList<String>? = ArrayList()
     var postsID:  ArrayList<String>? = ArrayList()
     var bio: String? = null
     var time: String? = null

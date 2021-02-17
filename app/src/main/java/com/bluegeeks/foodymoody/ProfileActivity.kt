@@ -132,6 +132,7 @@ class ProfileActivity : AppCompatActivity() {
                         .addOnSuccessListener {
                             val intent = Intent(applicationContext, ProfileActivity::class.java)
                             startActivity(intent)
+                            finish()
                         }
                         .addOnFailureListener {
                             Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()

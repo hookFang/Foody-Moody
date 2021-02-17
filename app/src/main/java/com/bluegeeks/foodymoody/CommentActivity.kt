@@ -2,10 +2,16 @@ package com.bluegeeks.foodymoody
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
@@ -13,6 +19,7 @@ import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bluegeeks.foodymoody.entity.Comment
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_comment.*
 import kotlinx.android.synthetic.main.item_comment.view.*
@@ -31,23 +38,33 @@ class CommentActivity : AppCompatActivity() {
         val postId = intent.getStringExtra("postId")
 
         button_comment.setOnClickListener {
-            try {
-                // caoture inputs into on instance of our Restaurant class
-                val comment = Comment()
-                comment.userId = authDb.currentUser?.uid
-                comment.comment = EditText_comment.text.toString().trim()
-                comment.time = getTime()
-                comment.postId = postId
 
-                comment.id = rootDB.collection("comments").document().id
-                rootDB.collection("comments").document(comment.id!!).set(comment)
+            rootDB.collection("users").document(authDb.currentUser!!.uid).get()
+                .addOnCompleteListener { user ->
+                    if (user.isSuccessful) {
+                        val userInfo = user.result
+                        if (userInfo != null) {
+                            try {
+                                // caoture inputs into on instance of our Restaurant class
+                                val comment = Comment()
+                                comment.userId = authDb.currentUser?.uid
+                                comment.userFullName = userInfo.get("userName") as String?
+                                comment.comment = EditText_comment.text.toString().trim()
+                                comment.time = getTime()
+                                comment.postId = postId
 
-                // show confirmation & clear inputs
-                EditText_comment.setText("")
+                                comment.id = rootDB.collection("comments").document().id
+                                rootDB.collection("comments").document(comment.id!!).set(comment)
 
-            } catch (e: Exception) {
-                Toast.makeText(this, "Error" + " :" + e, Toast.LENGTH_LONG).show()
-            }
+                                // show confirmation & clear inputs
+                                EditText_comment.setText("")
+
+                            } catch (e: Exception) {
+                                Toast.makeText(this, "Error" + " :" + e, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
         }
 
         commentsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -119,11 +136,10 @@ class CommentActivity : AppCompatActivity() {
                 model: Comment
         ) {
 
-            holder.itemView.TextView_user.text = model.userId
+            holder.itemView.TextView_user.text = model.userFullName + ":"
             holder.itemView.TextView_comment.text = model.comment!!
 
-            if (model.whoLiked?.containsKey(authDb.currentUser!!.uid) == true &&
-                    model.whoLiked?.get(authDb.currentUser!!.uid) == true) {
+            if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
 
                 holder.itemView.ImageView_like.setBackgroundResource(R.drawable.liked)
             } else {
@@ -132,30 +148,63 @@ class CommentActivity : AppCompatActivity() {
 
             holder.itemView.ImageView_like.setOnClickListener {
 
-                if (model.whoLiked?.containsKey(authDb.currentUser!!.uid) == true &&
-                        model.whoLiked?.get(authDb.currentUser!!.uid) == true) {
+                if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true ) {
 
                     rootDB.collection("comments").document(model.id!!).update(
-
-                        mapOf(
-                                "whoLiked."+authDb.currentUser!!.uid to false
-                        ))
+                        "whoLiked", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
                 } else {
 
                     rootDB.collection("comments").document(model.id!!).update(
-
-                        mapOf(
-                                "whoLiked."+authDb.currentUser!!.uid to true
-                        ))
+                        "whoLiked", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
                 }
             }
 
             holder.itemView.TextView_comment.setOnClickListener {
-                val intent = Intent(applicationContext, EditCommentActivity::class.java)
-                intent.putExtra("commentId", model.id)
-                intent.putExtra("comment", model.comment)
-                intent.putExtra("postId", model.postId)
-                startActivity(intent)
+                val alert = AlertDialog.Builder(this@CommentActivity)
+                val mView: View = layoutInflater.inflate(R.layout.bio_dialogue, null)
+                val button_bio_edit: Button = mView.findViewById(R.id.Button_bio_edit)
+
+                val editText_bio_edit: EditText = mView.findViewById(R.id.EditText_bio_edit)
+                alert.setView(mView)
+                val alertDialog: AlertDialog = alert.create()
+
+                editText_bio_edit.setText(model.comment.toString())
+                editText_bio_edit.setSelection(editText_bio_edit.length())
+                alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                alertDialog.show()
+
+                button_bio_edit.setOnClickListener{
+                    val newComment = editText_bio_edit.text.toString()
+                    if(newComment != "") {
+                        rootDB.collection("comments").document(model.id!!)
+                                .update(
+                                        mapOf(
+                                                "comment" to newComment,
+                                                "time" to getTime())
+                                )
+                                .addOnSuccessListener {
+                                    val intent = Intent(applicationContext, CommentActivity::class.java)
+                                    intent.putExtra("postId", model.postId)
+                                    startActivity(intent)
+                                    finish()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                                }
+                    } else {
+                        rootDB.collection("comments").document(model.id!!).delete().addOnSuccessListener {
+                                val intent = Intent(applicationContext, CommentActivity::class.java)
+                                intent.putExtra("postId", model.postId)
+                                startActivity(intent)
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+
+                }
             }
         }
     }
