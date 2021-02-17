@@ -54,4 +54,5 @@
     <string name="birthDate_selecting">Select your birth date</string>
     <string name="birthDate_reset">Remove birth date</string>
     <string name="write">Write something …</string>
+    <string name="ok">OK</string>
 </resources>

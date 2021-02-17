@@ -20,10 +20,16 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.activity_edit_comment.*
 import kotlinx.android.synthetic.main.activity_home.postsRecyclerView
 import kotlinx.android.synthetic.main.activity_personal.*
+import kotlinx.android.synthetic.main.activity_personal.TextView_bio_content
+import kotlinx.android.synthetic.main.activity_personal.button_change_format
+import kotlinx.android.synthetic.main.activity_personal.followers_text_view
+import kotlinx.android.synthetic.main.activity_personal.following_text_view
 import kotlinx.android.synthetic.main.activity_personal.imageView_profile_picture
+import kotlinx.android.synthetic.main.activity_personal.posts_text_view
+import kotlinx.android.synthetic.main.activity_personal.textView_name
+import kotlinx.android.synthetic.main.activity_personal_user_side.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.bio_dialogue.*
 import kotlinx.android.synthetic.main.item_post.view.*
@@ -36,11 +42,11 @@ import java.util.*
 class PersonalActivity : BaseFirebaseProperties() {
 
     private var adapter: PostAdapter? = null
-
-  var newBio: String = ""
+    var newBio: String = ""
 
     @SuppressLint("SetTextI18n")
     private var adapterChanged: PostAdapterChanged? = null
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_personal)
@@ -55,6 +61,13 @@ class PersonalActivity : BaseFirebaseProperties() {
                         newBio = (userInfo.get("bio") as CharSequence?).toString()
                     }
 
+                    val following: ArrayList<String> = userInfo.get("following") as ArrayList<String>
+                    val followers: ArrayList<String> = userInfo.get("followers") as ArrayList<String>
+                    val postsNumber: ArrayList<String> = userInfo.get("postsID") as ArrayList<String>
+                    following_text_view.text = following.size.toString() + "\nFollowing"
+                    followers_text_view.text = followers.size.toString() + "\nFollowers"
+                    posts_text_view.text = postsNumber.size.toString() + "\nPosts"
+
                     if(userInfo.get("photoURI") != "") {
                         //Glide.with(this@ProfileActivity).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
                         Glide.with(this).load(userInfo.get("photoURI").toString()).into(imageView_profile_picture);
@@ -64,6 +77,7 @@ class PersonalActivity : BaseFirebaseProperties() {
                 }
             }
         }
+
         imageView_profile_picture.setOnClickListener {
             startActivity(Intent(applicationContext, ProfileActivity::class.java))
         }
@@ -88,7 +102,6 @@ class PersonalActivity : BaseFirebaseProperties() {
             val alert = AlertDialog.Builder(this@PersonalActivity)
             val mView: View = layoutInflater.inflate(R.layout.bio_dialogue, null)
             val button_bio_edit: Button = mView.findViewById(R.id.Button_bio_edit)
-            val button_bio_cancel: Button = mView.findViewById(R.id.Button_bio_cancel)
 
             val editText_bio_edit: EditText = mView.findViewById(R.id.EditText_bio_edit)
             alert.setView(mView)
@@ -101,26 +114,21 @@ class PersonalActivity : BaseFirebaseProperties() {
             alertDialog.show()
 
             button_bio_edit.setOnClickListener{
-                if (editText_bio_edit.text.isNotEmpty()) {
 
-                    rootDB.collection("users").document(authDb.currentUser!!.uid)
-                        .update(
-                            mapOf(
-                                "bio" to editText_bio_edit.text.toString()
-                            )
+                rootDB.collection("users").document(authDb.currentUser!!.uid)
+                    .update(
+                        mapOf(
+                            "bio" to editText_bio_edit.text.toString()
                         )
-                        .addOnSuccessListener {
-                            val intent = Intent(applicationContext, PersonalActivity::class.java)
-                            startActivity(intent)
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
-                        }
-                }
-            }
-
-            button_bio_cancel.setOnClickListener {
-                alertDialog.dismiss()
+                    )
+                    .addOnSuccessListener {
+                        val intent = Intent(applicationContext, PersonalActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                    }
             }
         }
 

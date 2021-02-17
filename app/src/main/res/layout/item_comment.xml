@@ -15,9 +15,8 @@
         android:textSize="@dimen/f_14"
         android:paddingTop="@dimen/d_10"
         android:paddingBottom="@dimen/d_5"
-        android:paddingStart="@dimen/d_40"
-        android:paddingEnd="@dimen/d_40"
-        android:textStyle="bold" />
+        android:paddingStart="@dimen/d_10"
+        android:paddingEnd="@dimen/d_40" />
 
     <LinearLayout
         android:id="@+id/LinearLayout_comment_body"
@@ -37,7 +36,8 @@
             android:paddingEnd="@dimen/d_10"
             android:textAlignment="viewStart"
             android:layout_gravity = "start"
-            android:layout_marginStart="@dimen/d_10"/>
+            android:layout_marginStart="@dimen/d_10"
+            android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/ImageView_like"
