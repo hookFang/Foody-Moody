@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/profile"
+    android:gravity="center"
+    android:padding="@dimen/d_30">
+
+    <EditText
+        android:id="@+id/EditText_firstName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/f_20"
+        android:textAlignment="viewStart"
+        android:hint="@string/firstName"/>
+
+    <EditText
+        android:id="@+id/EditText_lastName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/f_20"
+        android:textAlignment="viewStart"
+        android:hint="@string/lastName"
+        android:layout_marginTop="@dimen/d_20"/>
+
+    <TextView
+        android:id="@+id/TextView_birthDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/f_20"
+        android:hint="@string/birthDate"
+        android:layout_marginTop="@dimen/d_20"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/Button_calender"
+        android:layout_width="@dimen/d_230"
+        android:layout_height="@dimen/d_30"
+        android:layout_marginTop="@dimen/d_20"
+        android:text="@string/birthDate_selecting"
+        android:background="@drawable/button_edit"
+        android:textColor="@color/dark_blue"
+        android:textSize="@dimen/f_16"/>
+
+    <Button
+        android:id="@+id/Button_calender_reset"
+        android:layout_width="@dimen/d_200"
+        android:layout_height="@dimen/d_30"
+        android:layout_marginTop="@dimen/d_20"
+        android:text="@string/birthDate_reset"
+        android:background="@drawable/button_remove"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/f_16"/>
+
+    <Button
+        android:id="@+id/Button_profile_update"
+        android:layout_width="@dimen/d_100"
+        android:layout_height="@dimen/d_40"
+        android:layout_marginTop="@dimen/d_20"
+        android:text="@string/update"
+        android:background="@drawable/button_login"
+        android:textColor="@color/yellow"
+        android:textSize="@dimen/f_20"/>
+
+
+</LinearLayout>

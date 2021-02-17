@@ -44,28 +44,28 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageView_profile_picture"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
+                android:layout_width="@dimen/d_250"
+                android:layout_height="@dimen/d_250"
                 android:layout_marginTop="@dimen/d_10"
-                android:background="@drawable/text_frame_profile" />
+                android:background="@drawable/photo_frame_profile" />
 
             <TextView
                 android:id="@+id/TextView_username"
-                android:layout_width="@dimen/d_200"
+                android:layout_width="@dimen/d_300"
                 android:layout_height="@dimen/d_30"
                 android:background="@drawable/text_frame_profile"
-                android:text="@string/username1"
+                android:hint="@string/username1"
                 android:textAlignment="center"
                 android:gravity="center"
                 android:textSize="@dimen/f_20"
-                android:layout_marginTop="@dimen/d_20"/>
+                android:layout_marginTop="@dimen/d_20" />
 
             <TextView
                 android:id="@+id/TextView_fullname"
-                android:layout_width="@dimen/d_200"
+                android:layout_width="@dimen/d_300"
                 android:layout_height="@dimen/d_30"
                 android:background="@drawable/text_frame_profile"
-                android:text="@string/fullName"
+                android:hint="@string/fullName"
                 android:textAlignment="center"
                 android:gravity="center"
                 android:textSize="@dimen/f_20"
@@ -73,10 +73,10 @@
 
             <TextView
                 android:id="@+id/TextView_email"
-                android:layout_width="@dimen/d_200"
+                android:layout_width="@dimen/d_300"
                 android:layout_height="@dimen/d_30"
                 android:background="@drawable/text_frame_profile"
-                android:text="@string/username"
+                android:hint="@string/username"
                 android:textAlignment="center"
                 android:gravity="center"
                 android:textSize="@dimen/f_20"
@@ -84,10 +84,10 @@
 
             <TextView
                 android:id="@+id/TextView_birthday"
-                android:layout_width="@dimen/d_200"
+                android:layout_width="@dimen/d_300"
                 android:layout_height="@dimen/d_30"
                 android:background="@drawable/text_frame_profile"
-                android:text="@string/birthday"
+                android:hint="@string/birthday"
                 android:textAlignment="center"
                 android:gravity="center"
                 android:textSize="@dimen/f_20"

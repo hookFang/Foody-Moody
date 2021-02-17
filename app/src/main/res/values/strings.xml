@@ -48,7 +48,10 @@
     <string name="message_user_side">message</string>
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
-    <string name="Edit">Edit</string>
-    <string name="follow_user_side">Follow</string>
-    <string name="message_user_side">message</string>
+    <string name="bioDialogueTitle">Edit Bio</string>
+    <string name="firstName">First name</string>
+    <string name="lastName">Last name</string>
+    <string name="birthDate_selecting">Select your birth date</string>
+    <string name="birthDate_reset">Remove birth date</string>
+    <string name="write">Write something …</string>
 </resources>

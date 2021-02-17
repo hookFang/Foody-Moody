@@ -65,8 +65,9 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_gravity = "start"
-                        android:layout_marginStart="@dimen/d_10"
-                        android:layout_marginTop="@dimen/d_10"/>
+                        android:layout_marginStart="@dimen/d_20"
+                        android:layout_marginTop="@dimen/d_10"
+                        android:background="@drawable/photo_frame_profile"/>
 
                     <TextView
                         android:id="@+id/textView_name"
@@ -105,7 +106,8 @@
                     android:layout_marginTop="@dimen/d_10"
                     android:layout_marginBottom="@dimen/d_10"
                     android:textAlignment="viewStart"
-                    android:textSize="@dimen/f_16"/>
+                    android:textSize="@dimen/f_16"
+                    android:hint="@string/write"/>
             </LinearLayout>
 
             <Button
