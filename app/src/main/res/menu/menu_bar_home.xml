@@ -22,5 +22,10 @@
         android:icon="@drawable/notofication"
         android:title="@string/add"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_serach"
+        android:icon="@drawable/searchlens"
+        android:title="@string/search_action"
+        app:showAsAction="always"/>
 
 </menu>

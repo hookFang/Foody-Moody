@@ -123,8 +123,8 @@ class PersonalActivity : BaseFirebaseProperties() {
                     )
                     .addOnSuccessListener {
                         val intent = Intent(applicationContext, PersonalActivity::class.java)
-                        startActivity(intent)
                         finish()
+                        startActivity(intent)
                     }
                     .addOnFailureListener {
                         Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
