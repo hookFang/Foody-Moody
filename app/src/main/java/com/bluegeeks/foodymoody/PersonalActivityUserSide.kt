@@ -14,12 +14,8 @@ import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
-import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_personal_user_side.*
 import kotlinx.android.synthetic.main.activity_personal_user_side.TextView_bio_content
 import kotlinx.android.synthetic.main.activity_personal_user_side.button_change_format
@@ -82,12 +78,26 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(userID)))
                 if (userID != null) {
                     rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                    rootDB.collection("posts").whereEqualTo("userId", userID).get().addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            task.result?.forEach { doc ->
+                                doc.reference.update("sharedWithUsers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                            }
+                        }
+                    }
                 }
                 follow_button.text = "Unfollow"
             } else {
                 rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayRemove(userID)))
                 if (userID != null) {
                     rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
+                    rootDB.collection("posts").whereEqualTo("userId", userID).get().addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            task.result?.forEach { doc ->
+                                doc.reference.update("sharedWithUsers", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
+                            }
+                        }
+                    }
                 }
                 follow_button.text = "Follow"
             }

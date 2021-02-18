@@ -26,7 +26,7 @@ class HomeActivity : BaseFirebaseProperties() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        val postsQuery = rootDB.collection("posts").orderBy("time", Query.Direction.DESCENDING)
+        val postsQuery = rootDB.collection("posts").orderBy("time", Query.Direction.DESCENDING).whereArrayContains("sharedWithUsers", authDb.currentUser!!.uid)
         // set our recyclerview to use LinearLayout
         postsRecyclerView.layoutManager = LinearLayoutManager(this)
         val options =
@@ -60,6 +60,10 @@ class HomeActivity : BaseFirebaseProperties() {
             }
             R.id.action_notification -> {
                 startActivity(Intent(applicationContext, HomeActivity::class.java))
+                return true
+            }
+            R.id.action_serach -> {
+                startActivity(Intent(applicationContext, SearchActivity::class.java))
                 return true
             }
         }

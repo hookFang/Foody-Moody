@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.toolbar_main.*
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class PostActivity : BaseFirebaseProperties() {
@@ -71,13 +72,15 @@ class PostActivity : BaseFirebaseProperties() {
                         if (user.isSuccessful) {
                             val userInfo = user.result
                             if (userInfo != null) {
+                                val sharedWithUsersTemp = userInfo.get("followers") as ArrayList<String>
+                                sharedWithUsersTemp.add(authDb.currentUser!!.uid)
                                 try {
-                                    val post =
-                                        Post()
+                                    val post =  Post()
                                     post.userId = authDb.currentUser!!.uid
                                     post.userFullName = userInfo.get("userName") as String?
                                     post.description = editText_description.text.toString().trim()
                                     post.time = getTime()
+                                    post.sharedWithUsers = sharedWithUsersTemp
                                     post.id = rootDB.collection("posts").document().id
                                     rootDB.collection("posts").document(post.id!!).set(post)
                                     rootDB.collection("users").document(authDb.currentUser!!.uid).update("postsID", (FieldValue.arrayUnion(post.id)))
