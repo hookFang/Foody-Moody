@@ -3,7 +3,12 @@ package com.bluegeeks.foodymoody
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,12 +17,14 @@ import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class HomeActivity : BaseFirebaseProperties() {
         private var adapter: PostAdapter? = null
@@ -123,7 +130,6 @@ class HomeActivity : BaseFirebaseProperties() {
             var d1: Date? = null
             var d2: Date? = null
             var time: String? = null
-            var user_name: String? = null
 
             try {
                 d1 = format.parse(dateStart);
@@ -143,7 +149,7 @@ class HomeActivity : BaseFirebaseProperties() {
                 } else if (seconds >= 1) {
                     time = seconds.toString() + " Second(s) ago"
                 }
-            } catch  (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace();
             }
 
@@ -152,20 +158,76 @@ class HomeActivity : BaseFirebaseProperties() {
             holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
 
-//            val spinner: Spinner = findViewById(R.id.spinner_review)
-//            // Create an ArrayAdapter using the string array and a default spinner layout
-//            ArrayAdapter.createFromResource(
-//                    this,
-//                    R.array.review,
-//                    android.R.layout.simple_spinner_item
-//            ).also { adapter ->
-//                // Specify the layout to use when the list of choices appears
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                // Apply the adapter to the spinner
-//                spinner.adapter = adapter
-//            }
-//
-//            var review: String? = spinner.selectedItem as String
+            val spinner: Spinner = holder.itemView.spinner_review
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter.createFromResource(
+                    this@HomeActivity,
+                    R.array.review,
+                    android.R.layout.simple_spinner_item
+            ).also { adapter ->
+                // Specify the layout to use when the list of choices appears
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                // Apply the adapter to the spinner
+                spinner.adapter = adapter
+            }
+
+            var review: String = ""
+            spinner.onItemSelectedListener = object : OnItemSelectedListener {
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+                    if (position == 1) {
+                        review = "Yummy"
+                    } else if ((position == 2)) {
+                        review = "Sweet"
+                    } else if ((position == 3)) {
+                        review = "Sour"
+                    } else if ((position == 4)) {
+                        review = "Salty"
+                    } else if ((position == 5)) {
+                        review = "Bitter"
+                    }
+                    if(review != "") {
+
+                        val newReview = hashMapOf<String, MutableList<String>>()
+                        newReview.put(review, mutableListOf())
+                        newReview.get(review)?.add(authDb.currentUser!!.uid)
+
+                        rootDB.collection("posts").document(model.id!!).get()
+                                .addOnSuccessListener { document ->
+                                    if (document != null) {
+                                        val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
+
+                                        try {
+                                            reviewed.forEach { (key, value) ->
+                                                if (value.contains(authDb.currentUser!!.uid) && key != review) {
+                                                    value.remove(authDb.currentUser!!.uid)
+                                                    rootDB.collection("posts").document(model.id!!)
+                                                        .update("review", reviewed)
+                                                    Toast.makeText(applicationContext, "Your review saved", Toast.LENGTH_SHORT).show()
+                                                }
+                                                if(!value.contains(authDb.currentUser!!.uid) && key == review) {
+                                                    value.add(authDb.currentUser!!.uid)
+                                                    rootDB.collection("posts").document(model.id!!)
+                                                        .update("review", reviewed)
+                                                    Toast.makeText(applicationContext, "Your review saved", Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+                                        } catch (e: Throwable) {
+                                            Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+                                .addOnFailureListener { exception ->
+                                    Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                                }
+                    }
+                }
+
+                override fun onNothingSelected(parentView: AdapterView<*>?) {
+                    Toast.makeText(applicationContext, "out item", Toast.LENGTH_SHORT).show()
+                }
+            }
 
             holder.itemView.imageView_comment.setOnClickListener {
                 val intent = Intent(applicationContext, CommentActivity::class.java)
@@ -183,7 +245,6 @@ class HomeActivity : BaseFirebaseProperties() {
                     startActivity(intent)
                 }
             }
-
         }
     }
 
@@ -194,4 +255,3 @@ class HomeActivity : BaseFirebaseProperties() {
         return sdf.format(Date())
     }
 }
-

@@ -1,5 +1,6 @@
 package com.bluegeeks.foodymoody.entity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -19,6 +20,7 @@ open class BaseFirebaseProperties: AppCompatActivity() {
     companion object {
         // FirebaseAuth instance
         val authDb = FirebaseAuth.getInstance()
+        @SuppressLint("StaticFieldLeak")
         val rootDB = FirebaseFirestore.getInstance()
         val imageRef = FirebaseStorage.getInstance().reference
     }
