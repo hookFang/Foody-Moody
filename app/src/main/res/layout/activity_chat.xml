@@ -39,6 +39,7 @@
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/button_chat_send"
             android:background="@android:color/transparent"
+            android:layout_marginEnd="@dimen/d_20"
             android:hint="@string/chat_enter_message"
             android:inputType="text"
             android:maxLines="6"
