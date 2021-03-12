@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.realtimeDB
@@ -50,6 +51,13 @@ class ChatActivity : AppCompatActivity() {
                 chatQuery?.let { FirebaseRecyclerOptions.Builder<ChatMessage>().setQuery(it, ChatMessage::class.java).build() }
         adapter = options?.let { ChatAdapter(it) }
         chat_recycler.adapter = adapter
+        
+        // Scroll to bottom on new messages
+        adapter?.registerAdapterDataObserver(object : AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                chat_recycler.smoothScrollToPosition(positionStart)
+            }
+        })
 
         button_chat_send.setOnClickListener {
             if (edit_chat_message.text.isNotEmpty()) {
