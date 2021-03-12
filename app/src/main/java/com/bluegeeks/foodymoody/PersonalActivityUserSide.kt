@@ -103,6 +103,13 @@ class PersonalActivityUserSide : AppCompatActivity() {
             }
         }
 
+        //Message button click takes the user to chat page
+        message_button.setOnClickListener {
+            val intent = Intent(applicationContext, ChatActivity::class.java)
+            intent.putExtra("chatReceiverID", userID)
+            startActivity(intent)
+        }
+
         val postsQuery = rootDB.collection("posts").whereEqualTo("userId", userID).orderBy("time", Query.Direction.DESCENDING)
 
         // set our recyclerview to use LinearLayout

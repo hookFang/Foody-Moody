@@ -11,6 +11,7 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         <activity android:name=".SearchActivity"/>
         <activity android:name=".PersonalActivityUserSide" />
+        <activity android:name=".ChatActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".CommentActivity" />
         <activity android:name=".PostActivity" />

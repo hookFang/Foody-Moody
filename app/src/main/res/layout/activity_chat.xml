@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Code Referred from - https://sendbird.com/developer/tutorials/android-chat-tutorial-building-a-messaging-ui-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChatActivity">
+
+    <include
+        android:id="@+id/toolBarContact"
+        layout="@layout/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTintMode="src_in" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/layout_chat_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolBarContact" />
+
+    <RelativeLayout
+        android:id="@+id/layout_chat_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/chat_recycler"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:layout_marginStart="16dp"
+            android:id="@+id/edit_chat_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/button_chat_send"
+            android:background="@android:color/transparent"
+            android:hint="@string/chat_enter_message"
+            android:inputType="text"
+            android:maxLines="6"
+            android:autofillHints="" />
+
+        <Button
+            android:id="@+id/button_chat_send"
+            android:layout_width="@dimen/d_100"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:background="@color/yellow"
+            android:text="@string/chat_send"
+            android:textColor="@color/colorPrimary" />
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

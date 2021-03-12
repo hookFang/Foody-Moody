@@ -56,4 +56,6 @@
     <string name="write">Write something …</string>
     <string name="ok">OK</string>
     <string name="search_action">Search</string>
+    <string name="chat_enter_message">Enter Message</string>
+    <string name="chat_send">Send</string>
 </resources>

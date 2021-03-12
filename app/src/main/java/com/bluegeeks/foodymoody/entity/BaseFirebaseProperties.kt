@@ -9,6 +9,7 @@ import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
 import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -23,5 +24,6 @@ open class BaseFirebaseProperties: AppCompatActivity() {
         @SuppressLint("StaticFieldLeak")
         val rootDB = FirebaseFirestore.getInstance()
         val imageRef = FirebaseStorage.getInstance().reference
+        val realtimeDB = FirebaseDatabase.getInstance();
     }
 }
