@@ -5,11 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
@@ -20,14 +16,18 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.item_comment.view.*
+import kotlinx.android.synthetic.main.item_post.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class HomeActivity : BaseFirebaseProperties() {
         private var adapter: PostAdapter? = null
+
+    var oldSize: Int = 0
+    var targetId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,17 +79,15 @@ class HomeActivity : BaseFirebaseProperties() {
     }
 
     // tell adapter to start watching data for changes
-    override fun onStart() {
-        super.onStart()
-        adapter!!.startListening()
+    override fun onPause() {
+        adapter?.stopListening()
+        super.onPause()
+    }
+    override fun onResume() {
+        super.onResume()
+        adapter?.startListening()
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (adapter != null) {
-            adapter!!.stopListening()
-        }
-    }
 
     private fun logout() {
         authDb.signOut()
@@ -146,8 +144,10 @@ class HomeActivity : BaseFirebaseProperties() {
                     time = hours.toString() + " Hour(s) ago"
                 } else if (minutes >= 1) {
                     time = minutes.toString() + " Minute(s) ago"
-                } else if (seconds >= 1) {
+                } else if (seconds >= 10) {
                     time = seconds.toString() + " Second(s) ago"
+                } else if (seconds < 10) {
+                    time = "Recently"
                 }
             } catch (e: Exception) {
                 e.printStackTrace();
@@ -158,75 +158,173 @@ class HomeActivity : BaseFirebaseProperties() {
             holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
 
-            val spinner: Spinner = holder.itemView.spinner_review
-            // Create an ArrayAdapter using the string array and a default spinner layout
-            ArrayAdapter.createFromResource(
-                    this@HomeActivity,
-                    R.array.review,
-                    android.R.layout.simple_spinner_item
-            ).also { adapter ->
-                // Specify the layout to use when the list of choices appears
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                // Apply the adapter to the spinner
-                spinner.adapter = adapter
+            if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
+                holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hatheart)
+            } else {
+                holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hat)
             }
 
+            holder.itemView.ImageView_hat.setOnClickListener {
+                if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
+                    rootDB.collection("posts").document(model.id!!).update(
+                            "whoLiked", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
+                } else {
+                    rootDB.collection("posts").document(model.id!!).update(
+                            "whoLiked", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                }
+            }
+
+            var yummySize: Int = 0
+            var sweetSize: Int = 0
+            var saltySize: Int = 0
+            var sourSize: Int = 0
+            var bitterSize: Int = 0
             var review: String = ""
-            spinner.onItemSelectedListener = object : OnItemSelectedListener {
+            var row: String = ""
 
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            val reviews = model.review as HashMap<String, ArrayList<String>>
 
-                    if (position == 1) {
-                        review = "Yummy"
-                    } else if ((position == 2)) {
-                        review = "Sweet"
-                    } else if ((position == 3)) {
-                        review = "Sour"
-                    } else if ((position == 4)) {
-                        review = "Salty"
-                    } else if ((position == 5)) {
-                        review = "Bitter"
-                    }
-                    if(review != "") {
+            model.review!!["Yummy"]?.size?.let {
+                yummySize = model.review!!["Yummy"]?.size!!
+            }
+            holder.itemView.TextView_yummy.text = yummySize.toString()
 
-                        val newReview = hashMapOf<String, MutableList<String>>()
-                        newReview.put(review, mutableListOf())
-                        newReview.get(review)?.add(authDb.currentUser!!.uid)
+            model.review!!["Sweet"]?.size?.let {
+                sweetSize = model.review!!["Sweet"]?.size!!
+            }
+            holder.itemView.TextView_sweet.text = sweetSize.toString()
 
-                        rootDB.collection("posts").document(model.id!!).get()
-                                .addOnSuccessListener { document ->
-                                    if (document != null) {
-                                        val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
+            model.review!!["Sour"]?.size?.let {
+                sourSize = model.review!!["Sour"]?.size!!
+            }
+            holder.itemView.TextView_sour.text = sourSize.toString()
 
-                                        try {
-                                            reviewed.forEach { (key, value) ->
-                                                if (value.contains(authDb.currentUser!!.uid) && key != review) {
-                                                    value.remove(authDb.currentUser!!.uid)
-                                                    rootDB.collection("posts").document(model.id!!)
-                                                        .update("review", reviewed)
-                                                    Toast.makeText(applicationContext, "Your review saved", Toast.LENGTH_SHORT).show()
-                                                }
-                                                if(!value.contains(authDb.currentUser!!.uid) && key == review) {
-                                                    value.add(authDb.currentUser!!.uid)
-                                                    rootDB.collection("posts").document(model.id!!)
-                                                        .update("review", reviewed)
-                                                    Toast.makeText(applicationContext, "Your review saved", Toast.LENGTH_SHORT).show()
-                                                }
-                                            }
-                                        } catch (e: Throwable) {
-                                            Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
-                                }
-                                .addOnFailureListener { exception ->
-                                    Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
-                                }
-                    }
-                }
+            model.review!!["Salty"]?.size?.let {
+                saltySize = model.review!!["Salty"]?.size!!
+            }
+            holder.itemView.TextView_salty.text = saltySize.toString()
 
-                override fun onNothingSelected(parentView: AdapterView<*>?) {
-                    Toast.makeText(applicationContext, "out item", Toast.LENGTH_SHORT).show()
-                }
+            model.review!!["Bitter"]?.size?.let {
+                bitterSize = model.review!!["Bitter"]?.size!!
+            }
+            holder.itemView.TextView_bitter.text = bitterSize.toString()
+
+            if (model.review!!["Yummy"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_yummy", "id",
+                        packageName
+                )
+                oldSize = yummySize
+                holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
+            } else if (model.review!!["Sweet"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_sweet", "id",
+                        packageName
+                )
+                oldSize = sweetSize
+                holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweetr)
+            } else if (model.review!!["Salty"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_salty", "id",
+                        packageName
+                )
+                oldSize = saltySize
+                holder.itemView.imageView_salty.setBackgroundResource(R.drawable.saltyr)
+            } else if (model.review!!["Sour"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_sour", "id",
+                        packageName
+                )
+                oldSize = sourSize
+                holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sourr)
+            } else if (model.review!!["Bitter"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_bitter", "id",
+                        packageName
+                )
+                oldSize = bitterSize
+                holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitterr)
+            }
+
+            holder.itemView.imageView_yummy.setOnClickListener {
+                review = "Yummy"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
+
+//                rootDB.collection("posts").document(model.id!!).get()
+//                    .addOnSuccessListener { document ->
+//                        if (document != null) {
+//                            val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
+//
+//                            try {
+//                                reviewed.forEach { (key, value) ->
+//                                    if (value.contains(authDb.currentUser!!.uid) && key == review) {
+//                                        value.remove(authDb.currentUser!!.uid)
+//                                        rootDB.collection("posts").document(model.id!!)
+//                                                .update("review", reviewed)
+//                                        holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummy)
+//                                        holder.itemView.TextView_yummy.text = value.size.toString()
+//                                        Toast.makeText(applicationContext, "in 11111", Toast.LENGTH_SHORT).show()
+//                                    } else if (value.contains(authDb.currentUser!!.uid) && key != review) {
+//                                        value.remove(authDb.currentUser!!.uid)
+//                                        rootDB.collection("posts").document(model.id!!)
+//                                                .update("review", reviewed)
+//                                        holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweet)
+//                                        holder.itemView.imageView_salty.setBackgroundResource(R.drawable.salty)
+//                                        holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sour)
+//                                        holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitter)
+//                                        holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
+//
+//                                        val target = findViewById<View>(targetId) as TextView
+//                                        target.text = oldSize.toString()
+//                                        targetId = resources.getIdentifier(
+//                                                "TextView_yummy", "id",
+//                                                packageName
+//                                        )
+//                                        model.review!![review]?.size?.let {
+//                                            oldSize = model.review!![review]?.size!!
+//                                        }
+//                                    } else if(!value.contains(authDb.currentUser!!.uid) && key == review) {
+//                                        value.add(authDb.currentUser!!.uid)
+//                                        rootDB.collection("posts").document(model.id!!)
+//                                            .update("review", reviewed)
+//                                        holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
+//                                        holder.itemView.TextView_yummy.text = value.size.toString()
+//
+//                                    }
+//                                }
+//                            } catch (e: Throwable) {
+//                                Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
+//                            }
+//                        }
+//                    }
+//                    .addOnFailureListener { exception ->
+//                        Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+//                    }
+            }
+
+            holder.itemView.imageView_sweet.setOnClickListener {
+                review = "Sweet"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
+            }
+
+            holder.itemView.imageView_salty.setOnClickListener {
+                review = "Salty"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
+            }
+
+            holder.itemView.imageView_sour.setOnClickListener {
+                review = "Sour"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
+            }
+
+            holder.itemView.imageView_bitter.setOnClickListener {
+                review = "Bitter"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
             }
 
             holder.itemView.imageView_comment.setOnClickListener {
@@ -245,6 +343,74 @@ class HomeActivity : BaseFirebaseProperties() {
                     startActivity(intent)
                 }
             }
+        }
+    }
+
+    private fun updateReviews(review: String, row: String, holder: PostViewHolder, targetId: Int, oldSize: Int, model: Post) {
+        holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummy)
+        holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweet)
+        holder.itemView.imageView_salty.setBackgroundResource(R.drawable.salty)
+        holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sour)
+        holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitter)
+        var reviewTextView = "holder.itemView.TextView_"+review
+        val textViewId = resources.getIdentifier(
+                reviewTextView, "id",
+                packageName
+        )
+        val textViewTarget = findViewById<View>(textViewId) as? TextView
+
+        var reviewImageView = "holder.itemView.ImageView_"+review
+        val imageViewId = resources.getIdentifier(
+                reviewImageView, "id",
+                packageName
+        )
+        val imageViewTarget = findViewById<View>(imageViewId) as? ImageView
+
+        rootDB.collection("posts").document(row).get()
+        .addOnSuccessListener { document ->
+            if (document != null) {
+                val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
+
+                try {
+                    reviewed.forEach { (key, value) ->
+                        if (value.contains(authDb.currentUser!!.uid) && key == review) {
+                            value.remove(authDb.currentUser!!.uid)
+                            rootDB.collection("posts").document(row)
+                                    .update("review", reviewed)
+                            textViewTarget?.text = value.size.toString()
+                        } else if (value.contains(authDb.currentUser!!.uid) && key != review) {
+                            value.remove(authDb.currentUser!!.uid)
+                            rootDB.collection("posts").document(row)
+                                    .update("review", reviewed)
+                            val target = findViewById<View>(targetId) as TextView
+                            target.text = oldSize.toString()
+                            this@HomeActivity.targetId = resources.getIdentifier(
+                                    textViewTarget.toString(), "id",
+                                    packageName
+                            )
+                            model.review!![review]?.size?.let {
+                                this@HomeActivity.oldSize = model.review!![review]?.size!!
+                            }
+                        } else if (!value.contains(authDb.currentUser!!.uid) && key == review) {
+                            value.add(authDb.currentUser!!.uid)
+                            rootDB.collection("posts").document(model.id!!)
+                                    .update("review", reviewed)
+                            when(review) {
+                                "Yummy" -> imageViewTarget?.setBackgroundResource(R.drawable.yummyr)
+                                "Sweet" -> imageViewTarget?.setBackgroundResource(R.drawable.sweetr)
+                                "Salty" -> imageViewTarget?.setBackgroundResource(R.drawable.saltyr)
+                                "Sour" -> imageViewTarget?.setBackgroundResource(R.drawable.sourr)
+                                "Bitter" -> imageViewTarget?.setBackgroundResource(R.drawable.bitterr)
+                            }
+                        }
+                    }
+                } catch (e: Throwable) {
+                    Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        .addOnFailureListener { exception ->
+            Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -2,6 +2,7 @@ package com.bluegeeks.foodymoody
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.database.DataSetObserver
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
@@ -140,20 +141,16 @@ class CommentActivity : AppCompatActivity() {
             holder.itemView.TextView_comment.text = model.comment!!
 
             if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
-
                 holder.itemView.ImageView_like.setBackgroundResource(R.drawable.liked)
             } else {
                 holder.itemView.ImageView_like.setBackgroundResource(R.drawable.heart)
             }
 
             holder.itemView.ImageView_like.setOnClickListener {
-
                 if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true ) {
-
                     rootDB.collection("comments").document(model.id!!).update(
                         "whoLiked", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
                 } else {
-
                     rootDB.collection("comments").document(model.id!!).update(
                         "whoLiked", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
                 }

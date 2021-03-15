@@ -19,7 +19,7 @@ class Comment {
         postId: String?,
         time: String?,
         comment: String?,
-        whoLiked: ArrayList<String>? = ArrayList()
+        whoLiked: ArrayList<String>?
     ) {
         this.id = id
         this.userId = userId
@@ -30,7 +30,8 @@ class Comment {
         this.whoLiked = whoLiked
     }
 
-    constructor(userId: String?, userFullName: String? = null, postId: String?, time: String?, comment: String?, whoLiked: ArrayList<String>? = ArrayList()) {
+    constructor(userId: String?, userFullName: String? = null, postId: String?, time: String?, comment: String?, whoLiked: ArrayList<String>?
+    ) {
         this.userId = userId
         this.userFullName = userFullName
         this.postId = postId

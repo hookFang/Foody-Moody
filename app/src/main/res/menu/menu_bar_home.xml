@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
-        android:id="@+id/action_add"
-        android:icon="@drawable/add"
-        android:title="@string/add"
-        app:showAsAction="always" />
     <item
         android:id="@+id/action_logout"
         android:icon="@drawable/logout"
         android:title="@string/logout"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_add"
+        android:icon="@drawable/add"
+        android:title="@string/add"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_personal"
@@ -18,14 +17,20 @@
         android:title="@string/personal"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_notification"
-        android:icon="@drawable/notofication"
-        android:title="@string/add"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_serach"
         android:icon="@drawable/searchlens"
         android:title="@string/search_action"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_message"
+        android:icon="@drawable/message"
+        android:title="@string/message"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_notification"
+        android:icon="@drawable/notofication"
+        android:title="@string/add"
+        app:showAsAction="always" />
+
 
 </menu>

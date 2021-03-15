@@ -111,21 +111,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/followers_text_view" />
 
-                    <Button
-                        android:id="@+id/message_button"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/d_30"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginStart="@dimen/d_75"
-                        android:layout_marginEnd="@dimen/d_75"
-                        android:text="@string/message_user_side"
-                        android:textColor="@color/background_green"
-                        android:background="@drawable/button_follow"
-                        app:layout_constraintStart_toStartOf="@+id/textView_name"
-                        app:layout_constraintEnd_toEndOf="@+id/textView_name"
-                        app:layout_constraintTop_toBottomOf="@id/textView_name"/>
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView

@@ -58,4 +58,8 @@
     <dimen name="d_143">143dp</dimen>
     <dimen name="d_148">148dp</dimen>
     <dimen name="d_75">75dp</dimen>
+    <dimen name="d_37">37dp</dimen>
+    <dimen name="d_38">38dp</dimen>
+    <dimen name="d_31">31dp</dimen>
+    <dimen name="d_7">7dp</dimen>
 </resources>
