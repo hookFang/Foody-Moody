@@ -8,9 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +17,7 @@ import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.postsRecyclerView
 import kotlinx.android.synthetic.main.activity_personal.*
@@ -43,9 +42,9 @@ class PersonalActivity : BaseFirebaseProperties() {
 
     private var adapter: PostAdapter? = null
     var newBio: String = ""
+    var oldSize: Int = 0
+    var targetId: Int = 0
 
-    @SuppressLint("SetTextI18n")
-    private var adapterChanged: PostAdapterChanged? = null
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,21 +160,17 @@ class PersonalActivity : BaseFirebaseProperties() {
                 return true
             }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
     // tell adapter to start watching data for changes
-    override fun onStart() {
-        super.onStart()
-        adapter!!.startListening()
+    override fun onPause() {
+        adapter?.stopListening()
+        super.onPause()
     }
-
-    override fun onStop() {
-        super.onStop()
-        if (adapter != null) {
-            adapter!!.stopListening()
-        }
+    override fun onResume() {
+        super.onResume()
+        adapter?.startListening()
     }
 
     private fun logout() {
@@ -184,7 +179,6 @@ class PersonalActivity : BaseFirebaseProperties() {
         val intent = Intent(applicationContext, LoginActivity::class.java)
         startActivity(intent)
     }
-
 
     // create inner classes needed to bind the data to the recyclerview
     private inner class PostViewHolder internal constructor(private val view: View) :
@@ -217,7 +211,6 @@ class PersonalActivity : BaseFirebaseProperties() {
             var d1: Date? = null
             var d2: Date? = null
             var time: String? = null
-            var user_name: String? = null
 
             try {
                 d1 = format.parse(dateStart);
@@ -234,8 +227,10 @@ class PersonalActivity : BaseFirebaseProperties() {
                     time = hours.toString() + " Hour(s) ago"
                 } else if (minutes >= 1) {
                     time = minutes.toString() + " Minute(s) ago"
-                } else if (seconds >= 1) {
+                } else if (seconds >= 10) {
                     time = seconds.toString() + " Second(s) ago"
+                } else if (seconds < 10) {
+                    time = "Recently"
                 }
             } catch (e: Exception) {
                 e.printStackTrace();
@@ -246,61 +241,199 @@ class PersonalActivity : BaseFirebaseProperties() {
             holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
 
+            if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
+                holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hatheart)
+            } else {
+                holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hat)
+            }
 
-//            val spinner: Spinner = findViewById(R.id.spinner_review)
-//            // Create an ArrayAdapter using the string array and a default spinner layout
-//            ArrayAdapter.createFromResource(
-//                    this,
-//                    R.array.review,
-//                    android.R.layout.simple_spinner_item
-//            ).also { adapter ->
-//                // Specify the layout to use when the list of choices appears
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                // Apply the adapter to the spinner
-//                spinner.adapter = adapter
-//            }
-//
-//            var review: String? = spinner.selectedItem as String
+            holder.itemView.ImageView_hat.setOnClickListener {
+                if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
+                    rootDB.collection("posts").document(model.id!!).update(
+                            "whoLiked", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
+                } else {
+                    rootDB.collection("posts").document(model.id!!).update(
+                            "whoLiked", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                }
+            }
 
+            var yummySize: Int = 0
+            var sweetSize: Int = 0
+            var saltySize: Int = 0
+            var sourSize: Int = 0
+            var bitterSize: Int = 0
+            var review: String = ""
+            var row: String = ""
+
+            val reviews = model.review as HashMap<String, ArrayList<String>>
+
+            model.review!!["Yummy"]?.size?.let {
+                yummySize = model.review!!["Yummy"]?.size!!
+            }
+            holder.itemView.TextView_yummy.text = yummySize.toString()
+
+            model.review!!["Sweet"]?.size?.let {
+                sweetSize = model.review!!["Sweet"]?.size!!
+            }
+            holder.itemView.TextView_sweet.text = sweetSize.toString()
+
+            model.review!!["Sour"]?.size?.let {
+                sourSize = model.review!!["Sour"]?.size!!
+            }
+            holder.itemView.TextView_sour.text = sourSize.toString()
+
+            model.review!!["Salty"]?.size?.let {
+                saltySize = model.review!!["Salty"]?.size!!
+            }
+            holder.itemView.TextView_salty.text = saltySize.toString()
+
+            model.review!!["Bitter"]?.size?.let {
+                bitterSize = model.review!!["Bitter"]?.size!!
+            }
+            holder.itemView.TextView_bitter.text = bitterSize.toString()
+
+            if (model.review!!["Yummy"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_yummy", "id",
+                        packageName
+                )
+                oldSize = yummySize
+                holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
+            } else if (model.review!!["Sweet"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_sweet", "id",
+                        packageName
+                )
+                oldSize = sweetSize
+                holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweetr)
+            } else if (model.review!!["Salty"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_salty", "id",
+                        packageName
+                )
+                oldSize = saltySize
+                holder.itemView.imageView_salty.setBackgroundResource(R.drawable.saltyr)
+            } else if (model.review!!["Sour"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_sour", "id",
+                        packageName
+                )
+                oldSize = sourSize
+                holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sourr)
+            } else if (model.review!!["Bitter"]?.contains(authDb.currentUser!!.uid) == true) {
+                targetId = resources.getIdentifier(
+                        "TextView_bitter", "id",
+                        packageName
+                )
+                oldSize = bitterSize
+                holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitterr)
+            }
+
+            holder.itemView.imageView_yummy.setOnClickListener {
+                review = "Yummy"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
+            }
+
+            holder.itemView.imageView_sweet.setOnClickListener {
+                review = "Sweet"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
+            }
+
+            holder.itemView.imageView_salty.setOnClickListener {
+                review = "Salty"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
+            }
+
+            holder.itemView.imageView_sour.setOnClickListener {
+                review = "Sour"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
+            }
+
+            holder.itemView.imageView_bitter.setOnClickListener {
+                review = "Bitter"
+                row = model.id.toString()
+                updateReviews(review, row, holder, targetId, oldSize, model)
+            }
 
             holder.itemView.imageView_comment.setOnClickListener {
                 val intent = Intent(applicationContext, CommentActivity::class.java)
                 intent.putExtra("postId", model.id)
                 startActivity(intent)
             }
-
         }
     }
 
-    private inner class PostAdapterChanged internal constructor(options: FirestoreRecyclerOptions<Post>) :
-            FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
-        override fun onCreateViewHolder(
-                parent: ViewGroup,
-                viewType: Int
-        ): PostViewHolder {
 
-            val view =
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_post_changed, parent, false)
-            return PostViewHolder(view)
-        }
+    private fun updateReviews(review: String, row: String, holder: PersonalActivity.PostViewHolder, targetId: Int, oldSize: Int, model: Post) {
+        holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummy)
+        holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweet)
+        holder.itemView.imageView_salty.setBackgroundResource(R.drawable.salty)
+        holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sour)
+        holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitter)
+        var reviewTextView = "holder.itemView.TextView_"+review
+        val textViewId = resources.getIdentifier(
+                reviewTextView, "id",
+                packageName
+        )
+        val textViewTarget = findViewById<View>(textViewId) as? TextView
 
-        @SuppressLint("SetTextI18n", "SimpleDateFormat")
-        override fun onBindViewHolder(
-                holder: PostViewHolder,
-                position: Int,
-                model: Post
-        ) {
+        var reviewImageView = "holder.itemView.ImageView_"+review
+        val imageViewId = resources.getIdentifier(
+                reviewImageView, "id",
+                packageName
+        )
+        val imageViewTarget = findViewById<View>(imageViewId) as? ImageView
 
-            Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post1);
+        rootDB.collection("posts").document(row).get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
 
-
-//            holder.itemView.imageView_post.setOnClickListener {
-//                val intent = Intent(applicationContext, PersonalActivity::class.java)
-//                intent.putExtra("postId", model.id)
-//                startActivity(intent)
-//            }
-
-        }
+                    try {
+                        reviewed.forEach { (key, value) ->
+                            if (value.contains(authDb.currentUser!!.uid) && key == review) {
+                                value.remove(authDb.currentUser!!.uid)
+                                rootDB.collection("posts").document(row)
+                                        .update("review", reviewed)
+                                textViewTarget?.text = value.size.toString()
+                            } else if (value.contains(authDb.currentUser!!.uid) && key != review) {
+                                value.remove(authDb.currentUser!!.uid)
+                                rootDB.collection("posts").document(row)
+                                        .update("review", reviewed)
+                                val target = findViewById<View>(targetId) as TextView
+                                target.text = oldSize.toString()
+                                this@PersonalActivity.targetId = resources.getIdentifier(
+                                        textViewTarget.toString(), "id",
+                                        packageName
+                                )
+                                model.review!![review]?.size?.let {
+                                    this@PersonalActivity.oldSize = model.review!![review]?.size!!
+                                }
+                            } else if (!value.contains(authDb.currentUser!!.uid) && key == review) {
+                                value.add(authDb.currentUser!!.uid)
+                                rootDB.collection("posts").document(model.id!!)
+                                        .update("review", reviewed)
+                                when(review) {
+                                    "Yummy" -> imageViewTarget?.setBackgroundResource(R.drawable.yummyr)
+                                    "Sweet" -> imageViewTarget?.setBackgroundResource(R.drawable.sweetr)
+                                    "Salty" -> imageViewTarget?.setBackgroundResource(R.drawable.saltyr)
+                                    "Sour" -> imageViewTarget?.setBackgroundResource(R.drawable.sourr)
+                                    "Bitter" -> imageViewTarget?.setBackgroundResource(R.drawable.bitterr)
+                                }
+                            }
+                        }
+                    } catch (e: Throwable) {
+                        Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+            }
     }
 
     @SuppressLint("SimpleDateFormat")

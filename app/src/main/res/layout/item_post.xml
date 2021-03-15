@@ -52,8 +52,6 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:layout_marginTop="@dimen/d_10"
-        android:paddingTop="@dimen/d_5"
-        android:paddingBottom="@dimen/d_5"
         android:background="@color/background_green"
         android:orientation="horizontal">
 
@@ -61,16 +59,138 @@
             android:id="@+id/imageView_comment"
             android:layout_width="@dimen/d_30"
             android:layout_height="@dimen/d_30"
-            android:layout_marginStart="@dimen/d_10"
+            android:layout_marginTop="@dimen/d_5"
             android:background="@drawable/pen"/>
 
-        <Spinner
-            android:id="@+id/spinner_review"
+        <LinearLayout
+            android:id="@+id/LinearLayout_home_yummy"
+            android:layout_width="@dimen/d_50"
+            android:layout_height="@dimen/d_40"
+            android:background="@color/background_green"
+            android:layout_marginStart="@dimen/d_20"
+            android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView_yummy"
+                    android:layout_width="@dimen/d_50"
+                    android:layout_height="@dimen/d_20"
+                    android:background="@drawable/yummy"/>
+
+                <TextView
+                    android:id="@+id/TextView_yummy"
+                    android:layout_width="@dimen/d_50"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:text="1000"
+                    android:textSize="@dimen/f_16"
+                    />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_home_sweet"
+            android:layout_width="@dimen/d_37"
+            android:layout_height="@dimen/d_40"
+            android:background="@color/background_green"
+            android:layout_marginStart="@dimen/d_15"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView_sweet"
+                android:layout_width="@dimen/d_37"
+                android:layout_height="@dimen/d_20"
+                android:background="@drawable/sweet"/>
+
+            <TextView
+                android:id="@+id/TextView_sweet"
+                android:layout_width="@dimen/d_37"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:text="2000"
+                android:textSize="@dimen/f_16"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_home_salty"
+            android:layout_width="@dimen/d_40"
+            android:layout_height="@dimen/d_40"
+            android:layout_marginStart="@dimen/d_10"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView_salty"
+                android:layout_width="@dimen/d_35"
+                android:layout_height="@dimen/d_20"
+                android:layout_marginStart="@dimen/d_2"
+                android:background="@drawable/salty"/>
+
+            <TextView
+                android:id="@+id/TextView_salty"
+                android:layout_width="@dimen/d_40"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:text="3000"
+                android:textSize="@dimen/f_16" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_home_sour"
+            android:layout_width="@dimen/d_40"
+            android:layout_height="@dimen/d_40"
+            android:background="@color/background_green"
+            android:layout_marginStart="@dimen/d_7"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView_sour"
+                android:layout_width="@dimen/d_31"
+                android:layout_height="@dimen/d_20"
+                android:layout_marginStart="@dimen/d_5"
+                android:background="@drawable/sour"/>
+
+            <TextView
+                android:id="@+id/TextView_sour"
+                android:layout_width="@dimen/d_40"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:text="3000"
+                android:textSize="@dimen/f_16" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout_home_bitter"
+            android:layout_width="@dimen/d_40"
+            android:layout_height="@dimen/d_40"
+            android:background="@color/background_green"
+            android:layout_marginStart="@dimen/d_7"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView_bitter"
+                android:layout_width="@dimen/d_40"
+                android:layout_height="@dimen/d_20"
+                android:background="@drawable/bitter"/>
+
+            <TextView
+                android:id="@+id/TextView_bitter"
+                android:layout_width="@dimen/d_40"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:text="4000"
+                android:textSize="@dimen/f_16" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ImageView_hat"
             android:layout_width="@dimen/d_30"
             android:layout_height="@dimen/d_30"
-            android:layout_marginStart="@dimen/d_10"
-            android:textAlignment="center"
-            android:background="@drawable/hat" />
+            android:layout_marginStart="@dimen/d_20"
+            android:layout_marginTop="@dimen/d_5"/>
 
     </LinearLayout>
 
