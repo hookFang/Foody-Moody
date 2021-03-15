@@ -333,57 +333,6 @@ class PersonalActivity : BaseFirebaseProperties() {
                 review = "Yummy"
                 row = model.id.toString()
                 updateReviews(review, row, holder, targetId, oldSize, model)
-
-//                rootDB.collection("posts").document(model.id!!).get()
-//                    .addOnSuccessListener { document ->
-//                        if (document != null) {
-//                            val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
-//
-//                            try {
-//                                reviewed.forEach { (key, value) ->
-//                                    if (value.contains(authDb.currentUser!!.uid) && key == review) {
-//                                        value.remove(authDb.currentUser!!.uid)
-//                                        rootDB.collection("posts").document(model.id!!)
-//                                                .update("review", reviewed)
-//                                        holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummy)
-//                                        holder.itemView.TextView_yummy.text = value.size.toString()
-//                                        Toast.makeText(applicationContext, "in 11111", Toast.LENGTH_SHORT).show()
-//                                    } else if (value.contains(authDb.currentUser!!.uid) && key != review) {
-//                                        value.remove(authDb.currentUser!!.uid)
-//                                        rootDB.collection("posts").document(model.id!!)
-//                                                .update("review", reviewed)
-//                                        holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweet)
-//                                        holder.itemView.imageView_salty.setBackgroundResource(R.drawable.salty)
-//                                        holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sour)
-//                                        holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitter)
-//                                        holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
-//
-//                                        val target = findViewById<View>(targetId) as TextView
-//                                        target.text = oldSize.toString()
-//                                        targetId = resources.getIdentifier(
-//                                                "TextView_yummy", "id",
-//                                                packageName
-//                                        )
-//                                        model.review!![review]?.size?.let {
-//                                            oldSize = model.review!![review]?.size!!
-//                                        }
-//                                    } else if(!value.contains(authDb.currentUser!!.uid) && key == review) {
-//                                        value.add(authDb.currentUser!!.uid)
-//                                        rootDB.collection("posts").document(model.id!!)
-//                                            .update("review", reviewed)
-//                                        holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
-//                                        holder.itemView.TextView_yummy.text = value.size.toString()
-//
-//                                    }
-//                                }
-//                            } catch (e: Throwable) {
-//                                Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                    }
-//                    .addOnFailureListener { exception ->
-//                        Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
-//                    }
             }
 
             holder.itemView.imageView_sweet.setOnClickListener {
