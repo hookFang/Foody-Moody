@@ -1,8 +1,6 @@
 package com.bluegeeks.foodymoody
 
-import android.R.layout
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -32,7 +30,6 @@ import kotlinx.android.synthetic.main.activity_personal_user_side.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.bio_dialogue.*
 import kotlinx.android.synthetic.main.item_post.view.*
-import kotlinx.android.synthetic.main.item_post_changed.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -115,19 +112,19 @@ class PersonalActivity : BaseFirebaseProperties() {
             button_bio_edit.setOnClickListener{
 
                 rootDB.collection("users").document(authDb.currentUser!!.uid)
-                    .update(
-                        mapOf(
-                            "bio" to editText_bio_edit.text.toString()
+                        .update(
+                                mapOf(
+                                        "bio" to editText_bio_edit.text.toString()
+                                )
                         )
-                    )
-                    .addOnSuccessListener {
-                        val intent = Intent(applicationContext, PersonalActivity::class.java)
-                        finish()
-                        startActivity(intent)
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
-                    }
+                        .addOnSuccessListener {
+                            val intent = Intent(applicationContext, PersonalActivity::class.java)
+                            finish()
+                            startActivity(intent)
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                        }
             }
         }
 
@@ -236,7 +233,7 @@ class PersonalActivity : BaseFirebaseProperties() {
                 e.printStackTrace();
             }
 
-            Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
+            Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
             holder.itemView.textView_time.text = time
             holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
@@ -389,51 +386,51 @@ class PersonalActivity : BaseFirebaseProperties() {
         val imageViewTarget = findViewById<View>(imageViewId) as? ImageView
 
         rootDB.collection("posts").document(row).get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
 
-                    try {
-                        reviewed.forEach { (key, value) ->
-                            if (value.contains(authDb.currentUser!!.uid) && key == review) {
-                                value.remove(authDb.currentUser!!.uid)
-                                rootDB.collection("posts").document(row)
-                                        .update("review", reviewed)
-                                textViewTarget?.text = value.size.toString()
-                            } else if (value.contains(authDb.currentUser!!.uid) && key != review) {
-                                value.remove(authDb.currentUser!!.uid)
-                                rootDB.collection("posts").document(row)
-                                        .update("review", reviewed)
-                                val target = findViewById<View>(targetId) as TextView
-                                target.text = oldSize.toString()
-                                this@PersonalActivity.targetId = resources.getIdentifier(
-                                        textViewTarget.toString(), "id",
-                                        packageName
-                                )
-                                model.review!![review]?.size?.let {
-                                    this@PersonalActivity.oldSize = model.review!![review]?.size!!
-                                }
-                            } else if (!value.contains(authDb.currentUser!!.uid) && key == review) {
-                                value.add(authDb.currentUser!!.uid)
-                                rootDB.collection("posts").document(model.id!!)
-                                        .update("review", reviewed)
-                                when(review) {
-                                    "Yummy" -> imageViewTarget?.setBackgroundResource(R.drawable.yummyr)
-                                    "Sweet" -> imageViewTarget?.setBackgroundResource(R.drawable.sweetr)
-                                    "Salty" -> imageViewTarget?.setBackgroundResource(R.drawable.saltyr)
-                                    "Sour" -> imageViewTarget?.setBackgroundResource(R.drawable.sourr)
-                                    "Bitter" -> imageViewTarget?.setBackgroundResource(R.drawable.bitterr)
+                        try {
+                            reviewed.forEach { (key, value) ->
+                                if (value.contains(authDb.currentUser!!.uid) && key == review) {
+                                    value.remove(authDb.currentUser!!.uid)
+                                    rootDB.collection("posts").document(row)
+                                            .update("review", reviewed)
+                                    textViewTarget?.text = value.size.toString()
+                                } else if (value.contains(authDb.currentUser!!.uid) && key != review) {
+                                    value.remove(authDb.currentUser!!.uid)
+                                    rootDB.collection("posts").document(row)
+                                            .update("review", reviewed)
+                                    val target = findViewById<View>(targetId) as TextView
+                                    target.text = oldSize.toString()
+                                    this@PersonalActivity.targetId = resources.getIdentifier(
+                                            textViewTarget.toString(), "id",
+                                            packageName
+                                    )
+                                    model.review!![review]?.size?.let {
+                                        this@PersonalActivity.oldSize = model.review!![review]?.size!!
+                                    }
+                                } else if (!value.contains(authDb.currentUser!!.uid) && key == review) {
+                                    value.add(authDb.currentUser!!.uid)
+                                    rootDB.collection("posts").document(model.id!!)
+                                            .update("review", reviewed)
+                                    when(review) {
+                                        "Yummy" -> imageViewTarget?.setBackgroundResource(R.drawable.yummyr)
+                                        "Sweet" -> imageViewTarget?.setBackgroundResource(R.drawable.sweetr)
+                                        "Salty" -> imageViewTarget?.setBackgroundResource(R.drawable.saltyr)
+                                        "Sour" -> imageViewTarget?.setBackgroundResource(R.drawable.sourr)
+                                        "Bitter" -> imageViewTarget?.setBackgroundResource(R.drawable.bitterr)
+                                    }
                                 }
                             }
+                        } catch (e: Throwable) {
+                            Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
                         }
-                    } catch (e: Throwable) {
-                        Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
                     }
                 }
-            }
-            .addOnFailureListener { exception ->
-                Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
-            }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                }
     }
 
     @SuppressLint("SimpleDateFormat")
