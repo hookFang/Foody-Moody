@@ -386,51 +386,51 @@ class PersonalActivity : BaseFirebaseProperties() {
         val imageViewTarget = findViewById<View>(imageViewId) as? ImageView
 
         rootDB.collection("posts").document(row).get()
-                .addOnSuccessListener { document ->
-                    if (document != null) {
-                        val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val reviewed = document.get("review") as HashMap<String, ArrayList<String>>
 
-                        try {
-                            reviewed.forEach { (key, value) ->
-                                if (value.contains(authDb.currentUser!!.uid) && key == review) {
-                                    value.remove(authDb.currentUser!!.uid)
-                                    rootDB.collection("posts").document(row)
-                                            .update("review", reviewed)
-                                    textViewTarget?.text = value.size.toString()
-                                } else if (value.contains(authDb.currentUser!!.uid) && key != review) {
-                                    value.remove(authDb.currentUser!!.uid)
-                                    rootDB.collection("posts").document(row)
-                                            .update("review", reviewed)
-                                    val target = findViewById<View>(targetId) as TextView
-                                    target.text = oldSize.toString()
-                                    this@PersonalActivity.targetId = resources.getIdentifier(
-                                            textViewTarget.toString(), "id",
-                                            packageName
-                                    )
-                                    model.review!![review]?.size?.let {
-                                        this@PersonalActivity.oldSize = model.review!![review]?.size!!
-                                    }
-                                } else if (!value.contains(authDb.currentUser!!.uid) && key == review) {
-                                    value.add(authDb.currentUser!!.uid)
-                                    rootDB.collection("posts").document(model.id!!)
-                                            .update("review", reviewed)
-                                    when(review) {
-                                        "Yummy" -> imageViewTarget?.setBackgroundResource(R.drawable.yummyr)
-                                        "Sweet" -> imageViewTarget?.setBackgroundResource(R.drawable.sweetr)
-                                        "Salty" -> imageViewTarget?.setBackgroundResource(R.drawable.saltyr)
-                                        "Sour" -> imageViewTarget?.setBackgroundResource(R.drawable.sourr)
-                                        "Bitter" -> imageViewTarget?.setBackgroundResource(R.drawable.bitterr)
-                                    }
+                    try {
+                        reviewed.forEach { (key, value) ->
+                            if (value.contains(authDb.currentUser!!.uid) && key == review) {
+                                value.remove(authDb.currentUser!!.uid)
+                                rootDB.collection("posts").document(row)
+                                        .update("review", reviewed)
+                                textViewTarget?.text = value.size.toString()
+                            } else if (value.contains(authDb.currentUser!!.uid) && key != review) {
+                                value.remove(authDb.currentUser!!.uid)
+                                rootDB.collection("posts").document(row)
+                                        .update("review", reviewed)
+                                val target = findViewById<View>(targetId) as TextView
+                                target.text = oldSize.toString()
+                                this@PersonalActivity.targetId = resources.getIdentifier(
+                                        textViewTarget.toString(), "id",
+                                        packageName
+                                )
+                                model.review!![review]?.size?.let {
+                                    this@PersonalActivity.oldSize = model.review!![review]?.size!!
+                                }
+                            } else if (!value.contains(authDb.currentUser!!.uid) && key == review) {
+                                value.add(authDb.currentUser!!.uid)
+                                rootDB.collection("posts").document(model.id!!)
+                                        .update("review", reviewed)
+                                when(review) {
+                                    "Yummy" -> imageViewTarget?.setBackgroundResource(R.drawable.yummyr)
+                                    "Sweet" -> imageViewTarget?.setBackgroundResource(R.drawable.sweetr)
+                                    "Salty" -> imageViewTarget?.setBackgroundResource(R.drawable.saltyr)
+                                    "Sour" -> imageViewTarget?.setBackgroundResource(R.drawable.sourr)
+                                    "Bitter" -> imageViewTarget?.setBackgroundResource(R.drawable.bitterr)
                                 }
                             }
-                        } catch (e: Throwable) {
-                            Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
                         }
+                    } catch (e: Throwable) {
+                        Toast.makeText(applicationContext, "Error" + e, Toast.LENGTH_SHORT).show()
                     }
                 }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
-                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+            }
     }
 
     @SuppressLint("SimpleDateFormat")
