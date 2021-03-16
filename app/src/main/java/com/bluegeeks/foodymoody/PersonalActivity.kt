@@ -1,8 +1,6 @@
 package com.bluegeeks.foodymoody
 
-import android.R.layout
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -32,7 +30,6 @@ import kotlinx.android.synthetic.main.activity_personal_user_side.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.bio_dialogue.*
 import kotlinx.android.synthetic.main.item_post.view.*
-import kotlinx.android.synthetic.main.item_post_changed.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -115,19 +112,19 @@ class PersonalActivity : BaseFirebaseProperties() {
             button_bio_edit.setOnClickListener{
 
                 rootDB.collection("users").document(authDb.currentUser!!.uid)
-                    .update(
-                        mapOf(
-                            "bio" to editText_bio_edit.text.toString()
+                        .update(
+                                mapOf(
+                                        "bio" to editText_bio_edit.text.toString()
+                                )
                         )
-                    )
-                    .addOnSuccessListener {
-                        val intent = Intent(applicationContext, PersonalActivity::class.java)
-                        finish()
-                        startActivity(intent)
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
-                    }
+                        .addOnSuccessListener {
+                            val intent = Intent(applicationContext, PersonalActivity::class.java)
+                            finish()
+                            startActivity(intent)
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                        }
             }
         }
 
@@ -236,7 +233,7 @@ class PersonalActivity : BaseFirebaseProperties() {
                 e.printStackTrace();
             }
 
-            Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
+            Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
             holder.itemView.textView_time.text = time
             holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
