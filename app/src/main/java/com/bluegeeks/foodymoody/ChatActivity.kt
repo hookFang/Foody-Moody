@@ -60,7 +60,7 @@ class ChatActivity : AppCompatActivity() {
         // Scroll to bottom on new messages
         chat_recycler.adapter?.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                chat_recycler.smoothScrollToPosition(positionStart)
+                chat_recycler.scrollToPosition(positionStart)
             }
         })
 
