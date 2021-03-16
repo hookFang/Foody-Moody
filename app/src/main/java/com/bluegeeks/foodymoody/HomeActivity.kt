@@ -73,6 +73,10 @@ class HomeActivity : BaseFirebaseProperties() {
                 startActivity(Intent(applicationContext, SearchActivity::class.java))
                 return true
             }
+            R.id.action_message -> {
+                startActivity(Intent(applicationContext, AllChatActivity::class.java))
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
