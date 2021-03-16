@@ -1,19 +1,13 @@
 package com.bluegeeks.foodymoody.entity
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Registry
-import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.module.AppGlideModule
-import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.bluegeeks.foodymoody.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import java.io.InputStream
 
 
 open class BaseFirebaseProperties: AppCompatActivity() {
@@ -24,6 +18,6 @@ open class BaseFirebaseProperties: AppCompatActivity() {
         @SuppressLint("StaticFieldLeak")
         val rootDB = FirebaseFirestore.getInstance()
         val imageRef = FirebaseStorage.getInstance().reference
-        val realtimeDB = FirebaseDatabase.getInstance();
+        val realtimeDB = FirebaseDatabase.getInstance()
     }
 }
