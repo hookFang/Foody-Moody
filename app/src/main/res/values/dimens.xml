@@ -65,4 +65,6 @@
     <dimen name="d_3">3dp</dimen>
     <dimen name="d_130">130dp</dimen>
     <dimen name="d_135">135dp</dimen>
+    <dimen name="d_55">55dp</dimen>
+    <dimen name="d_60">60dp</dimen>
 </resources>

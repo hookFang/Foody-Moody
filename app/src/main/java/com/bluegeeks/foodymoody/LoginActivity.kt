@@ -35,6 +35,24 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            // Sign in success, update UI with the signed-in user's information
+            Log.i("TAG", "Sign In was Successful")
+            val user = auth.currentUser
+            if (user != null) {
+                if (!user.isEmailVerified) {
+                    Toast.makeText(
+                            this,
+                            "Please Verify you're email before you can Login",
+                            Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    val i = Intent(applicationContext, HomeActivity::class.java)
+                    startActivity(i)
+                }
+            }
+        }
+
         var clicked = false
         //This is for the password visibility
         button_visiblity.setOnClickListener {
