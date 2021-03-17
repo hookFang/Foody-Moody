@@ -62,4 +62,7 @@
     <dimen name="d_38">38dp</dimen>
     <dimen name="d_31">31dp</dimen>
     <dimen name="d_7">7dp</dimen>
+    <dimen name="d_3">3dp</dimen>
+    <dimen name="d_130">130dp</dimen>
+    <dimen name="d_135">135dp</dimen>
 </resources>
