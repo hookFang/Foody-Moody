@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
@@ -19,11 +20,16 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_personal.*
 import kotlinx.android.synthetic.main.activity_personal_user_side.*
 import kotlinx.android.synthetic.main.activity_personal_user_side.TextView_bio_content
 import kotlinx.android.synthetic.main.activity_personal_user_side.button_change_format
+import kotlinx.android.synthetic.main.activity_personal_user_side.followers_text_view
+import kotlinx.android.synthetic.main.activity_personal_user_side.following_text_view
 import kotlinx.android.synthetic.main.activity_personal_user_side.imageView_profile_picture
 import kotlinx.android.synthetic.main.activity_personal_user_side.postsRecyclerView
+import kotlinx.android.synthetic.main.activity_personal_user_side.posts_text_view
 import kotlinx.android.synthetic.main.activity_personal_user_side.textView_name
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
@@ -32,9 +38,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class PersonalActivityUserSide : AppCompatActivity() {
+
     private var adapter: PostAdapter? = null
     var oldSize: Int = 0
     var targetId: Int = 0
+    var displayStatus: Boolean = false
+    val GRID_LAYOUT = 0
+    val LINEAR_LAYOUT = 1
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,13 +129,17 @@ class PersonalActivityUserSide : AppCompatActivity() {
         // set our recyclerview to use LinearLayout
         postsRecyclerView.layoutManager = LinearLayoutManager(this)
         val options =
-            FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java)
-                .build()
-
+            FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java).build()
         adapter = PostAdapter(options)
         postsRecyclerView.adapter = adapter
 
         button_change_format.setOnClickListener {
+            if(!displayStatus) {
+                postsRecyclerView.layoutManager = GridLayoutManager(this, 3)
+            } else {
+                postsRecyclerView.layoutManager = LinearLayoutManager(this)
+            }
+            displayStatus = !displayStatus
         }
 
         //instantiate toolbar
@@ -193,9 +207,22 @@ class PersonalActivityUserSide : AppCompatActivity() {
             viewType: Int
         ): PostViewHolder {
 
-            val view =
-                LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
-            return PostViewHolder(view)
+            val view: View
+            if (viewType == LINEAR_LAYOUT) {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
+                return PostViewHolder(view)
+            } else {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_post_changed, parent, false)
+                return PostViewHolder(view)
+            }
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return if(displayStatus) {
+                GRID_LAYOUT
+            } else {
+                LINEAR_LAYOUT
+            }
         }
 
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
@@ -204,168 +231,178 @@ class PersonalActivityUserSide : AppCompatActivity() {
             position: Int,
             model: Post
         ) {
+            if (!displayStatus) {
+                val dateStart = model.time
+                val dateStop = getTime()
 
-            val dateStart = model.time
-            val dateStop = getTime()
+                val format = SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z")
 
-            val format = SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z")
+                var d1: Date? = null
+                var d2: Date? = null
+                var time: String? = null
+                var user_name: String? = null
 
-            var d1: Date? = null
-            var d2: Date? = null
-            var time: String? = null
-            var user_name: String? = null
+                try {
+                    d1 = format.parse(dateStart);
+                    d2 = format.parse(dateStop);
+                    val diff: Long = d2.getTime() - d1.getTime()
+                    val seconds = diff.toInt() / 1000
+                    val minutes = seconds / 60
+                    val hours = minutes / 60
+                    val days = hours / 24
 
-            try {
-                d1 = format.parse(dateStart);
-                d2 = format.parse(dateStop);
-                val diff: Long = d2.getTime() - d1.getTime()
-                val seconds = diff.toInt() / 1000
-                val minutes = seconds / 60
-                val hours = minutes / 60
-                val days = hours / 24
-
-                if (days >= 1) {
-                    time = days.toString() + " Day(s) ago"
-                } else if (hours >= 1) {
-                    time = hours.toString() + " Hour(s) ago"
-                } else if (minutes >= 1) {
-                    time = minutes.toString() + " Minute(s) ago"
-                } else if (seconds >= 10) {
-                    time = seconds.toString() + " Second(s) ago"
-                } else if (seconds < 10) {
-                    time = "Recently"
+                    if (days >= 1) {
+                        time = days.toString() + " Day(s) ago"
+                    } else if (hours >= 1) {
+                        time = hours.toString() + " Hour(s) ago"
+                    } else if (minutes >= 1) {
+                        time = minutes.toString() + " Minute(s) ago"
+                    } else if (seconds >= 10) {
+                        time = seconds.toString() + " Second(s) ago"
+                    } else if (seconds < 10) {
+                        time = "Recently"
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace();
                 }
-            } catch  (e: Exception) {
-                e.printStackTrace();
-            }
 
-            Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
-            holder.itemView.textView_time.text = time
-            holder.itemView.TextView_name.text = model.userFullName
-            holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
+                Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
+                holder.itemView.textView_time.text = time
+                holder.itemView.TextView_name.text = model.userFullName
+                holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
 
-            if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
-                holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hatheart)
-            } else {
-                holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hat)
-            }
-
-            holder.itemView.ImageView_hat.setOnClickListener {
                 if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
-                    rootDB.collection("posts").document(model.id!!).update(
-                            "whoLiked", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
+                    holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hatheart)
                 } else {
-                    rootDB.collection("posts").document(model.id!!).update(
-                            "whoLiked", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                    holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hat)
                 }
-            }
 
-            var yummySize: Int = 0
-            var sweetSize: Int = 0
-            var saltySize: Int = 0
-            var sourSize: Int = 0
-            var bitterSize: Int = 0
-            var review: String = ""
-            var row: String = ""
+                holder.itemView.ImageView_hat.setOnClickListener {
+                    if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
+                        rootDB.collection("posts").document(model.id!!).update(
+                                "whoLiked", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
+                    } else {
+                        rootDB.collection("posts").document(model.id!!).update(
+                                "whoLiked", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                    }
+                }
 
-            val reviews = model.review as HashMap<String, java.util.ArrayList<String>>
+                var yummySize: Int = 0
+                var sweetSize: Int = 0
+                var saltySize: Int = 0
+                var sourSize: Int = 0
+                var bitterSize: Int = 0
+                var review: String = ""
+                var row: String = ""
 
-            model.review!!["Yummy"]?.size?.let {
-                yummySize = model.review!!["Yummy"]?.size!!
-            }
-            holder.itemView.TextView_yummy.text = yummySize.toString()
+                val reviews = model.review as HashMap<String, java.util.ArrayList<String>>
 
-            model.review!!["Sweet"]?.size?.let {
-                sweetSize = model.review!!["Sweet"]?.size!!
-            }
-            holder.itemView.TextView_sweet.text = sweetSize.toString()
+                model.review!!["Yummy"]?.size?.let {
+                    yummySize = model.review!!["Yummy"]?.size!!
+                }
+                holder.itemView.TextView_yummy.text = yummySize.toString()
 
-            model.review!!["Sour"]?.size?.let {
-                sourSize = model.review!!["Sour"]?.size!!
-            }
-            holder.itemView.TextView_sour.text = sourSize.toString()
+                model.review!!["Sweet"]?.size?.let {
+                    sweetSize = model.review!!["Sweet"]?.size!!
+                }
+                holder.itemView.TextView_sweet.text = sweetSize.toString()
 
-            model.review!!["Salty"]?.size?.let {
-                saltySize = model.review!!["Salty"]?.size!!
-            }
-            holder.itemView.TextView_salty.text = saltySize.toString()
+                model.review!!["Sour"]?.size?.let {
+                    sourSize = model.review!!["Sour"]?.size!!
+                }
+                holder.itemView.TextView_sour.text = sourSize.toString()
 
-            model.review!!["Bitter"]?.size?.let {
-                bitterSize = model.review!!["Bitter"]?.size!!
-            }
-            holder.itemView.TextView_bitter.text = bitterSize.toString()
+                model.review!!["Salty"]?.size?.let {
+                    saltySize = model.review!!["Salty"]?.size!!
+                }
+                holder.itemView.TextView_salty.text = saltySize.toString()
 
-            if (model.review!!["Yummy"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_yummy", "id",
-                        packageName
-                )
-                oldSize = yummySize
-                holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
-            } else if (model.review!!["Sweet"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_sweet", "id",
-                        packageName
-                )
-                oldSize = sweetSize
-                holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweetr)
-            } else if (model.review!!["Salty"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_salty", "id",
-                        packageName
-                )
-                oldSize = saltySize
-                holder.itemView.imageView_salty.setBackgroundResource(R.drawable.saltyr)
-            } else if (model.review!!["Sour"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_sour", "id",
-                        packageName
-                )
-                oldSize = sourSize
-                holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sourr)
-            } else if (model.review!!["Bitter"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_bitter", "id",
-                        packageName
-                )
-                oldSize = bitterSize
-                holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitterr)
-            }
+                model.review!!["Bitter"]?.size?.let {
+                    bitterSize = model.review!!["Bitter"]?.size!!
+                }
+                holder.itemView.TextView_bitter.text = bitterSize.toString()
 
-            holder.itemView.imageView_yummy.setOnClickListener {
-                review = "Yummy"
-                row = model.id.toString()
-                updateReviews(review, row, holder, targetId, oldSize, model)
-            }
+                if (model.review!!["Yummy"]?.contains(authDb.currentUser!!.uid) == true) {
+                    targetId = resources.getIdentifier(
+                            "TextView_yummy", "id",
+                            packageName
+                    )
+                    oldSize = yummySize
+                    holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
+                } else if (model.review!!["Sweet"]?.contains(authDb.currentUser!!.uid) == true) {
+                    targetId = resources.getIdentifier(
+                            "TextView_sweet", "id",
+                            packageName
+                    )
+                    oldSize = sweetSize
+                    holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweetr)
+                } else if (model.review!!["Salty"]?.contains(authDb.currentUser!!.uid) == true) {
+                    targetId = resources.getIdentifier(
+                            "TextView_salty", "id",
+                            packageName
+                    )
+                    oldSize = saltySize
+                    holder.itemView.imageView_salty.setBackgroundResource(R.drawable.saltyr)
+                } else if (model.review!!["Sour"]?.contains(authDb.currentUser!!.uid) == true) {
+                    targetId = resources.getIdentifier(
+                            "TextView_sour", "id",
+                            packageName
+                    )
+                    oldSize = sourSize
+                    holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sourr)
+                } else if (model.review!!["Bitter"]?.contains(authDb.currentUser!!.uid) == true) {
+                    targetId = resources.getIdentifier(
+                            "TextView_bitter", "id",
+                            packageName
+                    )
+                    oldSize = bitterSize
+                    holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitterr)
+                }
 
-            holder.itemView.imageView_sweet.setOnClickListener {
-                review = "Sweet"
-                row = model.id.toString()
-                updateReviews(review, row, holder, targetId, oldSize, model)
-            }
+                holder.itemView.imageView_yummy.setOnClickListener {
+                    review = "Yummy"
+                    row = model.id.toString()
+                    updateReviews(review, row, holder, targetId, oldSize, model)
+                }
 
-            holder.itemView.imageView_salty.setOnClickListener {
-                review = "Salty"
-                row = model.id.toString()
-                updateReviews(review, row, holder, targetId, oldSize, model)
-            }
+                holder.itemView.imageView_sweet.setOnClickListener {
+                    review = "Sweet"
+                    row = model.id.toString()
+                    updateReviews(review, row, holder, targetId, oldSize, model)
+                }
 
-            holder.itemView.imageView_sour.setOnClickListener {
-                review = "Sour"
-                row = model.id.toString()
-                updateReviews(review, row, holder, targetId, oldSize, model)
-            }
+                holder.itemView.imageView_salty.setOnClickListener {
+                    review = "Salty"
+                    row = model.id.toString()
+                    updateReviews(review, row, holder, targetId, oldSize, model)
+                }
 
-            holder.itemView.imageView_bitter.setOnClickListener {
-                review = "Bitter"
-                row = model.id.toString()
-                updateReviews(review, row, holder, targetId, oldSize, model)
-            }
+                holder.itemView.imageView_sour.setOnClickListener {
+                    review = "Sour"
+                    row = model.id.toString()
+                    updateReviews(review, row, holder, targetId, oldSize, model)
+                }
 
-            holder.itemView.imageView_comment.setOnClickListener {
-                val intent = Intent(applicationContext, CommentActivity::class.java)
-                intent.putExtra("postId", model.id)
-                startActivity(intent)
+                holder.itemView.imageView_bitter.setOnClickListener {
+                    review = "Bitter"
+                    row = model.id.toString()
+                    updateReviews(review, row, holder, targetId, oldSize, model)
+                }
+
+                holder.itemView.imageView_comment.setOnClickListener {
+                    val intent = Intent(applicationContext, CommentActivity::class.java)
+                    intent.putExtra("postId", model.id)
+                    startActivity(intent)
+                }
+            } else {
+                val param = postsRecyclerView.layoutParams as ViewGroup.MarginLayoutParams
+                param.setMargins(3,0,8,0)
+                Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
+
+                holder.itemView.ImageView_post.setOnClickListener {
+                    finish();
+                    startActivity(intent);
+                }
             }
         }
     }
