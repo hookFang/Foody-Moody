@@ -93,6 +93,21 @@
                 android:textSize="@dimen/f_20"
                 android:layout_marginTop="@dimen/d_20"/>
 
+            <CheckBox
+                android:id="@+id/checkBoxPrivate"
+                android:layout_width="@dimen/d_300"
+                android:layout_height="@dimen/d_30"
+                android:background="@drawable/text_frame_profile"
+                android:hint="@string/privateProfile"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="@dimen/f_20"
+                android:layout_marginTop="@dimen/d_20"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:paddingRight="@dimen/padding_checkbox"
+                android:paddingLeft="@dimen/padding_checkbox"/>
+
             <Button
                 android:id="@+id/Button_updateProfile"
                 android:layout_width="@dimen/d_180"

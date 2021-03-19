@@ -47,6 +47,7 @@ class SignUpActivity : AppCompatActivity() {
             val postsID = ArrayList<String>()
             val bio = ""
             val time = getTime()
+            val private = false
 
             rootDB.collection("users").whereEqualTo("userName", userName).get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -78,7 +79,8 @@ class SignUpActivity : AppCompatActivity() {
                                                         following,
                                                         postsID,
                                                         bio,
-                                                        time
+                                                        time,
+                                                        private
                                                     )
                                                 rootDB.collection("users").document(user.id!!).set(user)
                                                 finish()

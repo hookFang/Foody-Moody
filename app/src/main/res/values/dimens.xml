@@ -67,4 +67,5 @@
     <dimen name="d_135">135dp</dimen>
     <dimen name="d_55">55dp</dimen>
     <dimen name="d_60">60dp</dimen>
+    <dimen name="padding_checkbox">80dp</dimen>
 </resources>
