@@ -69,6 +69,11 @@ class ProfileActivity : AppCompatActivity() {
                 TextView_birthday.text = birthDate
             }
 
+            if (userInfo?.get("private") != false)
+            {
+                checkBoxPrivate.isChecked = true
+            }
+
             if(userInfo?.get("photoURI") != "") {
                 //Glide.with(this@ProfileActivity).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
                 Glide.with(this).load(userInfo?.get("photoURI").toString()).into(imageView_profile_picture);
@@ -120,13 +125,15 @@ class ProfileActivity : AppCompatActivity() {
                 val first_name = editText_firstName.text.toString()
                 val last_name = editText_lastName.text.toString()
                 val birth_date = textView_birthDate.text.toString()
+                val privateCheck = checkBoxPrivate.isChecked
 
                 rootDB.collection("users").document(authDb.currentUser!!.uid)
                         .update(
                                 mapOf(
                                         "firstName" to first_name,
                                         "lastName" to last_name,
-                                        "birthDay" to birth_date
+                                        "birthDay" to birth_date,
+                                        "private" to privateCheck
                                 )
                         )
                         .addOnSuccessListener {

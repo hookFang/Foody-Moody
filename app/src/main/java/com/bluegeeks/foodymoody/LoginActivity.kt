@@ -213,6 +213,7 @@ class LoginActivity : AppCompatActivity() {
                                 val postsID = ArrayList<String>()
                                 val bio = ""
                                 val time = getTime()
+                                val private = false;
 
                                 val newUser =
                                     User(
@@ -227,7 +228,8 @@ class LoginActivity : AppCompatActivity() {
                                         following,
                                         postsID,
                                         bio,
-                                        time
+                                        time,
+                                        private
                                     )
                                 rootDB.collection("users").document(newUser.id!!).set(newUser)
                             } catch (e: Exception) {
