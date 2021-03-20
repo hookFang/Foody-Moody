@@ -2,8 +2,10 @@ package com.bluegeeks.foodymoody
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,12 +16,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
+import com.bluegeeks.foodymoody.entity.Notifications
 import com.bluegeeks.foodymoody.entity.Post
+import com.bluegeeks.foodymoody.entity.User
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_personal.*
 import kotlinx.android.synthetic.main.activity_personal_user_side.*
@@ -31,8 +42,10 @@ import kotlinx.android.synthetic.main.activity_personal_user_side.imageView_prof
 import kotlinx.android.synthetic.main.activity_personal_user_side.postsRecyclerView
 import kotlinx.android.synthetic.main.activity_personal_user_side.posts_text_view
 import kotlinx.android.synthetic.main.activity_personal_user_side.textView_name
+import kotlinx.android.synthetic.main.activity_post.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -45,20 +58,47 @@ class PersonalActivityUserSide : AppCompatActivity() {
     var displayStatus: Boolean = false
     val GRID_LAYOUT = 0
     val LINEAR_LAYOUT = 1
+    var isPrivate: Boolean = false
+    var isFollowing: Boolean = false
+    val requestMessageSuccess = "Request sent successfully"
+    val requestMessageFail = "Error, Request not sent!"
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_personal_user_side)
         val userID = intent.getStringExtra("userID")
+        isPrivate = intent.getBooleanExtra("isPrivate", false)
+
 
         rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val userInfo = task.result
                 if (userInfo != null) {
                     val following: ArrayList<String> = userInfo.get("following") as ArrayList<String>
-                    if(following.contains(userID)) {
+                    if (following.contains(userID)) {
                         follow_button.text = "Unfollow"
+                        isFollowing = true
+                    } else {
+                        //Checking to see if user already sent follow request
+                        rootDB.collection("notifications").whereEqualTo("userId", userID).whereEqualTo("followerRequestId", authDb.currentUser!!.uid).get().addOnCompleteListener { task2 ->
+                            if (task.isSuccessful) {
+                                val userNotification = task2.result
+                                if (userNotification != null) {
+
+                                    //val notificationFollowing: Boolean = userNotification
+                                    //if(notificationFollowing === false) {
+                                    task2.result?.forEach { doc ->
+                                        var notificationFollowing: Boolean = doc.get("following").toString().toBoolean()
+                                        if(notificationFollowing === false) {
+                                            isFollowing = false
+                                            follow_button.text = "Request sent"
+                                        }
+                                    }
+                                    //}
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -89,19 +129,51 @@ class PersonalActivityUserSide : AppCompatActivity() {
         //Follow button add the user to the array list in firebase
         follow_button.setOnClickListener{
             if(follow_button.text == "Follow") {
-                rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(userID)))
-                if (userID != null) {
-                    rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
-                    rootDB.collection("posts").whereEqualTo("userId", userID).get().addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            task.result?.forEach { doc ->
-                                doc.reference.update("sharedWithUsers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                if(isPrivate === false) {
+                    rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(userID)))
+                    if (userID != null) {
+                        rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                        rootDB.collection("posts").whereEqualTo("userId", userID).get().addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                task.result?.forEach { doc ->
+                                    doc.reference.update("sharedWithUsers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                                }
                             }
                         }
                     }
+                    follow_button.text = "Unfollow"
                 }
-                follow_button.text = "Unfollow"
-            } else {
+                else
+                {
+                    //If account is private add notification to user that follow request will be sent to
+                    rootDB.collection("notifications").document(authDb.currentUser!!.uid).get()
+                            .addOnCompleteListener { user ->
+                                if (user.isSuccessful) {
+                                    val userInfo = user.result
+                                    if (userInfo != null) {
+                                        try {
+                                            val notification =  Notifications()
+                                            //user that follow request will be sent to
+                                            notification.userId = userID
+                                            //User that wants to follow private account
+                                            notification.followerRequestId = authDb.currentUser!!.uid
+                                            notification.time = getTime()
+                                            notification.isFollowing = false
+                                            notification.id = rootDB.collection("notifications").document().id
+                                            rootDB.collection("notifications").document(notification.id!!).set(notification)
+                                            Toast.makeText(this, requestMessageSuccess, Toast.LENGTH_LONG).show()
+                                            finish()
+                                        } catch (e: Exception) {
+                                            Log.e("TAG", e.message!!)
+                                            Toast.makeText(this, requestMessageFail, Toast.LENGTH_LONG).show()
+                                            finish()
+                                        }
+                                    }
+                                }
+                            }
+                    follow_button.text = "Request sent"
+                }
+            } else if(follow_button.text == "UnFollow") {
                 rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayRemove(userID)))
                 if (userID != null) {
                     rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
@@ -124,14 +196,17 @@ class PersonalActivityUserSide : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val postsQuery = rootDB.collection("posts").whereEqualTo("userId", userID).orderBy("time", Query.Direction.DESCENDING)
-
         // set our recyclerview to use LinearLayout
         postsRecyclerView.layoutManager = LinearLayoutManager(this)
-        val options =
-            FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java).build()
+        val postsQuery = rootDB.collection("posts").whereEqualTo("userId", userID).orderBy("time", Query.Direction.DESCENDING)
+        val options = FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java).build()
         adapter = PostAdapter(options)
-        postsRecyclerView.adapter = adapter
+
+        if(isPrivate === false || isFollowing === true || isPrivate === true && isFollowing === true) {
+            postsRecyclerView.adapter = adapter
+        }
+
+
 
         button_change_format.setOnClickListener {
             if(!displayStatus) {
