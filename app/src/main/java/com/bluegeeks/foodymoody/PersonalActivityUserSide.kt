@@ -45,20 +45,29 @@ class PersonalActivityUserSide : AppCompatActivity() {
     var displayStatus: Boolean = false
     val GRID_LAYOUT = 0
     val LINEAR_LAYOUT = 1
+    var isPrivate: Boolean = false
+    var isFollowing: Boolean = false
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_personal_user_side)
         val userID = intent.getStringExtra("userID")
+        isPrivate = intent.getBooleanExtra("isPrivate", false)
+
 
         rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val userInfo = task.result
                 if (userInfo != null) {
                     val following: ArrayList<String> = userInfo.get("following") as ArrayList<String>
-                    if(following.contains(userID)) {
+                    if (following.contains(userID)) {
                         follow_button.text = "Unfollow"
+                        isFollowing = true
+                    }
+                    else
+                    {
+                        isFollowing = false
                     }
                 }
             }
@@ -89,18 +98,24 @@ class PersonalActivityUserSide : AppCompatActivity() {
         //Follow button add the user to the array list in firebase
         follow_button.setOnClickListener{
             if(follow_button.text == "Follow") {
-                rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(userID)))
-                if (userID != null) {
-                    rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
-                    rootDB.collection("posts").whereEqualTo("userId", userID).get().addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            task.result?.forEach { doc ->
-                                doc.reference.update("sharedWithUsers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                if(isPrivate === false) {
+                    rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(userID)))
+                    if (userID != null) {
+                        rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                        rootDB.collection("posts").whereEqualTo("userId", userID).get().addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                task.result?.forEach { doc ->
+                                    doc.reference.update("sharedWithUsers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                                }
                             }
                         }
                     }
+                    follow_button.text = "Unfollow"
                 }
-                follow_button.text = "Unfollow"
+                else
+                {
+
+                }
             } else {
                 rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayRemove(userID)))
                 if (userID != null) {
@@ -124,14 +139,17 @@ class PersonalActivityUserSide : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val postsQuery = rootDB.collection("posts").whereEqualTo("userId", userID).orderBy("time", Query.Direction.DESCENDING)
-
         // set our recyclerview to use LinearLayout
         postsRecyclerView.layoutManager = LinearLayoutManager(this)
-        val options =
-            FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java).build()
+        val postsQuery = rootDB.collection("posts").whereEqualTo("userId", userID).orderBy("time", Query.Direction.DESCENDING)
+        val options = FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java).build()
         adapter = PostAdapter(options)
-        postsRecyclerView.adapter = adapter
+
+        if(isPrivate === false || isFollowing === true || isPrivate === true && isFollowing === true) {
+            postsRecyclerView.adapter = adapter
+        }
+
+
 
         button_change_format.setOnClickListener {
             if(!displayStatus) {

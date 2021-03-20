@@ -138,6 +138,7 @@ class SearchActivity : AppCompatActivity() {
                 } else {
                     val intent = Intent(applicationContext, PersonalActivityUserSide::class.java)
                     intent.putExtra("userID", model.id)
+                    intent.putExtra("isPrivate", model.private)
                     startActivity(intent)
                 }
             }
