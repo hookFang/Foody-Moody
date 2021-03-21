@@ -305,14 +305,14 @@ class HomeActivity : BaseFirebaseProperties() {
         holder.itemView.imageView_salty.setBackgroundResource(R.drawable.salty)
         holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sour)
         holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitter)
-        var reviewTextView = "holder.itemView.TextView_"+review
+        val reviewTextView = "holder.itemView.TextView_"+review
         val textViewId = resources.getIdentifier(
                 reviewTextView, "id",
                 packageName
         )
         val textViewTarget = findViewById<View>(textViewId) as? TextView
 
-        var reviewImageView = "holder.itemView.ImageView_"+review
+        val reviewImageView = "holder.itemView.ImageView_"+review
         val imageViewId = resources.getIdentifier(
                 reviewImageView, "id",
                 packageName
