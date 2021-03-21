@@ -100,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_notification -> {
-                startActivity(Intent(applicationContext, HomeActivity::class.java))
+                startActivity(Intent(applicationContext, NotificationActivity::class.java))
                 return true
             }
             R.id.action_serach -> {

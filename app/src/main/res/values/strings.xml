@@ -60,4 +60,5 @@
     <string name="chat_send">Send</string>
     <string name="message">message</string>
     <string name="privateProfile">Private?</string>
+    <string name="FollowRequest">This user has requested to follow your account. Do you accept?</string>
 </resources>

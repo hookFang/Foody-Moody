@@ -82,7 +82,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
                     } else {
                         //Checking to see if user already sent follow request
                         rootDB.collection("notifications").whereEqualTo("userId", userID).whereEqualTo("followerRequestId", authDb.currentUser!!.uid).get().addOnCompleteListener { task2 ->
-                            if (task.isSuccessful) {
+                            if (task2.isSuccessful) {
                                 val userNotification = task2.result
                                 if (userNotification != null) {
 
@@ -185,6 +185,12 @@ class PersonalActivityUserSide : AppCompatActivity() {
                         }
                     }
                 }
+                follow_button.text = "Follow"
+            }
+            else
+            {
+                rootDB.collection("notifications").document()
+                        .delete()
                 follow_button.text = "Follow"
             }
         }
