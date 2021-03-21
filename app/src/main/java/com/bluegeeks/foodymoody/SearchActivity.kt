@@ -100,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_notification -> {
-                startActivity(Intent(applicationContext, HomeActivity::class.java))
+                startActivity(Intent(applicationContext, NotificationActivity::class.java))
                 return true
             }
             R.id.action_serach -> {
@@ -139,6 +139,9 @@ class SearchActivity : AppCompatActivity() {
                     val intent = Intent(applicationContext, PersonalActivityUserSide::class.java)
                     intent.putExtra("userID", model.id)
                     intent.putExtra("isPrivate", model.private)
+                    if (model.followers?.contains(authDb.currentUser?.uid)!!) {
+                        intent.putExtra("isFollowing", true)
+                    }
                     startActivity(intent)
                 }
             }

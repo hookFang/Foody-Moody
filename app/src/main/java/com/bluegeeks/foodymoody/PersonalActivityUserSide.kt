@@ -69,6 +69,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
         setContentView(R.layout.activity_personal_user_side)
         val userID = intent.getStringExtra("userID")
         isPrivate = intent.getBooleanExtra("isPrivate", false)
+        isFollowing = intent.getBooleanExtra("isFollowing", false)
 
 
         rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { task ->
@@ -77,25 +78,19 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 if (userInfo != null) {
                     val following: ArrayList<String> = userInfo.get("following") as ArrayList<String>
                     if (following.contains(userID)) {
-                        follow_button.text = "Unfollow"
-                        isFollowing = true
+                        follow_button.text = "UnFollow"
                     } else {
                         //Checking to see if user already sent follow request
                         rootDB.collection("notifications").whereEqualTo("userId", userID).whereEqualTo("followerRequestId", authDb.currentUser!!.uid).get().addOnCompleteListener { task2 ->
-                            if (task.isSuccessful) {
+                            if (task2.isSuccessful) {
                                 val userNotification = task2.result
                                 if (userNotification != null) {
-
-                                    //val notificationFollowing: Boolean = userNotification
-                                    //if(notificationFollowing === false) {
                                     task2.result?.forEach { doc ->
-                                        var notificationFollowing: Boolean = doc.get("following").toString().toBoolean()
-                                        if(notificationFollowing === false) {
-                                            isFollowing = false
+                                        val notificationFollowing: Boolean = doc.get("following").toString().toBoolean()
+                                        if (notificationFollowing === false) {
                                             follow_button.text = "Request sent"
                                         }
                                     }
-                                    //}
                                 }
                             }
                         }
@@ -116,7 +111,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
                         followers_text_view.text = followers.size.toString() + "\nFollowers"
                         posts_text_view.text = postsNumber.size.toString() + "\nPosts"
                         textView_name.text = userInfo.get("userName").toString()
-                        if(userInfo.get("bio") != null && userInfo.get("bio") != "") {
+                        if (userInfo.get("bio") != null && userInfo.get("bio") != "") {
                             TextView_bio_content.text = userInfo.get("bio") as CharSequence?
                         }
                     }
@@ -127,9 +122,9 @@ class PersonalActivityUserSide : AppCompatActivity() {
         imageView_profile_picture.setImageResource(R.drawable.logout)
 
         //Follow button add the user to the array list in firebase
-        follow_button.setOnClickListener{
-            if(follow_button.text == "Follow") {
-                if(isPrivate === false) {
+        follow_button.setOnClickListener {
+            if (follow_button.text == "Follow") {
+                if (isPrivate === false) {
                     rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(userID)))
                     if (userID != null) {
                         rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
@@ -141,10 +136,8 @@ class PersonalActivityUserSide : AppCompatActivity() {
                             }
                         }
                     }
-                    follow_button.text = "Unfollow"
-                }
-                else
-                {
+                    follow_button.text = "UnFollow"
+                } else {
                     //If account is private add notification to user that follow request will be sent to
                     rootDB.collection("notifications").document(authDb.currentUser!!.uid).get()
                             .addOnCompleteListener { user ->
@@ -152,7 +145,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
                                     val userInfo = user.result
                                     if (userInfo != null) {
                                         try {
-                                            val notification =  Notifications()
+                                            val notification = Notifications()
                                             //user that follow request will be sent to
                                             notification.userId = userID
                                             //User that wants to follow private account
@@ -173,7 +166,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
                             }
                     follow_button.text = "Request sent"
                 }
-            } else if(follow_button.text == "UnFollow") {
+            } else if (follow_button.text == "UnFollow") {
                 rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayRemove(userID)))
                 if (userID != null) {
                     rootDB.collection("users").document(userID).update("followers", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
@@ -183,6 +176,19 @@ class PersonalActivityUserSide : AppCompatActivity() {
                                 doc.reference.update("sharedWithUsers", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
                             }
                         }
+                    }
+                }
+                follow_button.text = "Follow"
+            } else {
+                rootDB.collection("notifications").whereEqualTo("userId", userID).whereEqualTo("followerRequestId", authDb.currentUser!!.uid).get().addOnCompleteListener { task2 ->
+                    if (task2.isSuccessful) {
+                        if (task2.result != null) {
+                            task2.result?.forEach { doc ->
+                                doc.reference.delete()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(applicationContext, "Error. Try Again", Toast.LENGTH_SHORT).show()
                     }
                 }
                 follow_button.text = "Follow"
@@ -201,15 +207,12 @@ class PersonalActivityUserSide : AppCompatActivity() {
         val postsQuery = rootDB.collection("posts").whereEqualTo("userId", userID).orderBy("time", Query.Direction.DESCENDING)
         val options = FirestoreRecyclerOptions.Builder<Post>().setQuery(postsQuery, Post::class.java).build()
         adapter = PostAdapter(options)
-
-        if(isPrivate === false || isFollowing === true || isPrivate === true && isFollowing === true) {
+        if (!isPrivate || (isPrivate && isFollowing)) {
             postsRecyclerView.adapter = adapter
         }
 
-
-
         button_change_format.setOnClickListener {
-            if(!displayStatus) {
+            if (!displayStatus) {
                 postsRecyclerView.layoutManager = GridLayoutManager(this, 3)
             } else {
                 postsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -273,13 +276,13 @@ class PersonalActivityUserSide : AppCompatActivity() {
 
     // create inner classes needed to bind the data to the recyclerview
     private inner class PostViewHolder internal constructor(private val view: View) :
-        RecyclerView.ViewHolder(view) {}
+            RecyclerView.ViewHolder(view) {}
 
     private inner class PostAdapter internal constructor(options: FirestoreRecyclerOptions<Post>) :
-        FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
+            FirestoreRecyclerAdapter<Post, PostViewHolder>(options) {
         override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
+                parent: ViewGroup,
+                viewType: Int
         ): PostViewHolder {
 
             val view: View
@@ -293,7 +296,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
         }
 
         override fun getItemViewType(position: Int): Int {
-            return if(displayStatus) {
+            return if (displayStatus) {
                 GRID_LAYOUT
             } else {
                 LINEAR_LAYOUT
@@ -302,9 +305,9 @@ class PersonalActivityUserSide : AppCompatActivity() {
 
         @SuppressLint("SetTextI18n", "SimpleDateFormat")
         override fun onBindViewHolder(
-            holder: PostViewHolder,
-            position: Int,
-            model: Post
+                holder: PostViewHolder,
+                position: Int,
+                model: Post
         ) {
             if (!displayStatus) {
                 val dateStart = model.time
@@ -471,7 +474,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 }
             } else {
                 val param = postsRecyclerView.layoutParams as ViewGroup.MarginLayoutParams
-                param.setMargins(3,0,8,0)
+                param.setMargins(3, 0, 8, 0)
                 Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
 
                 holder.itemView.ImageView_post.setOnClickListener {
@@ -488,14 +491,14 @@ class PersonalActivityUserSide : AppCompatActivity() {
         holder.itemView.imageView_salty.setBackgroundResource(R.drawable.salty)
         holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sour)
         holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitter)
-        var reviewTextView = "holder.itemView.TextView_"+review
+        var reviewTextView = "holder.itemView.TextView_" + review
         val textViewId = resources.getIdentifier(
                 reviewTextView, "id",
                 packageName
         )
         val textViewTarget = findViewById<View>(textViewId) as? TextView
 
-        var reviewImageView = "holder.itemView.ImageView_"+review
+        var reviewImageView = "holder.itemView.ImageView_" + review
         val imageViewId = resources.getIdentifier(
                 reviewImageView, "id",
                 packageName
@@ -531,7 +534,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
                                     value.add(authDb.currentUser!!.uid)
                                     rootDB.collection("posts").document(model.id!!)
                                             .update("review", reviewed)
-                                    when(review) {
+                                    when (review) {
                                         "Yummy" -> imageViewTarget?.setBackgroundResource(R.drawable.yummyr)
                                         "Sweet" -> imageViewTarget?.setBackgroundResource(R.drawable.sweetr)
                                         "Salty" -> imageViewTarget?.setBackgroundResource(R.drawable.saltyr)
