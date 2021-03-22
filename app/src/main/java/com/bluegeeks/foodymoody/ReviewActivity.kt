@@ -21,7 +21,7 @@ class ReviewActivity : AppCompatActivity() {
     private var adapter: ReviewAdapter? = null
     var pageBack: String = ""
     var userId: String = ""
-    var review: Array<String> = arrayOf("Yummy", "Sweet", "Sour", "Salty", "Bitter")
+    var review: Array<String> = arrayOf("Yummy", "Sweet", "Sour", "Salty", "Bitter", "Like")
     var position: Int = 0
     var users: ArrayList<String> = ArrayList()
     private lateinit var layout: RelativeLayout
@@ -59,7 +59,7 @@ class ReviewActivity : AppCompatActivity() {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
 
-                if(position < 4) {
+                if(position < 5) {
                     position++
                 } else {
                     position = 0
@@ -88,7 +88,7 @@ class ReviewActivity : AppCompatActivity() {
                 if(position > 0) {
                     position--
                 } else {
-                    position = 4
+                    position = 5
                 }
                 TextView_review.text = review[position].toUpperCase(Locale.ROOT) + "\'s"
                 postId?.let {

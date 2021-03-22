@@ -186,7 +186,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/ImageView_hat"
+            android:id="@+id/ImageView_like"
             android:layout_width="@dimen/d_30"
             android:layout_height="@dimen/d_30"
             android:layout_marginStart="@dimen/d_20"

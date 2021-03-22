@@ -80,7 +80,9 @@ class PostActivity : BaseFirebaseProperties() {
                                     post.userFullName = userInfo.get("userName") as String?
                                     post.description = editText_description.text.toString().trim()
                                     post.time = getTime()
-                                    post.review = hashMapOf("Yummy" to ArrayList<String>(), "Sweet" to ArrayList<String>(), "Sour" to ArrayList<String>(), "Salty" to ArrayList<String>(), "Bitter"  to ArrayList<String>())
+                                    post.review = hashMapOf("Yummy" to ArrayList<String>(), "Sweet" to ArrayList<String>(),
+                                            "Sour" to ArrayList<String>(), "Salty" to ArrayList<String>(), "Bitter"  to ArrayList<String>(),
+                                            "Like"  to ArrayList<String>())
                                     post.sharedWithUsers = sharedWithUsersTemp
                                     post.id = rootDB.collection("posts").document().id
                                     rootDB.collection("posts").document(post.id!!).set(post)

@@ -11,7 +11,6 @@ class Post {
     var postIsPhoto: Boolean? =null
     var sharedWithUsers: ArrayList<String> = ArrayList()
     var review: HashMap<String, ArrayList<String>>? = HashMap<String, ArrayList<String>> ()
-    var whoLiked: ArrayList<String>? = ArrayList()
 
     //Constructors
     constructor()
@@ -23,8 +22,7 @@ class Post {
                 post: String?,
                 postIsPhoto: Boolean?,
                 sharedWithUsers: ArrayList<String>,
-                review: HashMap<String, ArrayList<String>>?,
-                whoLiked: ArrayList<String>?
+                review: HashMap<String, ArrayList<String>>?
     ) {
         this.id = id
         this.userId = userId
@@ -35,7 +33,6 @@ class Post {
         this.postIsPhoto = postIsPhoto
         this.sharedWithUsers = sharedWithUsers
         this.review = review
-        this.whoLiked = whoLiked
     }
 
     constructor(userId: String?,
@@ -45,8 +42,7 @@ class Post {
                 post: String?,
                 postIsPhoto: Boolean?,
                 sharedWithUsers: ArrayList<String>,
-                review: HashMap<String, ArrayList<String>>?,
-                whoLiked: ArrayList<String>?
+                review: HashMap<String, ArrayList<String>>?
     ) {
         this.userId = userId
         this.userFullName = userFullName
@@ -56,8 +52,5 @@ class Post {
         this.postIsPhoto = postIsPhoto
         this.sharedWithUsers = sharedWithUsers
         this.review = review
-        this.whoLiked = whoLiked
     }
-
-
 }

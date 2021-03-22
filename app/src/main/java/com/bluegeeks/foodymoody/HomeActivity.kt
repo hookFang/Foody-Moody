@@ -12,10 +12,8 @@ import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.item_post.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
@@ -161,22 +159,6 @@ class HomeActivity : BaseFirebaseProperties() {
             holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
 
-            if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
-                holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hatheart)
-            } else {
-                holder.itemView.ImageView_hat.setBackgroundResource(R.drawable.hat)
-            }
-
-            holder.itemView.ImageView_hat.setOnClickListener {
-                if (model.whoLiked?.contains(authDb.currentUser!!.uid) == true) {
-                    rootDB.collection("posts").document(model.id!!).update(
-                            "whoLiked", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
-                } else {
-                    rootDB.collection("posts").document(model.id!!).update(
-                            "whoLiked", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
-                }
-            }
-
             var yummySize: Int = 0
             var sweetSize: Int = 0
             var saltySize: Int = 0
@@ -212,41 +194,53 @@ class HomeActivity : BaseFirebaseProperties() {
             }
             holder.itemView.TextView_bitter.text = bitterSize.toString()
 
-            if (model.review!!["Yummy"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_yummy", "id",
-                        packageName
-                )
-                oldSize = yummySize
-                holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
-            } else if (model.review!!["Sweet"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_sweet", "id",
-                        packageName
-                )
-                oldSize = sweetSize
-                holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweetr)
-            } else if (model.review!!["Salty"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_salty", "id",
-                        packageName
-                )
-                oldSize = saltySize
-                holder.itemView.imageView_salty.setBackgroundResource(R.drawable.saltyr)
-            } else if (model.review!!["Sour"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_sour", "id",
-                        packageName
-                )
-                oldSize = sourSize
-                holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sourr)
-            } else if (model.review!!["Bitter"]?.contains(authDb.currentUser!!.uid) == true) {
-                targetId = resources.getIdentifier(
-                        "TextView_bitter", "id",
-                        packageName
-                )
-                oldSize = bitterSize
-                holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitterr)
+            when {
+                model.review!!["Yummy"]?.contains(authDb.currentUser!!.uid) == true -> {
+                    targetId = resources.getIdentifier(
+                            "TextView_yummy", "id",
+                            packageName
+                    )
+                    oldSize = yummySize
+                    holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
+                }
+                model.review!!["Sweet"]?.contains(authDb.currentUser!!.uid) == true -> {
+                    targetId = resources.getIdentifier(
+                            "TextView_sweet", "id",
+                            packageName
+                    )
+                    oldSize = sweetSize
+                    holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweetr)
+                }
+                model.review!!["Salty"]?.contains(authDb.currentUser!!.uid) == true -> {
+                    targetId = resources.getIdentifier(
+                            "TextView_salty", "id",
+                            packageName
+                    )
+                    oldSize = saltySize
+                    holder.itemView.imageView_salty.setBackgroundResource(R.drawable.saltyr)
+                }
+                model.review!!["Sour"]?.contains(authDb.currentUser!!.uid) == true -> {
+                    targetId = resources.getIdentifier(
+                            "TextView_sour", "id",
+                            packageName
+                    )
+                    oldSize = sourSize
+                    holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sourr)
+                }
+                model.review!!["Bitter"]?.contains(authDb.currentUser!!.uid) == true -> {
+                    targetId = resources.getIdentifier(
+                            "TextView_bitter", "id",
+                            packageName
+                    )
+                    oldSize = bitterSize
+                    holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitterr)
+                }
+            }
+
+            if (model.review!!["Like"]?.contains(authDb.currentUser!!.uid) == true) {
+                holder.itemView.ImageView_like.setBackgroundResource(R.drawable.hatheart)
+            } else {
+                holder.itemView.ImageView_like.setBackgroundResource(R.drawable.hat)
             }
 
             holder.itemView.imageView_yummy.setOnClickListener {
@@ -277,6 +271,31 @@ class HomeActivity : BaseFirebaseProperties() {
                 review = "Bitter"
                 row = model.id.toString()
                 updateReviews(review, row, holder, targetId, oldSize, model)
+            }
+
+            holder.itemView.ImageView_like.setOnClickListener {
+
+                rootDB.collection("posts").document(model.id.toString()).get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            try {
+                                val rev = document.get("review") as HashMap<String, ArrayList<String>>
+                                rev.forEach { (key, value) ->
+                                    if (value.contains(authDb.currentUser!!.uid) && key == "Like") {
+                                        value.remove(authDb.currentUser!!.uid)
+                                        rootDB.collection("posts").document(model.id.toString())
+                                                .update("review", rev)
+                                    } else if (!value.contains(authDb.currentUser!!.uid) && key == "Like") {
+                                        value.add(authDb.currentUser!!.uid)
+                                        rootDB.collection("posts").document(model.id.toString())
+                                                .update("review", rev)
+                                    }
+                                }
+                            } catch (e: Throwable) {
+                                Toast.makeText(applicationContext, "Error" + e , Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
             }
 
             holder.itemView.imageView_comment.setOnClickListener {
