@@ -3,7 +3,6 @@ package com.bluegeeks.foodymoody
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,8 +23,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class HomeActivity : BaseFirebaseProperties() {
-        private var adapter: PostAdapter? = null
 
+    private var adapter: PostAdapter? = null
     var oldSize: Int = 0
     var targetId: Int = 0
 
@@ -282,6 +281,7 @@ class HomeActivity : BaseFirebaseProperties() {
 
             holder.itemView.imageView_comment.setOnClickListener {
                 val intent = Intent(applicationContext, CommentActivity::class.java)
+                intent.putExtra("pageBack", "home")
                 intent.putExtra("postId", model.id)
                 startActivity(intent)
             }
@@ -295,6 +295,13 @@ class HomeActivity : BaseFirebaseProperties() {
                     intent.putExtra("userID", model.userId)
                     startActivity(intent)
                 }
+            }
+
+            holder.itemView.ImageView_fork.setOnClickListener {
+                val intent = Intent(applicationContext, ReviewActivity::class.java)
+                intent.putExtra("pageBack", "home")
+                intent.putExtra("postId", model.id)
+                startActivity(intent)
             }
         }
     }

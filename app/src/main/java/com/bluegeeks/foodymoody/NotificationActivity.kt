@@ -44,17 +44,14 @@ class NotificationActivity : BaseFirebaseProperties() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_bar_home, menu)
+        menuInflater.inflate(R.menu.menu_bar_notification, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
-            R.id.action_add -> {
-                startActivity(Intent(applicationContext, PostActivity::class.java))
-                return true
-            }
+
             R.id.action_logout -> {
                 logout()
                 return true
@@ -63,12 +60,8 @@ class NotificationActivity : BaseFirebaseProperties() {
                 startActivity(Intent(applicationContext, PersonalActivity::class.java))
                 return true
             }
-            R.id.action_notification -> {
+            R.id.action_home -> {
                 startActivity(Intent(applicationContext, HomeActivity::class.java))
-                return true
-            }
-            R.id.action_serach -> {
-                startActivity(Intent(applicationContext, SearchActivity::class.java))
                 return true
             }
             R.id.action_message -> {

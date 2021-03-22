@@ -9,13 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_chef_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".CommentActivity" />
+        <activity android:name=".NotificationActivity" />
+        <activity android:name=".ReviewActivity" />
         <activity android:name=".AllChatActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".PersonalActivityUserSide" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".CommentActivity" />
         <activity android:name=".PostActivity" />
         <activity android:name=".PersonalActivity" />
         <activity android:name=".RetrievePasswordActivity" />

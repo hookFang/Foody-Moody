@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/background_green"
     android:orientation="vertical"
-    android:id="@+id/homeLayout"
-    tools:context=".HomeActivity">
+    android:id="@+id/commentLayout"
+    tools:context=".CommentActivity">
 
 
     <ImageView

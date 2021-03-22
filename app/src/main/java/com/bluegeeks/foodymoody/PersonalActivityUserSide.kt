@@ -2,7 +2,6 @@ package com.bluegeeks.foodymoody
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,19 +17,11 @@ import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bluegeeks.foodymoody.entity.Notifications
 import com.bluegeeks.foodymoody.entity.Post
-import com.bluegeeks.foodymoody.entity.User
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_personal.*
 import kotlinx.android.synthetic.main.activity_personal_user_side.*
@@ -45,10 +36,10 @@ import kotlinx.android.synthetic.main.activity_personal_user_side.textView_name
 import kotlinx.android.synthetic.main.activity_post.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
-import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class PersonalActivityUserSide : AppCompatActivity() {
 
@@ -246,6 +237,10 @@ class PersonalActivityUserSide : AppCompatActivity() {
             }
             R.id.action_notification -> {
                 startActivity(Intent(applicationContext, HomeActivity::class.java))
+                return true
+            }
+            R.id.action_message -> {
+                startActivity(Intent(applicationContext, AllChatActivity::class.java))
                 return true
             }
         }
@@ -469,6 +464,16 @@ class PersonalActivityUserSide : AppCompatActivity() {
 
                 holder.itemView.imageView_comment.setOnClickListener {
                     val intent = Intent(applicationContext, CommentActivity::class.java)
+                    intent.putExtra("pageBack", "personalUserSide")
+                    intent.putExtra("userId", model.userId)
+                    intent.putExtra("postId", model.id)
+                    startActivity(intent)
+                }
+
+                holder.itemView.ImageView_fork.setOnClickListener {
+                    val intent = Intent(applicationContext, ReviewActivity::class.java)
+                    intent.putExtra("pageBack", "personalUserSide")
+                    intent.putExtra("userId", model.userId)
                     intent.putExtra("postId", model.id)
                     startActivity(intent)
                 }

@@ -61,4 +61,6 @@
     <string name="message">message</string>
     <string name="privateProfile">Private?</string>
     <string name="FollowRequest">This user has requested to follow your account. Do you accept?</string>
+    <string name="notFollowed">Follow</string>
+    <string name="sweet">Sweet\'s</string>
 </resources>

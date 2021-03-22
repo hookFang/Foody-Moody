@@ -57,17 +57,13 @@ class AllChatActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_bar_home, menu)
+            menuInflater.inflate(R.menu.menu_bar_message, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
-            R.id.action_add -> {
-                startActivity(Intent(applicationContext, PostActivity::class.java))
-                return true
-            }
             R.id.action_logout -> {
                 logout()
                 return true
@@ -77,15 +73,11 @@ class AllChatActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_notification -> {
+                startActivity(Intent(applicationContext, NotificationActivity::class.java))
+                return true
+            }
+            R.id.action_home -> {
                 startActivity(Intent(applicationContext, HomeActivity::class.java))
-                return true
-            }
-            R.id.action_serach -> {
-                startActivity(Intent(applicationContext, SearchActivity::class.java))
-                return true
-            }
-            R.id.action_message -> {
-                startActivity(Intent(applicationContext, AllChatActivity::class.java))
                 return true
             }
         }

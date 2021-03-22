@@ -40,6 +40,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+
+
+
 class PersonalActivity : BaseFirebaseProperties() {
 
     private var adapter: PostAdapter? = null
@@ -387,6 +390,14 @@ class PersonalActivity : BaseFirebaseProperties() {
 
                 holder.itemView.imageView_comment.setOnClickListener {
                     val intent = Intent(applicationContext, CommentActivity::class.java)
+                    intent.putExtra("pageBack", "personal")
+                    intent.putExtra("postId", model.id)
+                    startActivity(intent)
+                }
+
+                holder.itemView.ImageView_fork.setOnClickListener {
+                    val intent = Intent(applicationContext, ReviewActivity::class.java)
+                    intent.putExtra("pageBack", "personal")
                     intent.putExtra("postId", model.id)
                     startActivity(intent)
                 }
