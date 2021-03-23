@@ -51,17 +51,17 @@ class PersonalActivityUserSide : AppCompatActivity() {
     val LINEAR_LAYOUT = 1
     var isPrivate: Boolean = false
     var isFollowing: Boolean = false
-    val requestMessageSuccess = "Request sent successfully"
-    val requestMessageFail = "Error, Request not sent!"
+    private val requestMessageSuccess = "Request sent successfully"
+    private val requestMessageFail = "Error, Request not sent!"
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_personal_user_side)
+
         val userID = intent.getStringExtra("userID")
         isPrivate = intent.getBooleanExtra("isPrivate", false)
         isFollowing = intent.getBooleanExtra("isFollowing", false)
-
 
         rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {

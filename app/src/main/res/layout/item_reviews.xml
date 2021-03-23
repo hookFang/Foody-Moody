@@ -34,7 +34,7 @@
             android:layout_width="@dimen/d_80"
             android:layout_height="@dimen/d_20"
             android:layout_marginStart="@dimen/d_5"
-            android:text="@string/notFollowed"
+            android:text="@string/follow"
             android:textSize="@dimen/f_12"
             android:textColor="@color/yellow"
             android:background="@drawable/button_follow" />
