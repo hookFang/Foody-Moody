@@ -8,7 +8,6 @@ import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bluegeeks.foodymoody.entity.User
@@ -167,5 +166,4 @@ class SearchActivity : AppCompatActivity() {
         val intent = Intent(applicationContext, LoginActivity::class.java)
         startActivity(intent)
     }
-
 }

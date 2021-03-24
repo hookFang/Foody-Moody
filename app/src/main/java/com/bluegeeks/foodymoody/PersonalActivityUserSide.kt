@@ -2,7 +2,6 @@ package com.bluegeeks.foodymoody
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -37,7 +36,6 @@ import kotlinx.android.synthetic.main.activity_personal_user_side.textView_name
 import kotlinx.android.synthetic.main.activity_post.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
-import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -48,8 +46,8 @@ class PersonalActivityUserSide : AppCompatActivity() {
     var oldSize: Int = 0
     var targetId: Int = 0
     var displayStatus: Boolean = false
-    val GRID_LAYOUT = 0
-    val LINEAR_LAYOUT = 1
+    val grid = 0
+    val list = 1
     var isPrivate: Boolean = false
     var isFollowing: Boolean = false
     val requestMessageSuccess = "Request sent successfully"
@@ -59,10 +57,10 @@ class PersonalActivityUserSide : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_personal_user_side)
+
         val userID = intent.getStringExtra("userID")
         isPrivate = intent.getBooleanExtra("isPrivate", false)
         isFollowing = intent.getBooleanExtra("isFollowing", false)
-
 
         rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -143,15 +141,12 @@ class PersonalActivityUserSide : AppCompatActivity() {
                                             //User that wants to follow private account
                                             notification.followerRequestId = authDb.currentUser!!.uid
                                             notification.time = getTime()
-                                            notification.isFollowing = false
                                             notification.id = rootDB.collection("notifications").document().id
                                             rootDB.collection("notifications").document(notification.id!!).set(notification)
                                             Toast.makeText(this, requestMessageSuccess, Toast.LENGTH_LONG).show()
-                                            finish()
                                         } catch (e: Exception) {
                                             Log.e("TAG", e.message!!)
                                             Toast.makeText(this, requestMessageFail, Toast.LENGTH_LONG).show()
-                                            finish()
                                         }
                                     }
                                 }
@@ -237,7 +232,11 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 return true
             }
             R.id.action_notification -> {
-                startActivity(Intent(applicationContext, HomeActivity::class.java))
+                startActivity(Intent(applicationContext, NotificationActivity::class.java))
+                return true
+            }
+            R.id.action_message -> {
+                startActivity(Intent(applicationContext, AllChatActivity::class.java))
                 return true
             }
         }
@@ -278,7 +277,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
         ): PostViewHolder {
 
             val view: View
-            if (viewType == LINEAR_LAYOUT) {
+            if (viewType == list) {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
                 return PostViewHolder(view)
             } else {
@@ -289,9 +288,9 @@ class PersonalActivityUserSide : AppCompatActivity() {
 
         override fun getItemViewType(position: Int): Int {
             return if (displayStatus) {
-                GRID_LAYOUT
+                grid
             } else {
-                LINEAR_LAYOUT
+                list
             }
         }
 
@@ -310,7 +309,6 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 var d1: Date? = null
                 var d2: Date? = null
                 var time: String? = null
-                var user_name: String? = null
 
                 try {
                     d1 = format.parse(dateStart);
@@ -355,8 +353,6 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 var review: String = ""
                 var row: String = ""
 
-                val reviews = model.review as HashMap<String, java.util.ArrayList<String>>
-
                 model.review!!["Yummy"]?.size?.let {
                     yummySize = model.review!!["Yummy"]?.size!!
                 }
@@ -382,41 +378,47 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 }
                 holder.itemView.TextView_bitter.text = bitterSize.toString()
 
-                if (model.review!!["Yummy"]?.contains(authDb.currentUser!!.uid) == true) {
-                    targetId = resources.getIdentifier(
-                        "TextView_yummy", "id",
-                        packageName
-                    )
-                    oldSize = yummySize
-                    holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
-                } else if (model.review!!["Sweet"]?.contains(authDb.currentUser!!.uid) == true) {
-                    targetId = resources.getIdentifier(
-                        "TextView_sweet", "id",
-                        packageName
-                    )
-                    oldSize = sweetSize
-                    holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweetr)
-                } else if (model.review!!["Salty"]?.contains(authDb.currentUser!!.uid) == true) {
-                    targetId = resources.getIdentifier(
-                        "TextView_salty", "id",
-                        packageName
-                    )
-                    oldSize = saltySize
-                    holder.itemView.imageView_salty.setBackgroundResource(R.drawable.saltyr)
-                } else if (model.review!!["Sour"]?.contains(authDb.currentUser!!.uid) == true) {
-                    targetId = resources.getIdentifier(
-                        "TextView_sour", "id",
-                        packageName
-                    )
-                    oldSize = sourSize
-                    holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sourr)
-                } else if (model.review!!["Bitter"]?.contains(authDb.currentUser!!.uid) == true) {
-                    targetId = resources.getIdentifier(
-                        "TextView_bitter", "id",
-                        packageName
-                    )
-                    oldSize = bitterSize
-                    holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitterr)
+                when {
+                    model.review!!["Yummy"]?.contains(authDb.currentUser!!.uid) == true -> {
+                        targetId = resources.getIdentifier(
+                            "TextView_yummy", "id",
+                            packageName
+                        )
+                        oldSize = yummySize
+                        holder.itemView.imageView_yummy.setBackgroundResource(R.drawable.yummyr)
+                    }
+                    model.review!!["Sweet"]?.contains(authDb.currentUser!!.uid) == true -> {
+                        targetId = resources.getIdentifier(
+                            "TextView_sweet", "id",
+                            packageName
+                        )
+                        oldSize = sweetSize
+                        holder.itemView.imageView_sweet.setBackgroundResource(R.drawable.sweetr)
+                    }
+                    model.review!!["Salty"]?.contains(authDb.currentUser!!.uid) == true -> {
+                        targetId = resources.getIdentifier(
+                            "TextView_salty", "id",
+                            packageName
+                        )
+                        oldSize = saltySize
+                        holder.itemView.imageView_salty.setBackgroundResource(R.drawable.saltyr)
+                    }
+                    model.review!!["Sour"]?.contains(authDb.currentUser!!.uid) == true -> {
+                        targetId = resources.getIdentifier(
+                            "TextView_sour", "id",
+                            packageName
+                        )
+                        oldSize = sourSize
+                        holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sourr)
+                    }
+                    model.review!!["Bitter"]?.contains(authDb.currentUser!!.uid) == true -> {
+                        targetId = resources.getIdentifier(
+                            "TextView_bitter", "id",
+                            packageName
+                        )
+                        oldSize = bitterSize
+                        holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitterr)
+                    }
                 }
 
                 holder.itemView.imageView_yummy.setOnClickListener {

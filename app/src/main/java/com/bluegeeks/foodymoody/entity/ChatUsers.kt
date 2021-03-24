@@ -16,6 +16,4 @@ class ChatUsers {
         this.lastMessage = lastMessage
         this.sendAt = sendAt
     }
-
-
 }

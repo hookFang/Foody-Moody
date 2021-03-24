@@ -22,7 +22,8 @@ class Post {
                 post: String?,
                 postIsPhoto: Boolean?,
                 sharedWithUsers: ArrayList<String>,
-                review: HashMap<String, ArrayList<String>>?) {
+                review: HashMap<String, ArrayList<String>>?
+    ) {
         this.id = id
         this.userId = userId
         this.userFullName = userFullName
@@ -41,7 +42,8 @@ class Post {
                 post: String?,
                 postIsPhoto: Boolean?,
                 sharedWithUsers: ArrayList<String>,
-                review: HashMap<String, ArrayList<String>>?) {
+                review: HashMap<String, ArrayList<String>>?
+    ) {
         this.userId = userId
         this.userFullName = userFullName
         this.time = time

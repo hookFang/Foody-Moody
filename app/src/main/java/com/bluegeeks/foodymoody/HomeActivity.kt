@@ -12,7 +12,6 @@ import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.item_post.*

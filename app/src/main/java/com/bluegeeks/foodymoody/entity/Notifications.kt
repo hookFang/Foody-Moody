@@ -8,7 +8,6 @@ class Notifications {
     var time: String? = null
     var isFollowing: Boolean = false
 
-
     //Constructors
     constructor()
 

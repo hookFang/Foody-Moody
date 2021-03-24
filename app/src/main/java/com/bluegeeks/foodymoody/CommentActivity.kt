@@ -127,7 +127,6 @@ class CommentActivity : AppCompatActivity() {
         }
     }
 
-
     // create inner classes needed to bind the data to the recyclerview
     private inner class CommentViewHolder internal constructor(private val view: View) :
         RecyclerView.ViewHolder(view) {}
