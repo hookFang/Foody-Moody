@@ -50,6 +50,4 @@ class User {
         this.time = time
         this.private = private
     }
-
-
 }
