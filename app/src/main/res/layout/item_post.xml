@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:text="1000"
+                android:text="@string/tempTest"
                 android:textSize="@dimen/f_16"
                 />
         </LinearLayout>
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:text="2000"
+                android:text="@string/tempTest"
                 android:textSize="@dimen/f_16"
                 />
         </LinearLayout>
@@ -132,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:text="3000"
+                android:text="@string/tempTest"
                 android:textSize="@dimen/f_16" />
         </LinearLayout>
 
@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:text="3000"
+                android:text="@string/tempTest"
                 android:textSize="@dimen/f_16" />
         </LinearLayout>
 
@@ -181,7 +181,7 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:text="4000"
+                android:text="@string/tempTest"
                 android:textSize="@dimen/f_16" />
         </LinearLayout>
 

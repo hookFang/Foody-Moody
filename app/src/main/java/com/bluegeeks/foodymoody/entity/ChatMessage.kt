@@ -1,8 +1,5 @@
 package com.bluegeeks.foodymoody.entity
 
-import java.util.*
-
-
 class ChatMessage {
     //Properties
     var chatValue: String? = null

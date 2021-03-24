@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/d_20"
         android:fontFamily="@font/aldrich"
-        android:text="TextView"
+        android:text="@string/tempTest"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/chat_user_image"
@@ -38,7 +38,7 @@
         android:layout_marginStart="@dimen/d_30"
         android:layout_marginTop="@dimen/d_5"
         android:fontFamily="@font/aldrich"
-        android:text="TextView"
+        android:text="@string/tempTest"
         app:layout_constraintStart_toEndOf="@id/chat_user_image"
         app:layout_constraintTop_toBottomOf="@id/chat_user_name" />
 

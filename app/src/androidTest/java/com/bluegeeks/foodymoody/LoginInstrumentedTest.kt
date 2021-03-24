@@ -36,10 +36,10 @@ class LoginInstrumentedTest {
     @Test
     fun successfullLoginCreds() {
         onView(withId(R.id.editText_email))
-            .perform(typeText("programmingtutorials45@gmail.com"), closeSoftKeyboard());
+            .perform(typeText("programmingtutorials45@gmail.com"), closeSoftKeyboard())
         onView(withId(R.id.editText_email)).check(matches(withText("programmingtutorials45@gmail.com")))
         onView(withId(R.id.editText_password))
-            .perform(typeText("Google8667%@"), closeSoftKeyboard());
+            .perform(typeText("Google8667%@"), closeSoftKeyboard())
         onView(withId(R.id.editText_password)).check(matches(withText("Google8667%@")))
         onView(withId(R.id.login_button)).perform(click())
         Thread.sleep(2000)
@@ -52,9 +52,9 @@ class LoginInstrumentedTest {
     @Test
     fun invalidLoginCreds() {
         onView(withId(R.id.editText_email))
-            .perform(typeText("edwinchrist52ie100@gmail.com"), closeSoftKeyboard());
+            .perform(typeText("edwinchrist52ie100@gmail.com"), closeSoftKeyboard())
         onView(withId(R.id.editText_password))
-            .perform(typeText("Google8667%@"), closeSoftKeyboard());
+            .perform(typeText("Google8667%@"), closeSoftKeyboard())
         onView(withId(R.id.login_button)).perform(click())
         onView(withText(emailNotExistError)).inRoot(ToastMatcher())
             .check(matches(isDisplayed()))

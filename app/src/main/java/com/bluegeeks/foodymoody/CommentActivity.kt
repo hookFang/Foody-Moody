@@ -65,7 +65,7 @@ class CommentActivity : AppCompatActivity() {
                                 EditText_comment.setText("")
 
                             } catch (e: Exception) {
-                                Toast.makeText(this, "Error" + " :" + e, Toast.LENGTH_LONG).show()
+                                Toast.makeText(this, "Error :$e", Toast.LENGTH_LONG).show()
                             }
                         }
                     }

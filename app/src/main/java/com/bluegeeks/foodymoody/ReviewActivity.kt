@@ -14,9 +14,7 @@ import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bluegeeks.foodymoody.entity.Notifications
 import com.google.firebase.firestore.FieldValue
-import kotlinx.android.synthetic.main.activity_personal_user_side.*
 import kotlinx.android.synthetic.main.activity_review.*
-import kotlinx.android.synthetic.main.item_reviews.*
 import kotlinx.android.synthetic.main.item_reviews.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat

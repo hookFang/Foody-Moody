@@ -14,10 +14,8 @@ import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.realtimeDB
 import com.bluegeeks.foodymoody.entity.ChatMessage
-import com.firebase.ui.common.ChangeEventType
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.firebase.database.DataSnapshot
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.item_left_chat.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
@@ -34,7 +32,7 @@ class ChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat)
         val userID = intent.getStringExtra("chatReceiverID")
 //      Sound effects obtained from https://www.zapsplat.com
-        val mp = MediaPlayer.create(this, R.raw.chat_notification_sound);
+        val mp = MediaPlayer.create(this, R.raw.chat_notification_sound)
         //Instantiate the tool bar to show the username of the chat user
         if (userID != null) {
             BaseFirebaseProperties.rootDB.collection("users").document(userID).get().addOnCompleteListener { task ->
@@ -73,7 +71,7 @@ class ChatActivity : AppCompatActivity() {
                 if (userID != null) {
                     realtimeDB.reference.child(userID).child(authDb.currentUser?.uid!!).child("messages").push().setValue(tempChatMessage)
                 }
-                edit_chat_message.setText("");
+                edit_chat_message.setText("")
                 mp?.start()
             }
         }

@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
@@ -14,7 +16,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.item_post.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
@@ -129,8 +130,8 @@ class HomeActivity : BaseFirebaseProperties() {
             var time: String? = null
 
             try {
-                d1 = format.parse(dateStart);
-                d2 = format.parse(dateStop);
+                d1 = format.parse(dateStart)
+                d2 = format.parse(dateStop)
                 val diff: Long = d2.getTime() - d1.getTime()
                 val seconds = diff.toInt() / 1000
                 val minutes = seconds / 60
@@ -138,32 +139,32 @@ class HomeActivity : BaseFirebaseProperties() {
                 val days = hours / 24
 
                 if (days >= 1) {
-                    time = days.toString() + " Day(s) ago"
+                    time = "$days Day(s) ago"
                 } else if (hours >= 1) {
-                    time = hours.toString() + " Hour(s) ago"
+                    time = "$hours Hour(s) ago"
                 } else if (minutes >= 1) {
-                    time = minutes.toString() + " Minute(s) ago"
+                    time = "$minutes Minute(s) ago"
                 } else if (seconds >= 10) {
-                    time = seconds.toString() + " Second(s) ago"
+                    time = "$seconds Second(s) ago"
                 } else if (seconds < 10) {
                     time = "Recently"
                 }
             } catch (e: Exception) {
-                e.printStackTrace();
+                e.printStackTrace()
             }
 
-            Glide.with(this@HomeActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
+            Glide.with(this@HomeActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
             holder.itemView.textView_time.text = time
             holder.itemView.TextView_name.text = model.userFullName
             holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
 
-            var yummySize: Int = 0
-            var sweetSize: Int = 0
-            var saltySize: Int = 0
-            var sourSize: Int = 0
-            var bitterSize: Int = 0
-            var review: String = ""
-            var row: String = ""
+            var yummySize = 0
+            var sweetSize = 0
+            var saltySize = 0
+            var sourSize = 0
+            var bitterSize = 0
+            var review = ""
+            var row = ""
 
             val reviews = model.review as HashMap<String, ArrayList<String>>
 

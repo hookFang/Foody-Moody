@@ -71,7 +71,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        android:text="253 \nPosts"
                         android:layout_marginStart="20dp"
                         app:layout_constraintStart_toEndOf="@+id/imageView_profile_picture"
                         app:layout_constraintEnd_toStartOf="@id/followers_text_view"

@@ -6,18 +6,15 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.realtimeDB
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bluegeeks.foodymoody.entity.ChatUsers
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_all_chat.*
-import kotlinx.android.synthetic.main.activity_personal.*
-import kotlinx.android.synthetic.main.activity_personal_user_side.*
 import kotlinx.android.synthetic.main.item_chat_message.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
-import java.util.ArrayList
+import java.util.*
 
 
 class AllChatActivity : AppCompatActivity() {
@@ -28,7 +25,7 @@ class AllChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_all_chat)
         val chatUsersList = ArrayList<ChatUsers>()
 
-        realtimeDB.reference.child(BaseFirebaseProperties.authDb.currentUser?.uid!!).get().addOnCompleteListener { task ->
+        realtimeDB.reference.child(authDb.currentUser?.uid!!).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val res = task.result
                 if (res != null) {

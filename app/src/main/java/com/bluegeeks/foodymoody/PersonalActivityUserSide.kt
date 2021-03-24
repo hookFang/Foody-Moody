@@ -2,13 +2,13 @@ package com.bluegeeks.foodymoody
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,23 +22,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.activity_personal.*
 import kotlinx.android.synthetic.main.activity_personal_user_side.*
-import kotlinx.android.synthetic.main.activity_personal_user_side.TextView_bio_content
-import kotlinx.android.synthetic.main.activity_personal_user_side.button_change_format
-import kotlinx.android.synthetic.main.activity_personal_user_side.followers_text_view
-import kotlinx.android.synthetic.main.activity_personal_user_side.following_text_view
-import kotlinx.android.synthetic.main.activity_personal_user_side.imageView_profile_picture
-import kotlinx.android.synthetic.main.activity_personal_user_side.postsRecyclerView
-import kotlinx.android.synthetic.main.activity_personal_user_side.posts_text_view
-import kotlinx.android.synthetic.main.activity_personal_user_side.textView_name
-import kotlinx.android.synthetic.main.activity_post.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class PersonalActivityUserSide : AppCompatActivity() {
 
@@ -258,7 +246,7 @@ class PersonalActivityUserSide : AppCompatActivity() {
     }
 
     private fun logout() {
-        BaseFirebaseProperties.authDb.signOut()
+        authDb.signOut()
         finish()
         val intent = Intent(applicationContext, LoginActivity::class.java)
         startActivity(intent)
@@ -311,8 +299,8 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 var time: String? = null
 
                 try {
-                    d1 = format.parse(dateStart);
-                    d2 = format.parse(dateStop);
+                    d1 = format.parse(dateStart)
+                    d2 = format.parse(dateStop)
                     val diff: Long = d2.getTime() - d1.getTime()
                     val seconds = diff.toInt() / 1000
                     val minutes = seconds / 60
@@ -320,18 +308,18 @@ class PersonalActivityUserSide : AppCompatActivity() {
                     val days = hours / 24
 
                     if (days >= 1) {
-                        time = days.toString() + " Day(s) ago"
+                        time = "$days Day(s) ago"
                     } else if (hours >= 1) {
-                        time = hours.toString() + " Hour(s) ago"
+                        time = "$hours Hour(s) ago"
                     } else if (minutes >= 1) {
-                        time = minutes.toString() + " Minute(s) ago"
+                        time = "$minutes Minute(s) ago"
                     } else if (seconds >= 10) {
-                        time = seconds.toString() + " Second(s) ago"
+                        time = "$seconds Second(s) ago"
                     } else if (seconds < 10) {
                         time = "Recently"
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace();
+                    e.printStackTrace()
                 }
 
                 Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
@@ -345,13 +333,13 @@ class PersonalActivityUserSide : AppCompatActivity() {
                     holder.itemView.ImageView_like.setBackgroundResource(R.drawable.hat)
                 }
 
-                var yummySize: Int = 0
-                var sweetSize: Int = 0
-                var saltySize: Int = 0
-                var sourSize: Int = 0
-                var bitterSize: Int = 0
-                var review: String = ""
-                var row: String = ""
+                var yummySize = 0
+                var sweetSize = 0
+                var saltySize = 0
+                var sourSize = 0
+                var bitterSize = 0
+                var review = ""
+                var row = ""
 
                 model.review!!["Yummy"]?.size?.let {
                     yummySize = model.review!!["Yummy"]?.size!!
@@ -497,8 +485,8 @@ class PersonalActivityUserSide : AppCompatActivity() {
                 Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
 
                 holder.itemView.ImageView_post.setOnClickListener {
-                    finish();
-                    startActivity(intent);
+                    finish()
+                    startActivity(intent)
                 }
             }
         }
@@ -510,14 +498,14 @@ class PersonalActivityUserSide : AppCompatActivity() {
         holder.itemView.imageView_salty.setBackgroundResource(R.drawable.salty)
         holder.itemView.imageView_sour.setBackgroundResource(R.drawable.sour)
         holder.itemView.imageView_bitter.setBackgroundResource(R.drawable.bitter)
-        var reviewTextView = "holder.itemView.TextView_" + review
+        val reviewTextView = "holder.itemView.TextView_" + review
         val textViewId = resources.getIdentifier(
             reviewTextView, "id",
             packageName
         )
         val textViewTarget = findViewById<View>(textViewId) as? TextView
 
-        var reviewImageView = "holder.itemView.ImageView_" + review
+        val reviewImageView = "holder.itemView.ImageView_" + review
         val imageViewId = resources.getIdentifier(
             reviewImageView, "id",
             packageName
