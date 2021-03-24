@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -17,7 +16,6 @@ import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.activity_home.postsRecyclerView
@@ -29,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_personal.following_text_view
 import kotlinx.android.synthetic.main.activity_personal.imageView_profile_picture
 import kotlinx.android.synthetic.main.activity_personal.posts_text_view
 import kotlinx.android.synthetic.main.activity_personal.textView_name
+import kotlinx.android.synthetic.main.activity_personal.view.*
 import kotlinx.android.synthetic.main.activity_personal_user_side.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.bio_dialogue.*
@@ -38,7 +37,6 @@ import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class PersonalActivity : BaseFirebaseProperties() {
 
     private var adapter: PostAdapter? = null
@@ -46,8 +44,8 @@ class PersonalActivity : BaseFirebaseProperties() {
     var oldSize: Int = 0
     var targetId: Int = 0
     var displayStatus: Boolean = false
-    val GRID_LAYOUT = 0
-    val LINEAR_LAYOUT = 1
+    val grid = 0
+    val list = 1
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,6 +136,20 @@ class PersonalActivity : BaseFirebaseProperties() {
             }
         }
 
+        followers_text_view.setOnClickListener{
+            val intent = Intent(applicationContext, FollowingActivity::class.java)
+            intent.putExtra("button", "followers")
+            intent.putExtra("pageBack", "personal")
+            startActivity(intent)
+        }
+
+        following_text_view.setOnClickListener{
+            val intent = Intent(applicationContext, FollowingActivity::class.java)
+            intent.putExtra("button", "following")
+            intent.putExtra("pageBack", "personal")
+            startActivity(intent)
+        }
+
         //instantiate toolbar
         setSupportActionBar(topToolbar)
     }
@@ -203,7 +215,7 @@ class PersonalActivity : BaseFirebaseProperties() {
         ): PostViewHolder {
 
             val view: View
-            if (viewType == LINEAR_LAYOUT) {
+            if (viewType == list) {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
                 return PostViewHolder(view)
             } else {
@@ -214,9 +226,9 @@ class PersonalActivity : BaseFirebaseProperties() {
 
         override fun getItemViewType(position: Int): Int {
             return if(displayStatus) {
-                GRID_LAYOUT
+                grid
             } else {
-                LINEAR_LAYOUT
+                list
             }
         }
 

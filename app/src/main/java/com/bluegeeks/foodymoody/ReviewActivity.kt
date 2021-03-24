@@ -25,7 +25,6 @@ import kotlin.collections.ArrayList
 
 class ReviewActivity : AppCompatActivity() {
 
-    private var adapter: ReviewAdapter? = null
     var pageBack: String = ""
     var userId: String = ""
     var review: Array<String> = arrayOf("Yummy", "Sweet", "Sour", "Salty", "Bitter", "Like")
@@ -172,7 +171,7 @@ class ReviewActivity : AppCompatActivity() {
             return users.size
         }
 
-        @SuppressLint("SetTextI18n", "SimpleDateFormat")
+        @SuppressLint("SetTextI18n", "SimpleDateFormat", "ResourceAsColor")
         override fun onBindViewHolder(
             holder: ReviewViewHolder,
             position: Int
@@ -184,97 +183,116 @@ class ReviewActivity : AppCompatActivity() {
                     if ((document.get("followers") as ArrayList<String>).contains(authDb.currentUser!!.uid)) {
                         holder.itemView.Button_follow.text = "UnFollow"
                         holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_unfollow)
+                        holder.itemView.Button_follow.setTextColor(R.color.red)
                     } else {
-                        holder.itemView.Button_follow.text = "Follow"
+                        // It cannot find if user requested follow or not because of the id in notifications
+//                        rootDB.collection("users").document(users.get(position)+authDb.currentUser!!.uid).get().addOnSuccessListener { document ->
+//                            if (document != null) {
+//                                    holder.itemView.Button_follow.text = "Requested"
+//                                    holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_follow)
+//                                } else {
+                                    holder.itemView.Button_follow.text = "Follow"
+                                    holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_follow)
+//                                }
+//                            }
                     }
                 }
             }
-
             holder.itemView.Button_follow.setOnClickListener {
-                if (holder.itemView.Button_follow.text == "Follow") {
-                    rootDB.collection("users").document(users.get(position)).get().addOnSuccessListener { document ->
-                        if (document != null) {
-                            if (document.get("private") == false) {
-                                rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(document.id)))
-                                rootDB.collection("users").document(document.id).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
-                                rootDB.collection("posts").whereEqualTo("userId", document.id).get().addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        task.result?.forEach { doc ->
-                                            doc.reference.update("sharedWithUsers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
-                                        }
-                                    }
-                                }
-                                holder.itemView.Button_follow.text = "UnFollow"
-                                holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_unfollow)
-                            } else {
-                                //If account is private add notification to user that follow request will be sent to
-                                rootDB.collection("notifications").document(authDb.currentUser!!.uid).get()
-                                    .addOnCompleteListener { user ->
-                                        if (user.isSuccessful) {
-                                            val userInfo = user.result
-                                            if (userInfo != null) {
-                                                try {
-                                                    val notification = Notifications()
-                                                    //user that follow request will be sent to
-                                                    notification.userId = document.id
-                                                    //User that wants to follow private account
-                                                    notification.followerRequestId = authDb.currentUser!!.uid
-                                                    notification.time = getTime()
-                                                    notification.isFollowing = false
-                                                    notification.id = rootDB.collection("notifications").document().id
-                                                    rootDB.collection("notifications").document(notification.id!!).set(notification)
-                                                    Toast.makeText(this@ReviewActivity, requestMessageSuccess, Toast.LENGTH_LONG).show()
-                                                    finish()
-                                                } catch (e: Exception) {
-                                                    Log.e("TAG", e.message!!)
-                                                    Toast.makeText(this@ReviewActivity, requestMessageFail, Toast.LENGTH_LONG).show()
-                                                    finish()
-                                                }
+                when (holder.itemView.Button_follow.text) {
+                    "Follow" -> {
+                        rootDB.collection("users").document(users.get(position)).get().addOnSuccessListener { document ->
+                            if (document != null) {
+                                if (document.get("private") == false) {
+                                    rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(document.id)))
+                                    rootDB.collection("users").document(document.id).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                                    rootDB.collection("posts").whereEqualTo("userId", document.id).get().addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            task.result?.forEach { doc ->
+                                                doc.reference.update("sharedWithUsers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
                                             }
                                         }
                                     }
-                                holder.itemView.Button_follow.text = "Request sent"
+                                    holder.itemView.Button_follow.text = "UnFollow"
+                                    holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_unfollow)
+                                    holder.itemView.Button_follow.setTextColor(R.color.red)
+                                } else {
+                                    //If account is private add notification to user that follow request will be sent to
+                                    rootDB.collection("notifications").document(authDb.currentUser!!.uid).get()
+                                        .addOnCompleteListener { user ->
+                                            if (user.isSuccessful) {
+                                                val userInfo = user.result
+                                                if (userInfo != null) {
+                                                    try {
+                                                        val notification = Notifications()
+                                                        //user that follow request will be sent to
+                                                        notification.userId = document.id
+                                                        //User that wants to follow private account
+                                                        notification.followerRequestId = authDb.currentUser!!.uid
+                                                        notification.time = getTime()
+                                                        notification.isFollowing = false
+                                                        notification.id = rootDB.collection("notifications").document().id
+                                                        rootDB.collection("notifications").document(notification.id!!).set(notification)
+                                                        Toast.makeText(this@ReviewActivity, requestMessageSuccess, Toast.LENGTH_LONG).show()
+                                                    } catch (e: Exception) {
+                                                        Log.e("TAG", e.message!!)
+                                                        Toast.makeText(this@ReviewActivity, requestMessageFail, Toast.LENGTH_LONG).show()
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    holder.itemView.Button_follow.text = "Requested"
+                                    holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_follow)
+                                }
+                            }
+                        }
+                    }
+                    "UnFollow" -> {
+                        rootDB.collection("users").document(users.get(position)).get().addOnSuccessListener { document ->
+                            if (document != null) {
+                                rootDB.collection("users").document(authDb.currentUser!!.uid)
+                                    .update("following", (FieldValue.arrayRemove(document.id)))
+                                rootDB.collection("users").document(users.get(position)).update(
+                                    "followers",
+                                    (FieldValue.arrayRemove(authDb.currentUser!!.uid))
+                                )
+                                rootDB.collection("posts")
+                                    .whereEqualTo("userId", users.get(position)).get()
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            task.result?.forEach { doc ->
+                                                doc.reference.update(
+                                                    "sharedWithUsers",
+                                                    (FieldValue.arrayRemove(authDb.currentUser!!.uid))
+                                                )
+                                            }
+                                        }
+                                    }
+                                holder.itemView.Button_follow.text = "Follow"
                                 holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_follow)
                             }
                         }
                     }
-                } else if (holder.itemView.Button_follow.text == "UnFollow") {
-                    rootDB.collection("users").document(users.get(position)).get().addOnSuccessListener { document ->
-                        if (document != null) {
-                            if (document.get("private") == true) {
-                                rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayRemove(document.id)))
-                                rootDB.collection("users").document(users.get(position)).update("followers", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
-                                rootDB.collection("posts").whereEqualTo("userId", users.get(position)).get().addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        task.result?.forEach { doc ->
-                                            doc.reference.update("sharedWithUsers", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
-                                        }
-                                    }
-                                }
-                            }
-                            holder.itemView.Button_follow.text = "Follow"
-                            holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_follow)
-                        } else {
-                            rootDB.collection("notifications").whereEqualTo("userId", users.get(position)).whereEqualTo("followerRequestId", authDb.currentUser!!.uid).get().addOnCompleteListener { task2 ->
+                    "Requested" -> {
+                        rootDB.collection("notifications")
+                            .whereEqualTo("userId", users.get(position))
+                            .whereEqualTo("followerRequestId", authDb.currentUser!!.uid)
+                            .get().addOnCompleteListener { task2 ->
                                 if (task2.isSuccessful) {
                                     if (task2.result != null) {
                                         task2.result?.forEach { doc ->
                                             doc.reference.delete()
                                         }
                                     }
-                                } else {
-                                    Toast.makeText(applicationContext, "Error. Try Again", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            holder.itemView.Button_follow.text = "Follow"
-                            holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_follow)
-                        }
+                        holder.itemView.Button_follow.text = "Follow"
+                        holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_follow)
                     }
                 }
             }
         }
     }
-
     @SuppressLint("SimpleDateFormat")
     fun getTime(): String {
         val sdf = SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z")
@@ -282,4 +300,3 @@ class ReviewActivity : AppCompatActivity() {
         return currentDateandTime
     }
 }
-

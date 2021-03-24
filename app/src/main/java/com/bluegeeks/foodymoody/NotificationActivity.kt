@@ -1,30 +1,26 @@
 package com.bluegeeks.foodymoody
 
 import android.annotation.SuppressLint
-import android.app.Notification
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.Notifications
-import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_notification.*
-import kotlinx.android.synthetic.main.activity_personal_user_side.*
-import kotlinx.android.synthetic.main.item_notifications.*
 import kotlinx.android.synthetic.main.item_notifications.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class NotificationActivity : BaseFirebaseProperties() {
+
     private var adapter: NotificationsAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,17 +40,14 @@ class NotificationActivity : BaseFirebaseProperties() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_bar_home, menu)
+        menuInflater.inflate(R.menu.menu_bar_notification, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
-            R.id.action_add -> {
-                startActivity(Intent(applicationContext, PostActivity::class.java))
-                return true
-            }
+
             R.id.action_logout -> {
                 logout()
                 return true
@@ -63,12 +56,8 @@ class NotificationActivity : BaseFirebaseProperties() {
                 startActivity(Intent(applicationContext, PersonalActivity::class.java))
                 return true
             }
-            R.id.action_notification -> {
+            R.id.action_home -> {
                 startActivity(Intent(applicationContext, HomeActivity::class.java))
-                return true
-            }
-            R.id.action_serach -> {
-                startActivity(Intent(applicationContext, SearchActivity::class.java))
                 return true
             }
             R.id.action_message -> {
@@ -97,7 +86,6 @@ class NotificationActivity : BaseFirebaseProperties() {
         val intent = Intent(applicationContext, LoginActivity::class.java)
         startActivity(intent)
     }
-
 
     // create inner classes needed to bind the data to the recyclerview
     private inner class NotificationsViewHolder internal constructor(private val view: View) :
@@ -178,7 +166,6 @@ class NotificationActivity : BaseFirebaseProperties() {
             }
         }
     }
-
 
     @SuppressLint("SimpleDateFormat")
     fun getTime(): String {

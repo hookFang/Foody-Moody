@@ -28,7 +28,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/action_notification"
-        android:icon="@drawable/notofication"
+        android:icon="@drawable/notification"
         android:title="@string/add"
         app:showAsAction="always" />
 
