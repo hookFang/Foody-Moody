@@ -115,7 +115,7 @@ class NotificationActivity : BaseFirebaseProperties() {
                     val userNotification = task.result
                     if (userNotification != null) {
                         task.result?.forEach { doc ->
-                            var userName: String = doc.get("userName").toString()
+                            val userName: String = doc.get("userName").toString()
 
                             holder.itemView.username.text = userName
 

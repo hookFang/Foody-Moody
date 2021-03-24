@@ -20,10 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_personal.*
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_profile.imageView_profile_picture
-import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,7 +47,7 @@ class ProfileActivity : AppCompatActivity() {
             birthDate = userInfo?.get("birthDay").toString()
 
             if (userInfo?.get("userName") != "" && userInfo?.get("userName") != null) {
-                TextView_username.text = userInfo?.get("userName").toString()
+                TextView_username.text = userInfo.get("userName").toString()
             }
             if (firstName != "" && lastName != "") {
                 TextView_fullname.text = firstName + " " + lastName
@@ -61,7 +58,7 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             if (userInfo?.get("email") != "" && userInfo?.get("email") != null) {
-                TextView_email.text = userInfo?.get("email").toString()
+                TextView_email.text = userInfo.get("email").toString()
             }
             if (birthDate != "") {
                 TextView_birthday.text = birthDate
@@ -74,7 +71,7 @@ class ProfileActivity : AppCompatActivity() {
 
             if(userInfo?.get("photoURI") != "") {
                 //Glide.with(this@ProfileActivity).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
-                Glide.with(this).load(userInfo?.get("photoURI").toString()).into(imageView_profile_picture);
+                Glide.with(this).load(userInfo?.get("photoURI").toString()).into(imageView_profile_picture)
             }
         }
 
@@ -93,7 +90,7 @@ class ProfileActivity : AppCompatActivity() {
 
             editText_firstName.setText(firstName)
             editText_lastName.setText(lastName)
-            textView_birthDate.setText(birthDate)
+            textView_birthDate.text = birthDate
 
             alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             alertDialog.show()
@@ -107,7 +104,7 @@ class ProfileActivity : AppCompatActivity() {
                     selectedDate.set(Calendar.MONTH, month)
                     selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                     date = format.format(selectedDate.time)
-                    textView_birthDate.setText(date)
+                    textView_birthDate.text = date
                 },
                         now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
 
@@ -116,7 +113,7 @@ class ProfileActivity : AppCompatActivity() {
 
             button_calender_reset.setOnClickListener(View.OnClickListener() {
                 date = ""
-                textView_birthDate.setText(date)
+                textView_birthDate.text = date
             })
 
             button_profile_update.setOnClickListener(View.OnClickListener() {

@@ -36,19 +36,19 @@ class SignUpInstrumentedTest {
         //Go to sign Up page
         Espresso.onView(ViewMatchers.withId(R.id.button_signUp)).perform(ViewActions.click())
         //Enter values
-        Espresso.onView(ViewMatchers.withId(R.id.signUpUsername)).perform(ViewActions.typeText("tester007"),ViewActions.closeSoftKeyboard());
+        Espresso.onView(ViewMatchers.withId(R.id.signUpUsername)).perform(ViewActions.typeText("tester007"),ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpUsername))
             .check(ViewAssertions.matches(ViewMatchers.withText("tester007")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpEmail))
-            .perform(ViewActions.typeText("tester007@gmail.com"), ViewActions.closeSoftKeyboard());
+            .perform(ViewActions.typeText("tester007@gmail.com"), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpEmail))
             .check(ViewAssertions.matches(ViewMatchers.withText("tester007@gmail.com")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpPassword))
-            .perform(ViewActions.typeText("EJej1234*987&"), ViewActions.closeSoftKeyboard());
+            .perform(ViewActions.typeText("EJej1234*987&"), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpPassword))
             .check(ViewAssertions.matches(ViewMatchers.withText("EJej1234*987&")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpConfirmPassword))
-            .perform(ViewActions.typeText("EJej1234*987&"), ViewActions.closeSoftKeyboard());
+            .perform(ViewActions.typeText("EJej1234*987&"), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpConfirmPassword))
             .check(ViewAssertions.matches(ViewMatchers.withText("EJej1234*987&")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpButton)).perform(ViewActions.click())
@@ -64,19 +64,19 @@ class SignUpInstrumentedTest {
         //Go to sign Up page
         Espresso.onView(ViewMatchers.withId(R.id.button_signUp)).perform(ViewActions.click())
         //Enter values
-        Espresso.onView(ViewMatchers.withId(R.id.signUpUsername)).perform(ViewActions.typeText("tester007"),ViewActions.closeSoftKeyboard());
+        Espresso.onView(ViewMatchers.withId(R.id.signUpUsername)).perform(ViewActions.typeText("tester007"),ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpUsername))
             .check(ViewAssertions.matches(ViewMatchers.withText("tester007")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpEmail))
-            .perform(ViewActions.typeText("tester007@gmail.com"), ViewActions.closeSoftKeyboard());
+            .perform(ViewActions.typeText("tester007@gmail.com"), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpEmail))
             .check(ViewAssertions.matches(ViewMatchers.withText("tester007@gmail.com")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpPassword))
-            .perform(ViewActions.typeText("hi"), ViewActions.closeSoftKeyboard());
+            .perform(ViewActions.typeText("hi"), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpPassword))
             .check(ViewAssertions.matches(ViewMatchers.withText("hi")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpConfirmPassword))
-            .perform(ViewActions.typeText("hi"), ViewActions.closeSoftKeyboard());
+            .perform(ViewActions.typeText("hi"), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpConfirmPassword))
             .check(ViewAssertions.matches(ViewMatchers.withText("hi")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpButton)).perform(ViewActions.click())
@@ -92,19 +92,19 @@ class SignUpInstrumentedTest {
         //Go to sign Up page
         Espresso.onView(ViewMatchers.withId(R.id.button_signUp)).perform(ViewActions.click())
         //Enter values
-        Espresso.onView(ViewMatchers.withId(R.id.signUpUsername)).perform(ViewActions.typeText("tester977665655"),ViewActions.closeSoftKeyboard());
+        Espresso.onView(ViewMatchers.withId(R.id.signUpUsername)).perform(ViewActions.typeText("tester977665655"),ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpUsername))
             .check(ViewAssertions.matches(ViewMatchers.withText("tester977665655")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpEmail))
-            .perform(ViewActions.typeText("tester977665655@test.com"), ViewActions.closeSoftKeyboard());
+            .perform(ViewActions.typeText("tester977665655@test.com"), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpEmail))
             .check(ViewAssertions.matches(ViewMatchers.withText("tester977665655@test.com")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpPassword))
-            .perform(ViewActions.typeText("EJej1234*987&"), ViewActions.closeSoftKeyboard());
+            .perform(ViewActions.typeText("EJej1234*987&"), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpPassword))
             .check(ViewAssertions.matches(ViewMatchers.withText("EJej1234*987&")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpConfirmPassword))
-            .perform(ViewActions.typeText("EJej1234*987&"), ViewActions.closeSoftKeyboard());
+            .perform(ViewActions.typeText("EJej1234*987&"), ViewActions.closeSoftKeyboard())
         Espresso.onView(ViewMatchers.withId(R.id.signUpConfirmPassword))
             .check(ViewAssertions.matches(ViewMatchers.withText("EJej1234*987&")))
         Espresso.onView(ViewMatchers.withId(R.id.signUpButton)).perform(ViewActions.click())

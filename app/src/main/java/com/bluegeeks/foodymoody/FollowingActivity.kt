@@ -2,21 +2,16 @@ package com.bluegeeks.foodymoody
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Color.red
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
 import android.widget.RelativeLayout
-import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.google.firebase.firestore.FieldValue
 import kotlinx.android.synthetic.main.activity_following.*
-import kotlinx.android.synthetic.main.item_reviews.*
 import kotlinx.android.synthetic.main.item_reviews.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat

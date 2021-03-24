@@ -28,8 +28,6 @@ class LoginActivity : AppCompatActivity() {
 
     private val auth = Firebase.auth
     private val RC_SIGN_IN = 0
-    //bitmap image fore the post
-    var bitmapImage: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,13 +60,13 @@ class LoginActivity : AppCompatActivity() {
                             HideReturnsTransformationMethod.getInstance()
                     button_visiblity.setBackgroundResource(R.drawable.invisible)
                     //setSelection is added so that the cursor stays at the end when the hide button is pressed
-                    editText_password.setSelection(editText_password.length());
+                    editText_password.setSelection(editText_password.length())
                     clicked = true
                 } else {
                     editText_password.transformationMethod =
                             PasswordTransformationMethod.getInstance()
                     button_visiblity.setBackgroundResource(R.drawable.visible)
-                    editText_password.setSelection(editText_password.length());
+                    editText_password.setSelection(editText_password.length())
                     clicked = false
                 }
             }
@@ -213,7 +211,7 @@ class LoginActivity : AppCompatActivity() {
                                 val postsID = ArrayList<String>()
                                 val bio = ""
                                 val time = getTime()
-                                val private = false;
+                                val private = false
 
                                 val newUser =
                                     User(

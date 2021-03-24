@@ -14,11 +14,9 @@ import com.bluegeeks.foodymoody.entity.User
 import com.bumptech.glide.Glide
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import kotlinx.android.synthetic.main.activity_personal.*
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.item_search_user.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
-import java.util.*
 
 class SearchActivity : AppCompatActivity() {
 
@@ -30,7 +28,7 @@ class SearchActivity : AppCompatActivity() {
 
         //Set RecyclerView to use linear layout
         searchResultRecyclerView.layoutManager = LinearLayoutManager(this)
-        val query = rootDB.collection("users").whereNotEqualTo("userName", null)?.orderBy("userName")
+        val query = rootDB.collection("users").whereNotEqualTo("userName", null).orderBy("userName")
         //Get all the contacts in phone
         //pass query results to the recycler adapter
         val options = query.let {
@@ -44,11 +42,12 @@ class SearchActivity : AppCompatActivity() {
         searchUser.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             //this is when you press submit
             override fun onQueryTextSubmit(searchString: String): Boolean {
-                val newQuery = rootDB.collection("users").whereNotEqualTo("userName", null)?.orderBy("userName")?.whereGreaterThanOrEqualTo(
-                    "userName",
-                    searchString
-                )
-                val newOptions = newQuery?.let {
+                val newQuery = rootDB.collection("users").whereNotEqualTo("userName", null).orderBy("userName")
+                    .whereGreaterThanOrEqualTo(
+                        "userName",
+                        searchString
+                    )
+                val newOptions = newQuery.let {
                     FirestoreRecyclerOptions.Builder<User>().setQuery(
                         it,
                         User::class.java
@@ -60,11 +59,12 @@ class SearchActivity : AppCompatActivity() {
 
             //this actually runs each time a text change is found
             override fun onQueryTextChange(searchString: String): Boolean {
-                val newQuery = rootDB.collection("users").whereNotEqualTo("userName", null)?.orderBy("userName")?.whereGreaterThanOrEqualTo(
-                    "userName",
-                    searchString
-                )
-                val newOptions = newQuery?.let {
+                val newQuery = rootDB.collection("users").whereNotEqualTo("userName", null).orderBy("userName")
+                    .whereGreaterThanOrEqualTo(
+                        "userName",
+                        searchString
+                    )
+                val newOptions = newQuery.let {
                     FirestoreRecyclerOptions.Builder<User>().setQuery(
                         it,
                         User::class.java

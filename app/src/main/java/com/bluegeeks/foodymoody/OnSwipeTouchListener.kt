@@ -1,5 +1,6 @@
 package com.bluegeeks.foodymoody
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
@@ -11,6 +12,7 @@ import kotlin.math.abs
 internal open class OnSwipeTouchListener(c: Context?) :
     OnTouchListener {
     private val gestureDetector: GestureDetector
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
         return gestureDetector.onTouchEvent(motionEvent)
     }
