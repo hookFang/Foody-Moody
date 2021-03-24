@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/comment"
+    android:layout_marginTop="@dimen/d_10"
+    android:layout_marginStart="@dimen/d_10"
+    android:layout_marginEnd="@dimen/d_10"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/LinearLayout_review_body"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d_30"
+        android:layout_marginTop="@dimen/d_10"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/TextView_user"
+            android:layout_width="@dimen/d_285"
+            android:layout_height="@dimen/d_20"
+            android:textColor="@color/black"
+            android:textSize="@dimen/f_14"
+            android:layout_marginBottom="@dimen/d_20"
+            android:textAlignment="viewStart"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/d_10"
+            android:text=""
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/Button_follow"
+            android:layout_width="@dimen/d_80"
+            android:layout_height="@dimen/d_20"
+            android:layout_marginStart="@dimen/d_5"
+            android:text="@string/follow"
+            android:textSize="@dimen/f_12"
+            android:textColor="@color/yellow"
+            android:background="@drawable/button_follow" />
+    </LinearLayout>
+
+</android.widget.LinearLayout>
