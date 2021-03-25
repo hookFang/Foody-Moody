@@ -322,7 +322,29 @@ class PersonalActivityUserSide : AppCompatActivity() {
                     e.printStackTrace()
                 }
 
-                Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
+                if(model.postIsPhoto!!) {
+                    holder.itemView.videoView_post_home.visibility = View.GONE
+                    holder.itemView.ImageView_post.visibility = View.VISIBLE
+                    Glide.with(this@PersonalActivityUserSide).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
+                } else {
+                    holder.itemView.ImageView_post.visibility = View.GONE
+                    holder.itemView.videoView_post_home.visibility = View.VISIBLE
+                    BaseFirebaseProperties.videoRef.child("videos/" + model.id).downloadUrl.addOnSuccessListener {
+                        print(it)
+                        holder.itemView.videoView_post_home.setVideoURI(it)
+                        holder.itemView.videoView_post_home.start()
+                    }.addOnFailureListener {
+                        Log.i("TAG", "Error loading video, Wrong URI")
+                    }
+                    //To play/pause video
+                    holder.itemView.videoView_post_home.setOnClickListener {
+                        if (holder.itemView.videoView_post_home.isPlaying) {
+                            holder.itemView.videoView_post_home.pause()
+                        } else {
+                            holder.itemView.videoView_post_home.start()
+                        }
+                    }
+                }
                 holder.itemView.textView_time.text = time
                 holder.itemView.TextView_name.text = model.userFullName
                 holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.bluegeeks.foodymoody">
 
     <application
-        android:allowBackup="true"
+        android:requestLegacyExternalStorage="true"
+        tools:replace="android:label"
         android:icon="@mipmap/ic_launcher_chef"
         android:label=""
         android:roundIcon="@mipmap/ic_launcher_chef_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-        android:fullBackupContent="@xml/backup_descriptor">
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         <activity android:name=".FollowingActivity" />
         <activity android:name=".ReviewActivity" />
         <activity android:name=".NotificationActivity" />
@@ -44,6 +45,20 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 </manifest>

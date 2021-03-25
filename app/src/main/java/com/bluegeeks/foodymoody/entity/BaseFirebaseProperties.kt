@@ -16,6 +16,7 @@ open class BaseFirebaseProperties: AppCompatActivity() {
         @SuppressLint("StaticFieldLeak")
         val rootDB = FirebaseFirestore.getInstance()
         val imageRef = FirebaseStorage.getInstance().reference
+        val videoRef = FirebaseStorage.getInstance().reference
         val realtimeDB = FirebaseDatabase.getInstance()
     }
 }

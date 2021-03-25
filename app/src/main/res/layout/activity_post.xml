@@ -58,7 +58,16 @@
                 android:layout_marginTop="@dimen/d_50"
                 android:textColor="@color/dark_blue"
                 android:hint="@string/click_to_add"
-                android:background="@drawable/image_frame"/>
+                android:background="@drawable/image_frame"
+                android:visibility="visible" />
+
+            <VideoView
+                android:id="@+id/videoView_post"
+                android:layout_width="350dp"
+                android:layout_height="350dp"
+                android:layout_marginTop="@dimen/d_50"
+                android:hint="@string/click_to_add"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/editText_description"
