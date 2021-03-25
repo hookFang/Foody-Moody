@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_post.*
+import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -188,6 +189,14 @@ class PostActivity : BaseFirebaseProperties() {
                             }
                         }
                     }
+            }
+        }
+        //To play/pause video
+        videoView_post.setOnClickListener {
+            if (videoView_post.isPlaying) {
+                videoView_post.pause()
+            } else {
+                videoView_post.start()
             }
         }
         //instantiate toolbar

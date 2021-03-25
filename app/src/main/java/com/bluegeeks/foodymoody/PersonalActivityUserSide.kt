@@ -336,6 +336,14 @@ class PersonalActivityUserSide : AppCompatActivity() {
                     }.addOnFailureListener {
                         Log.i("TAG", "Error loading video, Wrong URI")
                     }
+                    //To play/pause video
+                    holder.itemView.videoView_post_home.setOnClickListener {
+                        if (holder.itemView.videoView_post_home.isPlaying) {
+                            holder.itemView.videoView_post_home.pause()
+                        } else {
+                            holder.itemView.videoView_post_home.start()
+                        }
+                    }
                 }
                 holder.itemView.textView_time.text = time
                 holder.itemView.TextView_name.text = model.userFullName
