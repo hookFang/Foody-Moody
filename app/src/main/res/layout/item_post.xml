@@ -39,6 +39,14 @@
             android:textAlignment="center"/>
     </LinearLayout>
 
+    <VideoView
+        android:id="@+id/videoView_post_home"
+        android:layout_width="@dimen/d_375"
+        android:layout_height="@dimen/d_340"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/d_10"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/ImageView_post"
         android:layout_width="wrap_content"

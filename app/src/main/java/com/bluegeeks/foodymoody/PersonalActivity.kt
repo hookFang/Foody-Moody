@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -260,7 +261,21 @@ class PersonalActivity : BaseFirebaseProperties() {
                     e.printStackTrace()
                 }
 
-                Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post)
+                if(model.postIsPhoto!!) {
+                    holder.itemView.videoView_post_home.visibility = View.GONE
+                    holder.itemView.ImageView_post.visibility = View.VISIBLE
+                    Glide.with(this@PersonalActivity).load(imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
+                } else {
+                    holder.itemView.ImageView_post.visibility = View.GONE
+                    holder.itemView.videoView_post_home.visibility = View.VISIBLE
+                    videoRef.child("videos/" + model.id).downloadUrl.addOnSuccessListener {
+                        print(it)
+                        holder.itemView.videoView_post_home.setVideoURI(it)
+                        holder.itemView.videoView_post_home.start()
+                    }.addOnFailureListener {
+                        Log.i("TAG", "Error loading video, Wrong URI")
+                    }
+                }
                 holder.itemView.textView_time.text = time
                 holder.itemView.TextView_name.text = model.userFullName
                 holder.itemView.TextView_description.text = model.description // convert to float to match RatingBar.rating type
