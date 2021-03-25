@@ -132,19 +132,15 @@ class NotificationActivity : BaseFirebaseProperties() {
                                     }
                                 }
                                 rootDB.collection("notifications").document(model.id.toString())
-                                    .update(
-                                        mapOf(
-                                            "following" to true
-                                        )
-                                    )
-                                    .addOnSuccessListener {
-                                        val intent = Intent(applicationContext, NotificationActivity::class.java)
-                                        startActivity(intent)
-                                        finish()
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(applicationContext, "Error. Could not approve", Toast.LENGTH_SHORT).show()
-                                    }
+                                        .delete()
+                                        .addOnSuccessListener {
+                                            val intent = Intent(applicationContext, NotificationActivity::class.java)
+                                            startActivity(intent)
+                                            finish()
+                                        }
+                                        .addOnFailureListener {
+                                            Toast.makeText(applicationContext, "Error. Could not reject", Toast.LENGTH_SHORT).show()
+                                        }
                             }
 
                             //This for if the user rejects the follower request
