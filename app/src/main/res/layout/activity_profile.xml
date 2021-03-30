@@ -94,19 +94,28 @@
                 android:layout_marginTop="@dimen/d_20"/>
 
             <CheckBox
-                android:id="@+id/checkBoxPrivate"
+                android:id="@+id/checkBoxFollowListIsVisible"
                 android:layout_width="@dimen/d_300"
                 android:layout_height="@dimen/d_30"
                 android:background="@drawable/text_frame_profile"
-                android:hint="@string/privateProfile"
+                android:text="@string/followListIsVisible"
                 android:textAlignment="center"
                 android:gravity="center"
                 android:textSize="@dimen/f_20"
                 android:layout_marginTop="@dimen/d_20"
-                android:button="@null"
-                android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
-                android:paddingRight="@dimen/padding_checkbox"
-                android:paddingLeft="@dimen/padding_checkbox"/>
+                android:enabled="false"/>
+
+            <CheckBox
+                android:id="@+id/checkBoxPrivate"
+                android:layout_width="@dimen/d_300"
+                android:layout_height="@dimen/d_30"
+                android:background="@drawable/text_frame_profile"
+                android:text="@string/privateProfile"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="@dimen/f_20"
+                android:layout_marginTop="@dimen/d_20"
+                android:enabled="false"/>
 
             <Button
                 android:id="@+id/Button_updateProfile"
@@ -121,7 +130,7 @@
 
             <Button
                 android:id="@+id/Button_updateSecurity"
-                android:layout_width="@dimen/d_180"
+                android:layout_width="@dimen/d_200"
                 android:layout_height="@dimen/d_40"
                 android:layout_marginTop="@dimen/d_20"
                 android:background="@drawable/button_login"

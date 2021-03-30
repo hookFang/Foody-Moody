@@ -10,10 +10,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +18,10 @@ import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.activity_profile.checkBoxFollowListIsVisible
+import kotlinx.android.synthetic.main.activity_profile.checkBoxPrivate
+import kotlinx.android.synthetic.main.activity_profile.imageView_profile_picture
+import kotlinx.android.synthetic.main.profile_security_dialogue.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,6 +31,8 @@ class ProfileActivity : AppCompatActivity() {
     var firstName = ""
     var lastName = ""
     var birthDate = ""
+    var security = false
+    var private = false
 
     @SuppressLint("WeekBasedYear")
     var format = SimpleDateFormat("dd MMM, YYYY", Locale.US)
@@ -64,9 +67,14 @@ class ProfileActivity : AppCompatActivity() {
                 TextView_birthday.text = birthDate
             }
 
-            if (userInfo?.get("private") != false)
-            {
+            if (userInfo?.get("followListIsVisible") != false) {
+                checkBoxFollowListIsVisible.isChecked = true
+                security = true
+            }
+
+            if (userInfo?.get("private") != false) {
                 checkBoxPrivate.isChecked = true
+                private = true
             }
 
             if(userInfo?.get("photoURI") != "") {
@@ -77,25 +85,25 @@ class ProfileActivity : AppCompatActivity() {
 
         Button_updateProfile.setOnClickListener {
             val alert = AlertDialog.Builder(this@ProfileActivity)
-            val mView: View = layoutInflater.inflate(R.layout.profile_dialogue, null)
-            val editText_firstName: EditText = mView.findViewById(R.id.EditText_firstName)
-            val editText_lastName: EditText = mView.findViewById(R.id.EditText_lastName)
-            val textView_birthDate: TextView = mView.findViewById(R.id.TextView_birthDate)
-            val button_calender: Button = mView.findViewById(R.id.Button_calender)
-            val button_calender_reset: Button = mView.findViewById(R.id.Button_calender_reset)
-            val button_profile_update: Button = mView.findViewById(R.id.Button_profile_update)
+            val profileUpdating: View = layoutInflater.inflate(R.layout.profile_dialogue, null)
+            val editTextFirstName: EditText = profileUpdating.findViewById(R.id.EditText_firstName)
+            val editTextLastName: EditText = profileUpdating.findViewById(R.id.EditText_lastName)
+            val textViewBirthDate: TextView = profileUpdating.findViewById(R.id.TextView_birthDate)
+            val buttonCalender: Button = profileUpdating.findViewById(R.id.Button_calender)
+            val buttonCalenderReset: Button = profileUpdating.findViewById(R.id.Button_calender_reset)
+            val buttonProfileUpdate: Button = profileUpdating.findViewById(R.id.Button_profile_update)
             var date = ""
-            alert.setView(mView)
+            alert.setView(profileUpdating)
             val alertDialog: AlertDialog = alert.create()
 
-            editText_firstName.setText(firstName)
-            editText_lastName.setText(lastName)
-            textView_birthDate.text = birthDate
+            editTextFirstName.setText(firstName)
+            editTextLastName.setText(lastName)
+            textViewBirthDate.text = birthDate
 
             alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             alertDialog.show()
 
-            button_calender.setOnClickListener {
+            buttonCalender.setOnClickListener {
                 val now = Calendar.getInstance()
                 val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {
                     view, year, month, dayOfMonth ->
@@ -104,31 +112,29 @@ class ProfileActivity : AppCompatActivity() {
                     selectedDate.set(Calendar.MONTH, month)
                     selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                     date = format.format(selectedDate.time)
-                    textView_birthDate.text = date
+                    buttonCalender.text = date
                 },
                         now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
 
                 datePicker.show()
             }
 
-            button_calender_reset.setOnClickListener(View.OnClickListener() {
+            buttonCalenderReset.setOnClickListener(View.OnClickListener() {
                 date = ""
-                textView_birthDate.text = date
+                textViewBirthDate.text = date
             })
 
-            button_profile_update.setOnClickListener(View.OnClickListener() {
-                val first_name = editText_firstName.text.toString()
-                val last_name = editText_lastName.text.toString()
-                val birth_date = textView_birthDate.text.toString()
-                val privateCheck = checkBoxPrivate.isChecked
+            buttonProfileUpdate.setOnClickListener(View.OnClickListener() {
+                val firstName = editTextFirstName.text.toString()
+                val lastName = editTextLastName.text.toString()
+                val birthDate = textViewBirthDate.text.toString()
 
                 rootDB.collection("users").document(authDb.currentUser!!.uid)
                         .update(
                                 mapOf(
-                                        "firstName" to first_name,
-                                        "lastName" to last_name,
-                                        "birthDay" to birth_date,
-                                        "private" to privateCheck
+                                        "firstName" to firstName,
+                                        "lastName" to lastName,
+                                        "birthDay" to birthDate
                                 )
                         )
                         .addOnSuccessListener {
@@ -141,6 +147,50 @@ class ProfileActivity : AppCompatActivity() {
                         }
             })
         }
+
+        Button_updateSecurity.setOnClickListener {
+
+            val alert = AlertDialog.Builder(this@ProfileActivity)
+            val securityUpdating: View = layoutInflater.inflate(R.layout.profile_security_dialogue, null)
+            val privateCheck: CheckBox = securityUpdating.findViewById(R.id.checkBoxPrivate)
+            val privateSecurityCheck: CheckBox = securityUpdating.findViewById(R.id.checkBoxFollowListIsVisible)
+            val buttonProfileSecurityUpdate: Button = securityUpdating.findViewById(R.id.Button_profile_security_update)
+
+            if (private) {
+                privateCheck.isChecked = true
+            }
+
+            if (security) {
+                privateSecurityCheck.isChecked = true
+            }
+            alert.setView(securityUpdating)
+            val alertDialog: AlertDialog = alert.create()
+
+            alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            alertDialog.show()
+
+            buttonProfileSecurityUpdate.setOnClickListener(View.OnClickListener() {
+
+                rootDB.collection("users").document(authDb.currentUser!!.uid)
+                    .update(
+                        mapOf(
+                            "private" to privateCheck.isChecked,
+                            "followListIsVisible" to privateSecurityCheck.isChecked
+                        )
+                    )
+                    .addOnSuccessListener {
+                        private = privateCheck.isChecked
+                        security = privateSecurityCheck.isChecked
+                        val intent = Intent(applicationContext, ProfileActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
+                    }
+            })
+        }
+
 
         //instantiate toolbar
         setSupportActionBar(topToolbar)

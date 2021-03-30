@@ -22,7 +22,16 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.activity_personal.*
 import kotlinx.android.synthetic.main.activity_personal_user_side.*
+import kotlinx.android.synthetic.main.activity_personal_user_side.TextView_bio_content
+import kotlinx.android.synthetic.main.activity_personal_user_side.button_change_format
+import kotlinx.android.synthetic.main.activity_personal_user_side.followers_text_view
+import kotlinx.android.synthetic.main.activity_personal_user_side.following_text_view
+import kotlinx.android.synthetic.main.activity_personal_user_side.imageView_profile_picture
+import kotlinx.android.synthetic.main.activity_personal_user_side.postsRecyclerView
+import kotlinx.android.synthetic.main.activity_personal_user_side.posts_text_view
+import kotlinx.android.synthetic.main.activity_personal_user_side.textView_name
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
@@ -38,8 +47,8 @@ class PersonalActivityUserSide : AppCompatActivity() {
     val list = 1
     var isPrivate: Boolean = false
     var isFollowing: Boolean = false
-    val requestMessageSuccess = "Request sent successfully"
-    val requestMessageFail = "Error, Request not sent!"
+    private val requestMessageSuccess = "Request sent successfully"
+    private val requestMessageFail = "Error, Request not sent!"
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -195,6 +204,42 @@ class PersonalActivityUserSide : AppCompatActivity() {
             displayStatus = !displayStatus
         }
 
+        followers_text_view.setOnClickListener {
+            if (userID != "null") {
+                rootDB.collection("users").document(userID.toString()).get().addOnSuccessListener { task ->
+                    if (task != null) {
+                        if (task.get("followListIsVisible") == true) {
+                            val intent = Intent(applicationContext, FollowingActivity::class.java)
+                            intent.putExtra("button", "followers")
+                            intent.putExtra("pageBack", "personalUserSide")
+                            intent.putExtra("userID", userID)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(this, "List is protected", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
+
+        following_text_view.setOnClickListener{
+            if (userID != "null") {
+                rootDB.collection("users").document(userID.toString()).get().addOnSuccessListener { task ->
+                    if (task != null) {
+                        if (task.get("followListIsVisible") == true) {
+                            val intent = Intent(applicationContext, FollowingActivity::class.java)
+                            intent.putExtra("button", "followers")
+                            intent.putExtra("pageBack", "personalUserSide")
+                            intent.putExtra("userID", userID)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(this, "List is protected", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
+
         //instantiate toolbar
         setSupportActionBar(topToolbar)
     }
@@ -265,12 +310,12 @@ class PersonalActivityUserSide : AppCompatActivity() {
         ): PostViewHolder {
 
             val view: View
-            if (viewType == list) {
+            return if (viewType == list) {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
-                return PostViewHolder(view)
+                PostViewHolder(view)
             } else {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.item_post_changed, parent, false)
-                return PostViewHolder(view)
+                PostViewHolder(view)
             }
         }
 

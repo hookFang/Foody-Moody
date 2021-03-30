@@ -3,14 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.bluegeeks.foodymoody">
 
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
-        android:requestLegacyExternalStorage="true"
-        tools:replace="android:label"
         android:icon="@mipmap/ic_launcher_chef"
         android:label=""
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_chef_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+        tools:replace="android:label">
         <activity android:name=".FollowingActivity" />
         <activity android:name=".ReviewActivity" />
         <activity android:name=".NotificationActivity" />
@@ -55,10 +60,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 </manifest>

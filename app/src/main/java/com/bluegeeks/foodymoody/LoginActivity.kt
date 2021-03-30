@@ -212,6 +212,7 @@ class LoginActivity : AppCompatActivity() {
                                 val bio = ""
                                 val time = getTime()
                                 val private = false
+                                val followListIsVisible = true
 
                                 val newUser =
                                     User(
@@ -227,7 +228,8 @@ class LoginActivity : AppCompatActivity() {
                                         postsID,
                                         bio,
                                         time,
-                                        private
+                                        private,
+                                        followListIsVisible
                                     )
                                 rootDB.collection("users").document(newUser.id!!).set(newUser)
                             } catch (e: Exception) {
