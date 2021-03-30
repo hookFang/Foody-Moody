@@ -260,6 +260,18 @@ class FollowingActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            holder.itemView.TextView_user.setOnClickListener {
+                if(users.get(position) == authDb.currentUser!!.uid) {
+                    startActivity(Intent(applicationContext, PersonalActivity::class.java))
+                    finish()
+                } else {
+                    val intent = Intent(applicationContext, PersonalActivityUserSide::class.java)
+                    intent.putExtra("userID", users.get(position))
+                    startActivity(intent)
+                    finish()
+                }
+            }
         }
     }
 
