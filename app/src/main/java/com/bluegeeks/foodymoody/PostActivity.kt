@@ -40,29 +40,31 @@ class PostActivity : BaseFirebaseProperties() {
     var imageURI: Uri? = null
     var videoURI: Uri? = null
     lateinit var currentPhotoPath: String
+    var pageBack: String = ""
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
 
+        pageBack = intent.getStringExtra("pageBack").toString()
         val successMessage = "Post submitted successfully"
         val unSuccessMessage = "Error, Cannot Post"
 
         // Code referred from - https://medium.com/@manuaravindpta/fetching-contacts-from-device-using-kotlin-6c6d3e76574f
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && (checkSelfPermission(
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED) && checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED) && checkSelfPermission(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
         ) {
             //So if we don't have permission we request for permissions from the user, this will execute the overridden onRequestPermissionsResult
             requestPermissions(
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                1001
+                    arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ),
+                    1001
             )
             //callback onRequestPermissionsResult
         }
@@ -81,114 +83,118 @@ class PostActivity : BaseFirebaseProperties() {
             if (imageView_post.drawable != null && editText_description.text.isNotEmpty()) {
                 progressBar_PostPage.visibility = View.VISIBLE
                 rootDB.collection("users").document(authDb.currentUser!!.uid).get()
-                    .addOnCompleteListener { user ->
-                        if (user.isSuccessful) {
-                            val userInfo = user.result
-                            if (userInfo != null) {
-                                val sharedWithUsersTemp =
-                                    userInfo.get("followers") as ArrayList<String>
-                                sharedWithUsersTemp.add(authDb.currentUser!!.uid)
-                                try {
-                                    val post = Post()
-                                    post.userId = authDb.currentUser!!.uid
-                                    post.userFullName = userInfo.get("userName") as String?
-                                    post.description = editText_description.text.toString().trim()
-                                    post.time = getTime()
-                                    post.postIsPhoto = true
-                                    post.review = hashMapOf(
-                                        "Yummy" to ArrayList<String>(),
-                                        "Sweet" to ArrayList<String>(),
-                                        "Sour" to ArrayList<String>(),
-                                        "Salty" to ArrayList<String>(),
-                                        "Bitter" to ArrayList<String>(),
-                                        "Like" to ArrayList<String>()
-                                    )
-                                    post.sharedWithUsers = sharedWithUsersTemp
-                                    post.id = rootDB.collection("posts").document().id
-                                    rootDB.collection("posts").document(post.id!!).set(post)
-                                    rootDB.collection("users").document(authDb.currentUser!!.uid)
-                                        .update("postsID", (FieldValue.arrayUnion(post.id)))
+                        .addOnCompleteListener { user ->
+                            if (user.isSuccessful) {
+                                val userInfo = user.result
+                                if (userInfo != null) {
+                                    val sharedWithUsersTemp =
+                                            userInfo.get("followers") as ArrayList<String>
+                                    sharedWithUsersTemp.add(authDb.currentUser!!.uid)
+                                    try {
+                                        val post = Post()
+                                        post.userId = authDb.currentUser!!.uid
+                                        post.userFullName = userInfo.get("userName") as String?
+                                        post.description = editText_description.text.toString().trim()
+                                        post.time = getTime()
+                                        post.postIsPhoto = true
+                                        post.review = hashMapOf(
+                                                "Yummy" to ArrayList<String>(),
+                                                "Sweet" to ArrayList<String>(),
+                                                "Sour" to ArrayList<String>(),
+                                                "Salty" to ArrayList<String>(),
+                                                "Bitter" to ArrayList<String>(),
+                                                "Like" to ArrayList<String>()
+                                        )
+                                        post.sharedWithUsers = sharedWithUsersTemp
+                                        post.id = rootDB.collection("posts").document().id
+                                        rootDB.collection("posts").document(post.id!!).set(post)
+                                        rootDB.collection("users").document(authDb.currentUser!!.uid)
+                                                .update("postsID", (FieldValue.arrayUnion(post.id)))
 
-                                    //Upload the image to firebase storage
-                                    val imagesRef: StorageReference =
-                                        imageRef.child("images/" + post.id + ".jpeg")
-                                    val uploadTask: UploadTask? = imagesRef.putFile(imageURI!!)
-                                    uploadTask?.addOnFailureListener {
-                                        Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG)
-                                            .show()
-                                        progressBar_PostPage.visibility = View.GONE
-                                    }?.addOnSuccessListener {
-                                        Toast.makeText(this, successMessage, Toast.LENGTH_LONG)
-                                            .show()
+                                        //Upload the image to firebase storage
+                                        val imagesRef: StorageReference =
+                                                imageRef.child("images/" + post.id + ".jpeg")
+                                        val uploadTask: UploadTask? = imagesRef.putFile(imageURI!!)
+                                        uploadTask?.addOnFailureListener {
+                                            Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG)
+                                                    .show()
+                                            progressBar_PostPage.visibility = View.GONE
+                                        }?.addOnSuccessListener {
+                                            Toast.makeText(this, successMessage, Toast.LENGTH_LONG)
+                                                    .show()
+                                            progressBar_PostPage.visibility = View.GONE
+
+                                            if(pageBack == "personal") {
+                                                startActivity(Intent(applicationContext, PersonalActivity::class.java))
+                                            }
+                                            finish()
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e("TAG", e.message!!)
+                                        Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG).show()
                                         progressBar_PostPage.visibility = View.GONE
                                         finish()
                                     }
-                                } catch (e: Exception) {
-                                    Log.e("TAG", e.message!!)
-                                    Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG).show()
-                                    progressBar_PostPage.visibility = View.GONE
-                                    finish()
                                 }
                             }
                         }
-                    }
             } else if (videoURI != null && editText_description.text.isNotEmpty()) {
                 progressBar_PostPage.visibility = View.VISIBLE
                 rootDB.collection("users").document(authDb.currentUser!!.uid).get()
-                    .addOnCompleteListener { user ->
-                        if (user.isSuccessful) {
-                            val userInfo = user.result
-                            if (userInfo != null) {
-                                val sharedWithUsersTemp =
-                                    userInfo.get("followers") as ArrayList<String>
-                                sharedWithUsersTemp.add(authDb.currentUser!!.uid)
-                                try {
-                                    val post = Post()
-                                    post.userId = authDb.currentUser!!.uid
-                                    post.userFullName = userInfo.get("userName") as String?
-                                    post.description = editText_description.text.toString().trim()
-                                    post.time = getTime()
-                                    post.review = hashMapOf(
-                                        "Yummy" to ArrayList<String>(),
-                                        "Sweet" to ArrayList<String>(),
-                                        "Sour" to ArrayList<String>(),
-                                        "Salty" to ArrayList<String>(),
-                                        "Bitter" to ArrayList<String>()
-                                    )
-                                    post.sharedWithUsers = sharedWithUsersTemp
-                                    post.postIsPhoto = false
-                                    post.id = rootDB.collection("posts").document().id
-                                    rootDB.collection("posts").document(post.id!!).set(post)
-                                    rootDB.collection("users").document(authDb.currentUser!!.uid)
-                                        .update("postsID", (FieldValue.arrayUnion(post.id)))
+                        .addOnCompleteListener { user ->
+                            if (user.isSuccessful) {
+                                val userInfo = user.result
+                                if (userInfo != null) {
+                                    val sharedWithUsersTemp =
+                                            userInfo.get("followers") as ArrayList<String>
+                                    sharedWithUsersTemp.add(authDb.currentUser!!.uid)
+                                    try {
+                                        val post = Post()
+                                        post.userId = authDb.currentUser!!.uid
+                                        post.userFullName = userInfo.get("userName") as String?
+                                        post.description = editText_description.text.toString().trim()
+                                        post.time = getTime()
+                                        post.review = hashMapOf(
+                                                "Yummy" to ArrayList<String>(),
+                                                "Sweet" to ArrayList<String>(),
+                                                "Sour" to ArrayList<String>(),
+                                                "Salty" to ArrayList<String>(),
+                                                "Bitter" to ArrayList<String>()
+                                        )
+                                        post.sharedWithUsers = sharedWithUsersTemp
+                                        post.postIsPhoto = false
+                                        post.id = rootDB.collection("posts").document().id
+                                        rootDB.collection("posts").document(post.id!!).set(post)
+                                        rootDB.collection("users").document(authDb.currentUser!!.uid)
+                                                .update("postsID", (FieldValue.arrayUnion(post.id)))
 
-                                    //Upload the image to firebase storage
-                                    val videoRef: StorageReference =
-                                        videoRef.child("videos/" + post.id)
-                                    val uploadTask: UploadTask = videoRef.putFile(videoURI!!)
-                                    uploadTask.addOnFailureListener {
-                                        Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG)
-                                            .show()
-                                        progressBar_PostPage.visibility = View.GONE
-                                    }.addOnSuccessListener {
-                                        Toast.makeText(this, successMessage, Toast.LENGTH_LONG)
-                                            .show()
-                                        progressBar_PostPage.visibility = View.GONE
-                                        finish()
+                                        //Upload the image to firebase storage
+                                        val videoRef: StorageReference =
+                                                videoRef.child("videos/" + post.id)
+                                        val uploadTask: UploadTask = videoRef.putFile(videoURI!!)
+                                        uploadTask.addOnFailureListener {
+                                            Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG)
+                                                    .show()
+                                            progressBar_PostPage.visibility = View.GONE
+                                        }.addOnSuccessListener {
+                                            Toast.makeText(this, successMessage, Toast.LENGTH_LONG)
+                                                    .show()
+                                            progressBar_PostPage.visibility = View.GONE
+                                            finish()
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e("TAG", e.message!!)
+                                        Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG).show()
                                     }
-                                } catch (e: Exception) {
-                                    Log.e("TAG", e.message!!)
-                                    Toast.makeText(this, unSuccessMessage, Toast.LENGTH_LONG).show()
+                                } else {
+                                    Toast.makeText(
+                                            this,
+                                            "Please select a image and add a description !",
+                                            Toast.LENGTH_LONG
+                                    ).show()
                                 }
-                            } else {
-                                Toast.makeText(
-                                    this,
-                                    "Please select a image and add a description !",
-                                    Toast.LENGTH_LONG
-                                ).show()
                             }
                         }
-                    }
             }
         }
         //To play/pause video
@@ -205,15 +211,15 @@ class PostActivity : BaseFirebaseProperties() {
 
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>,
-        grantResults: IntArray
+            requestCode: Int, permissions: Array<out String>,
+            grantResults: IntArray
     ) {
         if (requestCode == 1001) {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(
-                    this,
-                    "Cannot access storage !",
-                    Toast.LENGTH_LONG
+                        this,
+                        "Cannot access storage !",
+                        Toast.LENGTH_LONG
                 ).show()
             }
         }
