@@ -29,8 +29,7 @@
     <item
         android:id="@+id/action_notification"
         android:icon="@drawable/notification"
-        android:title="@string/add"
+        android:title="@string/Notification"
         app:showAsAction="always" />
-
 
 </menu>

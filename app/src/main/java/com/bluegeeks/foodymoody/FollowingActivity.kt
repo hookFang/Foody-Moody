@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,37 +29,57 @@ class FollowingActivity : AppCompatActivity() {
     var users: ArrayList<String> = ArrayList()
     var follow: Boolean = false
     private lateinit var layout: RelativeLayout
-    private val requestMessageSuccess: String = "Request sent successfully"
-    private val requestMessageFail: String = "Error, Request not sent!"
+    var userID: String = ""
 
     @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_following)
 
-        val postId = intent.getStringExtra("postId")
-        button = intent.getStringExtra("button").toString()
         pageBack = intent.getStringExtra("pageBack").toString()
+        button = intent.getStringExtra("button").toString()
+        userID = intent.getStringExtra("userID").toString()
 
         followingsRecyclerView.layoutManager = LinearLayoutManager(this)
-        rootDB.collection("users").document(authDb.currentUser!!.uid).get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    following = document.get("following") as ArrayList<String>
-                    followers = document.get("followers") as ArrayList<String>
+        if(userID == "null") {
+            rootDB.collection("users").document(authDb.currentUser!!.uid).get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            following = document.get("following") as ArrayList<String>
+                            followers = document.get("followers") as ArrayList<String>
 
-                    if(button == "following") {
-                        TextView_followingList.text = "FOLLOWING\'s"
-                        users = following
-                    } else {
-                        TextView_followingList.text = "FOLLOWERS\'s"
-                        users = followers
-                        follow = true
+                            if (button == "following") {
+                                TextView_followingList.text = "FOLLOWING\'s"
+                                users = following
+                            } else {
+                                TextView_followingList.text = "FOLLOWERS\'s"
+                                users = followers
+                                follow = true
+                            }
+                            followingsRecyclerView.layoutManager = LinearLayoutManager(this)
+                            followingsRecyclerView.adapter = FollowingAdapter(users, this)
+                        }
                     }
-                    followingsRecyclerView.layoutManager = LinearLayoutManager(this)
-                    followingsRecyclerView.adapter = FollowingAdapter(users, this)
-                }
-            }
+        } else {
+            rootDB.collection("users").document(userID).get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            following = document.get("following") as ArrayList<String>
+                            followers = document.get("followers") as ArrayList<String>
+
+                            if (button == "following") {
+                                TextView_followingList.text = "FOLLOWING\'s"
+                                users = following
+                            } else {
+                                TextView_followingList.text = "FOLLOWERS\'s"
+                                users = followers
+                                follow = true
+                            }
+                            followingsRecyclerView.layoutManager = LinearLayoutManager(this)
+                            followingsRecyclerView.adapter = FollowingAdapter(users, this)
+                        }
+                    }
+        }
 
         layout = findViewById(R.id.following_linearLayout)
         layout.setOnTouchListener(object : OnSwipeTouchListener(this@FollowingActivity) {
@@ -122,12 +143,12 @@ class FollowingActivity : AppCompatActivity() {
                         startActivity(Intent(applicationContext, PersonalActivity::class.java))
                         return true
                     }
-//                    "personalUserSide" -> {
-//                        val intent = Intent(this@FollowingActivity, PersonalActivityUserSide::class.java)
-//                        intent.putExtra("userID", userId)
-//                        startActivity(intent)
-//                        return true
-//                    }
+                    "personalUserSide" -> {
+                        val intent = Intent(this@FollowingActivity, PersonalActivityUserSide::class.java)
+                        intent.putExtra("userID", userID)
+                        startActivity(intent)
+                        return true
+                    }
                 }
             }
         }
@@ -159,16 +180,33 @@ class FollowingActivity : AppCompatActivity() {
                 position: Int
         ) {
 
+
             rootDB.collection("users").document(users.get(position)).get().addOnSuccessListener { document ->
                 if (document != null) {
                     holder.itemView.TextView_user.text = document.get("userName") as String
-                    if (!follow) {
-                        holder.itemView.Button_follow.text = "UnFollow"
-                        holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_unfollow)
-                        holder.itemView.Button_follow.setTextColor(R.color.red)
+                    if(userID == "null") {
+                        if (!follow) {
+                            holder.itemView.Button_follow.text = "UnFollow"
+                            holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_unfollow)
+                            holder.itemView.Button_follow.setTextColor(R.color.red)
+                        } else {
+                            holder.itemView.Button_follow.text = "Block"
+                            holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_block)
+                        }
                     } else {
-                        holder.itemView.Button_follow.text = "Block"
-                        holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_block)
+                        rootDB.collection("users").document(authDb.currentUser!!.uid).get().addOnSuccessListener { user ->
+                            if (user != null) {
+                                val following: java.util.ArrayList<String> = user.get("following") as ArrayList<String>
+                                if (following.contains(users.get(position))) {
+                                    holder.itemView.Button_follow.text = "UnFollow"
+                                    holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_unfollow)
+                                    holder.itemView.Button_follow.setTextColor(R.color.red)
+                                } else {
+                                    holder.itemView.Button_follow.text = "Follow"
+                                    holder.itemView.Button_follow.setBackgroundResource(R.drawable.button_follow)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -184,10 +222,54 @@ class FollowingActivity : AppCompatActivity() {
                                     task.result?.forEach { doc ->
                                         doc.reference.update("sharedWithUsers", (FieldValue.arrayRemove(authDb.currentUser!!.uid)))
                                     }
+
+                                    val intent = Intent(applicationContext, FollowingActivity::class.java)
+                                    intent.putExtra("button", button)
+                                    intent.putExtra("pageBack", pageBack)
+                                    if(userID != "null") {
+                                        intent.putExtra("userID", userID)
+                                    }
+                                    startActivity(intent)
+                                    finish()
                                 }
                             }
                         }
                     }
+                } else if (holder.itemView.Button_follow.text == "Follow") {
+                    rootDB.collection("users").document(users.get(position)).get().addOnSuccessListener { document ->
+                        if (document != null) {
+                            rootDB.collection("users").document(authDb.currentUser!!.uid).update("following", (FieldValue.arrayUnion(document.id)))
+                            rootDB.collection("users").document(users.get(position)).update("followers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                            rootDB.collection("posts").whereEqualTo("userId", users.get(position)).get().addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    task.result?.forEach { doc ->
+                                        doc.reference.update("sharedWithUsers", (FieldValue.arrayUnion(authDb.currentUser!!.uid)))
+                                    }
+
+                                    val intent = Intent(applicationContext, FollowingActivity::class.java)
+                                    intent.putExtra("button", button)
+                                    intent.putExtra("pageBack", pageBack)
+                                    if(userID != "null") {
+                                        intent.putExtra("userID", userID)
+                                    }
+                                    startActivity(intent)
+                                    finish()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            holder.itemView.TextView_user.setOnClickListener {
+                if(users.get(position) == authDb.currentUser!!.uid) {
+                    startActivity(Intent(applicationContext, PersonalActivity::class.java))
+                    finish()
+                } else {
+                    val intent = Intent(applicationContext, PersonalActivityUserSide::class.java)
+                    intent.putExtra("userID", users.get(position))
+                    startActivity(intent)
+                    finish()
                 }
             }
         }

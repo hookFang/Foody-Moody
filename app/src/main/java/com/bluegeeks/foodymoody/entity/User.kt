@@ -15,12 +15,14 @@ class User {
     var bio: String? = null
     var time: String? = null
     var private: Boolean = false
-
+    var followListIsVisible: Boolean = true
 
     //Constructors
     constructor()
 
-    constructor(id: String?, email: String?, firstName: String?, lastName: String?, userName: String?, birthDay: String?, photoURI: String?, followers: ArrayList<String>?, following: ArrayList<String>?, postsID: ArrayList<String>?, bio: String?, time: String?, private: Boolean) {
+    constructor(id: String?, email: String?, firstName: String?, lastName: String?, userName: String?,
+                birthDay: String?, photoURI: String?, followers: ArrayList<String>?, following: ArrayList<String>?,
+                postsID: ArrayList<String>?, bio: String?, time: String?, private: Boolean, followListIsVisible: Boolean) {
         this.id = id
         this.email = email
         this.firstName = firstName
@@ -34,9 +36,13 @@ class User {
         this.bio = bio
         this.time = time
         this.private = private
+        this.followListIsVisible = followListIsVisible
+
     }
 
-    constructor(email: String?, firstName: String?, lastName: String?, userName: String?, birthDay: String?, photoURI: String?, followers: ArrayList<String>?, following: ArrayList<String>?, postsID: ArrayList<String>?, bio: String?, time: String?, private: Boolean) {
+    constructor(email: String?, firstName: String?, lastName: String?, userName: String?, birthDay: String?,
+                photoURI: String?, followers: ArrayList<String>?, following: ArrayList<String>?,
+                postsID: ArrayList<String>?, bio: String?, time: String?, private: Boolean, followListIsVisible: Boolean) {
         this.email = email
         this.firstName = firstName
         this.lastName = lastName
@@ -49,5 +55,6 @@ class User {
         this.bio = bio
         this.time = time
         this.private = private
+        this.followListIsVisible = followListIsVisible
     }
 }
