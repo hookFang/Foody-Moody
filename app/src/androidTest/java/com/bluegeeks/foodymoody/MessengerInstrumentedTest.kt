@@ -16,14 +16,18 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import junit.framework.AssertionFailedError
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class MessengerInstrumentedTest {
+
+    companion object {
+        @AfterClass @JvmStatic fun teardown() {
+            BaseFirebaseProperties.realtimeDB.reference.child("7LPevX6rGvfvYIskt6mLL4TuzHR2").removeValue()
+            BaseFirebaseProperties.realtimeDB.reference.child("HfBoG48043bKGh5p7t57l917b1p1").removeValue()
+        }
+    }
 
     @Rule
     @JvmField
@@ -124,6 +128,4 @@ class MessengerInstrumentedTest {
         onView(withId(R.id.button_chat_send)).perform(click())
         onView(withId(R.id.chat_recycler)).check(matches(hasChildCount(2)))
     }
-    
-
 }
