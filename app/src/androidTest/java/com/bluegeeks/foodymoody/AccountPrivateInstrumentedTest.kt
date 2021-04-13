@@ -32,7 +32,7 @@ class AccountPrivateInstrumentedTest {
     }
 
     /**
-     * Instrumented Unit test- Checks if a message was properly send
+     * Instrumented Unit test- Makes the account private and checks if the account is made private or not
      */
     @Test
     fun makeAccountPrivate() {
