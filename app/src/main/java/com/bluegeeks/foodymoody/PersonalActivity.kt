@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
@@ -58,8 +59,19 @@ class PersonalActivity : BaseFirebaseProperties() {
                     posts_text_view.text = postsNumber.size.toString() + "\nPosts"
 
                     if(userInfo.get("photoURI") != "") {
-                        //Glide.with(this@ProfileActivity).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
-                        Glide.with(this).load(userInfo.get("photoURI").toString()).into(imageView_profile_picture)
+                        val tempPhotoUri: String = userInfo.get("photoURI") as String
+                        val photoTemp = tempPhotoUri.split(".")
+                        if(photoTemp[0] == authDb.currentUser!!.uid) {
+                            Glide.with(this)
+                                .load(BaseFirebaseProperties.imageRef.child(
+                                "profilePictures/$tempPhotoUri"))
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(imageView_profile_picture)
+                        } else {
+                            Glide.with(this).load(userInfo.get("photoURI").toString())
+                                .into(imageView_profile_picture)
+                        }
                     }
                 } else {
                     textView_name.text = authDb.currentUser!!.displayName

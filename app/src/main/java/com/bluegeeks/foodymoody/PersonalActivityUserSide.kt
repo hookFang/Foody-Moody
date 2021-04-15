@@ -18,6 +18,7 @@ import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bluegeeks.foodymoody.entity.Notifications
 import com.bluegeeks.foodymoody.entity.Post
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldValue
@@ -32,6 +33,7 @@ import kotlinx.android.synthetic.main.activity_personal_user_side.imageView_prof
 import kotlinx.android.synthetic.main.activity_personal_user_side.postsRecyclerView
 import kotlinx.android.synthetic.main.activity_personal_user_side.posts_text_view
 import kotlinx.android.synthetic.main.activity_personal_user_side.textView_name
+import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 import java.text.SimpleDateFormat
@@ -94,6 +96,8 @@ class PersonalActivityUserSide : AppCompatActivity() {
                         val following: ArrayList<String> = userInfo.get("following") as ArrayList<String>
                         val followers: ArrayList<String> = userInfo.get("followers") as ArrayList<String>
                         val postsNumber: ArrayList<String> = userInfo.get("postsID") as ArrayList<String>
+                        val tempPhotoUri: String = userInfo.get("photoURI") as String
+                        val photoTemp = tempPhotoUri.split(".")
                         following_text_view.text = following.size.toString() + "\nFollowing"
                         followers_text_view.text = followers.size.toString() + "\nFollowers"
                         posts_text_view.text = postsNumber.size.toString() + "\nPosts"
@@ -101,12 +105,21 @@ class PersonalActivityUserSide : AppCompatActivity() {
                         if (userInfo.get("bio") != null && userInfo.get("bio") != "") {
                             TextView_bio_content.text = userInfo.get("bio") as CharSequence?
                         }
+                        if(photoTemp[0] == authDb.currentUser!!.uid) {
+                            Glide.with(this)
+                                .load(BaseFirebaseProperties.imageRef.child(
+                                    "profilePictures/$tempPhotoUri"))
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(imageView_profile_picture)
+                        } else {
+                            Glide.with(this).load(userInfo.get("photoURI").toString())
+                                .into(imageView_profile_picture)
+                        }
                     }
                 }
             }
         }
-
-        imageView_profile_picture.setImageResource(R.drawable.logout)
 
         //Follow button add the user to the array list in firebase
         follow_button.setOnClickListener {
