@@ -5,8 +5,13 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,15 +19,25 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
+import com.bluegeeks.foodymoody.entity.URIPathHelper
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
+import kotlinx.android.synthetic.main.activity_personal.*
+import kotlinx.android.synthetic.main.activity_post.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.checkBoxFollowListIsVisible
 import kotlinx.android.synthetic.main.activity_profile.checkBoxPrivate
 import kotlinx.android.synthetic.main.activity_profile.imageView_profile_picture
 import kotlinx.android.synthetic.main.profile_security_dialogue.*
 import kotlinx.android.synthetic.main.toolbar_main.*
+import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,6 +48,9 @@ class ProfileActivity : AppCompatActivity() {
     var birthDate = ""
     var security = false
     var private = false
+    lateinit var imageURI: Uri
+    lateinit var currentPhotoPath: String
+
 
     @SuppressLint("WeekBasedYear")
     var format = SimpleDateFormat("dd MMM, YYYY", Locale.US)
@@ -78,9 +96,25 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             if(userInfo?.get("photoURI") != "") {
-                //Glide.with(this@ProfileActivity).load(BaseFirebaseProperties.imageRef.child("images/" + model.id + ".jpeg")).into(holder.itemView.ImageView_post);
-                Glide.with(this).load(userInfo?.get("photoURI").toString()).into(imageView_profile_picture)
+                val tempPhotoUri: String = userInfo?.get("photoURI") as String
+                val photoTemp = tempPhotoUri.split(".")
+                if(photoTemp[0] == authDb.currentUser!!.uid) {
+                    Glide.with(this)
+                        .load(BaseFirebaseProperties.imageRef.child(
+                            "profilePictures/$tempPhotoUri"))
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .into(imageView_profile_picture)
+                } else {
+                    Glide.with(this).load(userInfo.get("photoURI").toString())
+                            .into(imageView_profile_picture)
+                }
             }
+        }
+
+        //Update  User profile
+        imageView_profile_picture.setOnClickListener {
+            chooseProfilePhoto()
         }
 
         Button_updateProfile.setOnClickListener {
@@ -128,16 +162,26 @@ class ProfileActivity : AppCompatActivity() {
                 val firstName = editTextFirstName.text.toString()
                 val lastName = editTextLastName.text.toString()
                 val birthDate = textViewBirthDate.text.toString()
-
-                rootDB.collection("users").document(authDb.currentUser!!.uid)
+                val profilePhotoPath = authDb.currentUser!!.uid + ".jpeg"
+                val imagesRef: StorageReference =
+                    BaseFirebaseProperties.imageRef.child("profilePictures/$profilePhotoPath")
+                imagesRef.delete()
+                val uploadTask: UploadTask? = imagesRef.putFile(imageURI!!)
+                uploadTask?.addOnFailureListener {
+                    Toast.makeText(this, "Failed to update Profile", Toast.LENGTH_LONG)
+                        .show()
+                }?.addOnSuccessListener {
+                    rootDB.collection("users").document(authDb.currentUser!!.uid)
                         .update(
-                                mapOf(
-                                        "firstName" to firstName,
-                                        "lastName" to lastName,
-                                        "birthDay" to birthDate
-                                )
+                            mapOf(
+                                "firstName" to firstName,
+                                "lastName" to lastName,
+                                "birthDay" to birthDate,
+                                "photoURI" to profilePhotoPath
+                            )
                         )
                         .addOnSuccessListener {
+                            alertDialog.dismiss()
                             val intent = Intent(applicationContext, ProfileActivity::class.java)
                             startActivity(intent)
                             finish()
@@ -145,6 +189,7 @@ class ProfileActivity : AppCompatActivity() {
                         .addOnFailureListener {
                             Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
                         }
+                }
             })
         }
 
@@ -211,6 +256,80 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    //To get the image from the gallery
+    @RequiresApi(Build.VERSION_CODES.P)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1001 && data != null) {
+            imageURI = data.data!!
+            imageView_profile_picture.setImageDrawable(null)
+            imageView_profile_picture.setImageURI(imageURI)
+        } else if (requestCode == 1002) {
+            imageURI = Uri.fromFile(File(currentPhotoPath))
+            imageView_profile_picture.setImageDrawable(null)
+            imageView_profile_picture.setImageURI(imageURI)
+        }
+    }
+
+    //This function is used to create a android dialog box and select the option
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun chooseProfilePhoto() {
+        val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
+        val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
+        builder.setTitle("Select an Option")
+        builder.setItems(options) { dialog, item ->
+            when (options[item]) {
+                "Take Photo" -> {
+                    Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                        // Ensure that there's a camera activity to handle the intent
+                        takePictureIntent.resolveActivity(packageManager)?.also {
+                            // Create the File where the photo should go
+                            val photoFile: File? = try {
+                                createImageFile()
+                            } catch (ex: IOException) {
+                                Log.e("ERROR", ex.message.toString())
+                                null
+                            }
+                            // Continue only if the File was successfully created
+                            photoFile?.also {
+                                val photoURI: Uri = FileProvider.getUriForFile(
+                                    this,
+                                    "com.example.android.fileprovider",
+                                    it
+                                )
+                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                                startActivityForResult(takePictureIntent, 1002)
+                            }
+                        }
+                    }
+                }
+                "Choose from Gallery" -> {
+                    val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    startActivityForResult(pickPhoto, 1001)
+                }
+                "Cancel" -> {
+                    dialog.dismiss()
+                }
+            }
+        }
+        builder.show()
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
+        }
     }
 }
 

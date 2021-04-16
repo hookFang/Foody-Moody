@@ -8,12 +8,15 @@ import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.authDb
 import com.bluegeeks.foodymoody.entity.BaseFirebaseProperties.Companion.rootDB
 import com.bluegeeks.foodymoody.entity.User
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.item_search_user.view.*
 import kotlinx.android.synthetic.main.toolbar_main.*
@@ -126,7 +129,22 @@ class SearchActivity : AppCompatActivity() {
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: UserViewHolder, position: Int, model: User) {
-            Glide.with(this@SearchActivity).load(model.photoURI).into(holder.itemView.imageView_profile_picture)
+            if(model.photoURI != null) {
+                val tempPhotoUri: String = model.photoURI!!
+                val photoTemp = tempPhotoUri.split(".")
+                if(photoTemp[0] == authDb.currentUser!!.uid) {
+                    Glide.with(this@SearchActivity)
+                        .load(
+                            BaseFirebaseProperties.imageRef.child(
+                            "profilePictures/$tempPhotoUri"))
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .into(holder.itemView.imageView_profile_picture)
+                } else {
+                    Glide.with(this@SearchActivity).load(model.photoURI)
+                        .into(holder.itemView.imageView_profile_picture)
+                }
+            }
             holder.itemView.user_full_name.text = model.firstName + model.lastName
             holder.itemView.username.text = model.userName
 
